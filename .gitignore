@@ -1,3 +1,96 @@
 node_modules/
 frontend/.env
 backend/.env
+
+
+# ai-ats-platform/
+# │
+# ├── .gitignore
+# ├── README.md
+# │
+# ├── client/                        # Frontend (React.js + Vite + MUI)
+# │   ├── public/
+# │   │   └── favicon.ico
+# │   ├── src/
+# │   │   ├── assets/                # Logos, static illustrations
+# │   │   ├── components/            # Reusable UI components
+# │   │   │   ├── common/
+# │   │   │   │   ├── Navbar.jsx
+# │   │   │   │   ├── Sidebar.jsx
+# │   │   │   │   ├── ProtectedRoute.jsx
+# │   │   │   │   └── ScoreBadge.jsx
+# │   │   │   ├── kanban/
+# │   │   │   │   ├── KanbanBoard.jsx
+# │   │   │   │   ├── KanbanColumn.jsx
+# │   │   │   │   └── CandidateCard.jsx
+# │   │   │   └── jobs/
+# │   │   │       ├── JobCard.jsx
+# │   │   │       └── JobFilter.jsx
+# │   │   ├── context/               # Global state (e.g., AuthContext)
+# │   │   │   └── AuthContext.jsx
+# │   │   ├── hooks/                 # Custom React hooks (React Query abstractions)
+# │   │   │   ├── useAuth.js
+# │   │   │   ├── useJobs.js
+# │   │   │   └── useApplications.js
+# │   │   ├── pages/                 # Route pages
+# │   │   │   ├── auth/
+# │   │   │   │   ├── Login.jsx
+# │   │   │   │   └── Register.jsx
+# │   │   │   ├── recruiter/
+# │   │   │   │   ├── Dashboard.jsx
+# │   │   │   │   ├── CreateJob.jsx
+# │   │   │   │   ├── JobApplicants.jsx
+# │   │   │   │   └── PipelineView.jsx
+# │   │   │   └── candidate/
+# │   │   │       ├── JobBoard.jsx
+# │   │   │       ├── ApplyJobModal.jsx
+# │   │   │       └── MyApplications.jsx
+# │   │   ├── services/              # Axios / Fetch API clients
+# │   │   │   ├── api.js             # Base Axios instance with interceptors
+# │   │   │   ├── authService.js
+# │   │   │   ├── jobService.js
+# │   │   │   └── applicationService.js
+# │   │   ├── theme/                 # Material-UI custom theme configuration
+# │   │   │   └── theme.js
+# │   │   ├── App.jsx
+# │   │   ├── main.jsx
+# │   │   └── index.css
+# │   ├── .env.example
+# │   ├── index.html
+# │   ├── package.json
+# │   └── vite.config.js
+# │
+# └── server/                        # Backend (Node.js + Express)
+#     ├── src/
+#     │   ├── config/                # Environment & SDK initializations
+#     │   │   ├── db.js              # Mongoose connection setup
+#     │   │   ├── supabase.js        # Supabase client setup
+#     │   │   └── gemini.js          # Google Generative AI client setup
+#     │   ├── controllers/           # Request handlers / Business logic
+#     │   │   ├── authController.js
+#     │   │   ├── jobController.js
+#     │   │   └── applicationController.js
+#     │   ├── middleware/            # Custom express middlewares
+#     │   │   ├── authMiddleware.js  # JWT verification & RBAC (Role checks)
+#     │   │   ├── uploadMiddleware.js# Multer memory storage configuration
+#     │   │   └── errorMiddleware.js # Centralized error handler
+#     │   ├── models/                # Mongoose database schemas
+#     │   │   ├── User.js
+#     │   │   ├── Job.js
+#     │   │   └── Application.js
+#     │   ├── routes/                # API route definitions
+#     │   │   ├── authRoutes.js
+#     │   │   ├── jobRoutes.js
+#     │   │   └── applicationRoutes.js
+#     │   ├── services/              # External/Third-party service helpers
+#     │   │   ├── aiService.js       # Gemini text evaluation logic
+#     │   │   ├── parseService.js    # pdf-parse text extraction logic
+#     │   │   ├── storageService.js  # Supabase upload/download logic
+#     │   │   └── emailService.js    # Nodemailer notification triggers
+#     │   ├── utils/                 # General helpers and constants
+#     │   │   ├── promptTemplates.js # Pre-formatted LLM prompts
+#     │   │   └── tokenHelper.js
+#     │   ├── app.js                 # Express app initialization & middleware registration
+#     │   └── server.js              # Server entry point (starts HTTP listener)
+#     ├── .env.example
+#     └── package.json
