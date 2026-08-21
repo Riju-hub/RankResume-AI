@@ -8,7 +8,7 @@ backend/.env
 # ├── .gitignore
 # ├── README.md
 # │
-# ├── client/                        # Frontend (React.js + Vite + MUI)
+# ├── frontend/                        # Frontend (React.js + Vite + MUI)
 # │   ├── public/
 # │   │   └── favicon.ico
 # │   ├── src/
@@ -50,17 +50,17 @@ backend/.env
 # │   │   │   ├── authService.js
 # │   │   │   ├── jobService.js
 # │   │   │   └── applicationService.js
-# │   │   ├── theme/                 # Material-UI custom theme configuration
-# │   │   │   └── theme.js
 # │   │   ├── App.jsx
 # │   │   ├── main.jsx
 # │   │   └── index.css
-# │   ├── .env.example
+# │   ├── .env
 # │   ├── index.html
 # │   ├── package.json
+# │   ├── postcss.config.js
+# │   ├── tailwind.config.js
 # │   └── vite.config.js
 # │
-# └── server/                        # Backend (Node.js + Express)
+# └── backend/                        # Backend (Node.js + Express)
 #     ├── src/
 #     │   ├── config/                # Environment & SDK initializations
 #     │   │   ├── db.js              # Mongoose connection setup
@@ -92,5 +92,5 @@ backend/.env
 #     │   │   └── tokenHelper.js
 #     │   ├── app.js                 # Express app initialization & middleware registration
 #     │   └── server.js              # Server entry point (starts HTTP listener)
-#     ├── .env.example
+#     ├── .env
 #     └── package.json
