@@ -24,6 +24,9 @@ import PipelineView from './pages/recruiter/PipelineView';
 import JobBoard from './pages/candidate/JobBoard';
 import MyApplications from './pages/candidate/MyApplications';
 
+// 404 Page
+import NotFound from './pages/NotFound';
+
 // Modern App Layout Wrapper
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -57,7 +60,7 @@ const AppLayout = () => {
 function App() {
   return (
     <Routes>
-      {/* 1. Public Landing Page always accessible at root '/' */}
+      {/* 1. Public Landing Page */}
       <Route path="/" element={<LandingPage />} />
 
       {/* 2. Standalone Auth Pages */}
@@ -66,6 +69,7 @@ function App() {
 
       {/* 3. Main Authenticated / App Shell */}
       <Route element={<AppLayout />}>
+        {/* Public & Candidate Accessible Job Board */}
         <Route path="/jobs" element={<JobBoard />} />
 
         {/* Protected Candidate Routes */}
@@ -80,10 +84,10 @@ function App() {
           <Route path="/recruiter/jobs/:jobId/applicants" element={<JobApplicants />} />
           <Route path="/recruiter/jobs/:jobId/pipeline" element={<PipelineView />} />
         </Route>
-
-        {/* Catch-all */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
+
+      {/* 4. Standalone Catch-All 404 Route */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
