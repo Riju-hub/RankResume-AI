@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('rankresume_user', JSON.stringify(userData));
           }
         } catch (err) {
-          // Only force logout on explicit 401 Unauthorized
           if (err.response?.status === 401) {
             logout();
           }
@@ -52,6 +51,17 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateUserState = (newUserData) => {
+    const updated = { ...user, ...newUserData };
+    setUser(updated);
+    localStorage.setItem('rankresume_user', JSON.stringify(updated));
+  };
+
+  const deleteAccount = async () => {
+    await authService.deleteAccount();
+    logout();
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -62,6 +72,8 @@ export const AuthProvider = ({ children }) => {
         isCandidate: user?.role === 'candidate',
         login,
         logout,
+        updateUserState,
+        deleteAccount,
         loading,
       }}
     >

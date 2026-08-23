@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import geminiLogo from '../../assets/gemini-svg.svg';
 import { 
-  Sparkles, 
   Mail, 
   Lock, 
   User, 
@@ -64,28 +64,26 @@ const Register = () => {
 
   return (
     <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-zinc-950 px-4 py-12 selection:bg-indigo-500 selection:text-white">
-      {/* Ambient Background Elements */}
       <div className="pointer-events-none absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-indigo-600/15 via-violet-600/10 to-transparent blur-[140px]" />
       <div className="pointer-events-none absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-violet-600/15 via-indigo-600/10 to-transparent blur-[140px]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
 
-      {/* Main Container Card */}
       <div className="relative z-10 w-full max-w-[480px]">
         <div className="relative rounded-3xl border border-zinc-800/80 bg-zinc-900/60 p-7 sm:p-9 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:border-zinc-700/80 hover:shadow-indigo-500/5">
           <div className="absolute top-0 left-12 right-12 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
 
-          {/* Header & Clickable Logo */}
+          {/* Header & Logo Image */}
           <div className="flex flex-col items-center text-center">
             <Link
               to="/"
-              className="group relative flex h-12 w-12 items-center justify-center rounded-2xl border border-indigo-500/20 bg-gradient-to-tr from-indigo-500/10 via-zinc-900 to-violet-500/10 p-2.5 shadow-lg shadow-indigo-500/10 transition-transform duration-200 hover:scale-105"
+              className="group flex items-center justify-center p-1 transition-transform duration-200 hover:scale-105"
               title="Return to Landing Page"
             >
-              <Sparkles className="h-5 w-5 text-indigo-400 transition-transform duration-300 group-hover:scale-110" />
-              <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-indigo-500 ring-2 ring-zinc-950" />
-              </span>
+              <img 
+                src={geminiLogo} 
+                alt="RankResume AI" 
+                className="h-11 w-auto object-contain" 
+              />
             </Link>
 
             <h1 className="mt-4 text-xl font-bold tracking-tight text-zinc-100 sm:text-2xl">
@@ -96,7 +94,6 @@ const Register = () => {
             </p>
           </div>
 
-          {/* Error Message */}
           {registerError && (
             <div className="mt-5 flex items-center gap-2.5 rounded-xl border border-rose-500/25 bg-rose-500/10 p-3 text-xs text-rose-300 backdrop-blur-md">
               <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
@@ -104,7 +101,7 @@ const Register = () => {
             </div>
           )}
 
-          {/* Account Role Selector Cards */}
+          {/* Role Selection */}
           <div className="mt-6 space-y-2">
             <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
               I am joining as a

@@ -13,11 +13,16 @@ backend/.env
 # │   │   └── favicon.ico
 # │   ├── src/
 # │   │   ├── assets/                # Logos, static illustrations
+# │   │   │   └── gemini-svg.svg
 # │   │   ├── components/            # Reusable UI components
 # │   │   │   ├── common/
+# │   │   │   │   ├── DeleteAccountModal.jsx
+# │   │   │   │   ├── HelpFeedback.jsx
 # │   │   │   │   ├── Navbar.jsx
+# │   │   │   │   ├── Profile.jsx
 # │   │   │   │   ├── Sidebar.jsx
 # │   │   │   │   ├── ProtectedRoute.jsx
+# │   │   │   │   ├── TermsConditions.jsx
 # │   │   │   │   └── ScoreBadge.jsx
 # │   │   │   ├── kanban/
 # │   │   │   │   ├── KanbanBoard.jsx
@@ -41,10 +46,12 @@ backend/.env
 # │   │   │   │   ├── CreateJob.jsx
 # │   │   │   │   ├── JobApplicants.jsx
 # │   │   │   │   └── PipelineView.jsx
-# │   │   │   └── candidate/
-# │   │   │       ├── JobBoard.jsx
-# │   │   │       ├── ApplyJobModal.jsx
-# │   │   │       └── MyApplications.jsx
+# │   │   │   ├── candidate/
+# │   │   │   │    ├── JobBoard.jsx
+# │   │   │   │    ├── ApplyJobModal.jsx
+# │   │   │   │    └── MyApplications.jsx
+# │   │   │   ├── NotFound.jsx
+# │   │   │   └── LandingPage.jsx
 # │   │   ├── services/              # Axios / Fetch API clients
 # │   │   │   ├── api.js             # Base Axios instance with interceptors
 # │   │   │   ├── authService.js
@@ -56,7 +63,6 @@ backend/.env
 # │   ├── .env
 # │   ├── index.html
 # │   ├── package.json
-# │   ├── postcss.config.js
 # │   ├── tailwind.config.js
 # │   └── vite.config.js
 # │

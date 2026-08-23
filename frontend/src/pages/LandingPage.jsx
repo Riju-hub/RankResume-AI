@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+// If in src/pages/LandingPage.jsx:
+import geminiLogo from '../assets/gemini-svg.svg';
+
+// OR if in src/components/common/Navbar.jsx:
+// import geminiLogo from '../../assets/gemini-svg.svg';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -64,13 +69,17 @@ export const LandingPage = () => {
       {/* Top Floating Glass Navigation */}
       <nav className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-zinc-800/80 bg-zinc-950/80 px-6 sm:px-12 backdrop-blur-xl">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 shadow-md shadow-indigo-500/25">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-sm font-bold tracking-tight text-zinc-100 sm:text-base">
-            RankResume <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">AI</span>
-          </span>
-        </div>
+  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 p-1.5 shadow-md shadow-indigo-500/25">
+    <img 
+      src={geminiLogo} 
+      alt="RankResume AI Logo" 
+      className="h-full w-full object-contain" 
+    />
+  </div>
+  <span className="text-sm font-bold tracking-tight text-zinc-100 sm:text-base">
+    RankResume <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">AI</span>
+  </span>
+</div>
 
         <div className="flex items-center gap-3">
           <Link

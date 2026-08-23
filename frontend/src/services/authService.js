@@ -13,4 +13,12 @@ export const authService = {
     const res = await api.get('/auth/me');
     return res.data;
   },
+  updateProfile: async (payload) => {
+    const res = await api.put('/auth/profile', payload);
+    return res.data;
+  },
+  deleteAccount: async () => {
+    const res = await api.delete('/auth/account');
+    return res.data;
+  },
 };
