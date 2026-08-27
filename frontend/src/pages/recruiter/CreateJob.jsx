@@ -16,12 +16,14 @@ import {
   ArrowLeft,
   Check,
   Eye,
-  EyeOff
+  EyeOff,
+  Zap,
+  Target
 } from 'lucide-react';
 
 const SUGGESTED_SKILLS = [
   'React', 'TypeScript', 'Node.js', 'Python', 'Tailwind CSS', 
-  'MongoDB', 'PostgreSQL', 'Docker', 'AWS', 'Next.js', 'REST APIs'
+  'MongoDB', 'PostgreSQL', 'Docker', 'AWS', 'Next.js', 'REST APIs', 'GraphQL'
 ];
 
 const CreateJob = () => {
@@ -85,53 +87,63 @@ const CreateJob = () => {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      {/* Top Header & Navigation Bar */}
+    <div className="mx-auto max-w-4xl space-y-6 font-sans">
+      {/* ========================================================================= */}
+      {/* --- Header Navigation & Preview Toggle --- */}
+      {/* ========================================================================= */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <Link
             to="/recruiter/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400 transition hover:text-zinc-200"
+            className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-slate-400 transition hover:text-pink-400"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to Dashboard
           </Link>
-          <h1 className="text-xl font-bold tracking-tight text-zinc-100 sm:text-2xl">
-            Create Job Opening
+          
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Create Job <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">Opening</span>
           </h1>
-          <p className="text-xs text-zinc-400">
-            Define requirements and target skills to configure the Gemini ATS semantic matcher.
+          
+          <p className="text-xs text-slate-400">
+            Define requirements and target skills to configure the Gemini ATS semantic vector matcher.
           </p>
         </div>
 
-        {/* Live Preview Toggle */}
+        {/* Live Preview Toggle Button */}
         <button
           type="button"
           onClick={() => setShowPreview(!showPreview)}
-          className="inline-flex h-9 items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/60 px-3.5 text-xs font-medium text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-100 self-start sm:self-auto"
+          className={`inline-flex h-9 items-center gap-2 rounded-xl border px-3.5 text-xs font-bold transition-all self-start sm:self-auto cursor-pointer active:scale-95 ${
+            showPreview
+              ? 'border-pink-500/50 bg-pink-950/40 text-pink-300 shadow-md shadow-pink-500/10'
+              : 'border-slate-800 bg-slate-900/80 text-slate-300 hover:border-slate-700 hover:text-white'
+          }`}
         >
-          {showPreview ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-          <span>{showPreview ? 'Hide Preview' : 'Live Preview'}</span>
+          {showPreview ? <EyeOff className="h-3.5 w-3.5 text-pink-400" /> : <Eye className="h-3.5 w-3.5 text-pink-400" />}
+          <span>{showPreview ? 'Hide Candidate Preview' : 'Live Candidate Preview'}</span>
         </button>
       </div>
 
-      {/* Optional Live Preview Card */}
+      {/* ========================================================================= */}
+      {/* --- Live Candidate Preview Card --- */}
+      {/* ========================================================================= */}
       {showPreview && (
-        <div className="rounded-3xl border border-indigo-500/30 bg-indigo-500/5 p-5 backdrop-blur-md">
+        <div className="rounded-3xl border border-pink-500/30 bg-pink-950/15 p-5 backdrop-blur-md transition-all shadow-xl">
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">
-              Candidate Preview Mode
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
+              <Sparkles className="h-3 w-3" /> Candidate Preview Mode
             </span>
-            <span className="text-[10px] text-zinc-400">Updates live as you type</span>
+            <span className="font-mono text-[10px] text-slate-500">Live Synchronized</span>
           </div>
           <JobCard
             job={{
               _id: 'preview-mode',
-              title: formData.title || 'Job Title Placeholder',
-              department: formData.department || 'General',
+              title: formData.title || 'Senior Software Engineer (Preview)',
+              department: formData.department || 'Engineering',
               location: formData.location || 'Remote',
               jobType: formData.jobType,
-              description: formData.description || 'Job description preview will appear here...',
+              description: formData.description || 'Job description preview will populate here as you type...',
               skillsRequired: formData.skillsRequired,
               createdAt: new Date().toISOString(),
               applicantCount: 0,
@@ -141,35 +153,39 @@ const CreateJob = () => {
         </div>
       )}
 
-      {/* Error Alert Box */}
+      {/* ========================================================================= */}
+      {/* --- Error Alert Box --- */}
+      {/* ========================================================================= */}
       {errorMsg && (
-        <div className="flex items-center gap-2.5 rounded-2xl border border-rose-500/25 bg-rose-500/10 p-4 text-xs text-rose-300 backdrop-blur-md">
+        <div className="flex items-center gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-950/40 p-4 text-xs font-medium text-rose-300 backdrop-blur-md">
           <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
           <span>{errorMsg}</span>
         </div>
       )}
 
-      {/* Main Creation Form Container */}
+      {/* ========================================================================= */}
+      {/* --- Main Creation Form Container --- */}
+      {/* ========================================================================= */}
       <form
         onSubmit={handleSubmit}
-        className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-8"
+        className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/70 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-8"
       >
-        {/* Subtle Top Ambient Accent */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+        {/* Hardware-Accelerated Ambient Top Border Glow */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-pink-500/40 to-transparent" />
 
         {/* Section 1: Role Overview */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 border-b border-zinc-800/60 pb-2">
-            <Briefcase className="h-4 w-4 text-indigo-400" />
-            <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+          <div className="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+            <Briefcase className="h-4 w-4 text-pink-400" />
+            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-300">
               1. Role Identity
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2 space-y-1.5">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                Job Title <span className="text-indigo-400">*</span>
+              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+                Job Title <span className="text-pink-400">*</span>
               </label>
               <input
                 type="text"
@@ -178,12 +194,12 @@ const CreateJob = () => {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="e.g. Senior Full-Stack Engineer"
-                className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-950/70 px-3.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-indigo-500/60 focus:bg-zinc-950 focus:ring-2 focus:ring-indigo-500/20"
+                className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition focus:border-pink-500/60 focus:bg-slate-950 focus:ring-2 focus:ring-pink-500/20"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
                 Department
               </label>
               <input
@@ -191,13 +207,13 @@ const CreateJob = () => {
                 name="department"
                 value={formData.department}
                 onChange={handleChange}
-                placeholder="e.g. Engineering / Product"
-                className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-950/70 px-3.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-indigo-500/60 focus:bg-zinc-950 focus:ring-2 focus:ring-indigo-500/20"
+                placeholder="e.g. Platform Engineering / Product"
+                className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition focus:border-pink-500/60 focus:bg-slate-950 focus:ring-2 focus:ring-pink-500/20"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
                 Work Location
               </label>
               <input
@@ -206,7 +222,7 @@ const CreateJob = () => {
                 value={formData.location}
                 onChange={handleChange}
                 placeholder="e.g. Remote / San Francisco, CA"
-                className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-950/70 px-3.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-indigo-500/60 focus:bg-zinc-950 focus:ring-2 focus:ring-indigo-500/20"
+                className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition focus:border-pink-500/60 focus:bg-slate-950 focus:ring-2 focus:ring-pink-500/20"
               />
             </div>
           </div>
@@ -214,33 +230,33 @@ const CreateJob = () => {
 
         {/* Section 2: Specifications */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 border-b border-zinc-800/60 pb-2">
-            <Layers className="h-4 w-4 text-indigo-400" />
-            <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+          <div className="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+            <Layers className="h-4 w-4 text-purple-400" />
+            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-300">
               2. Position Parameters
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
                 Employment Type
               </label>
               <select
                 name="jobType"
                 value={formData.jobType}
                 onChange={handleChange}
-                className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-950/70 px-3.5 text-xs font-medium text-zinc-200 outline-none transition focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 cursor-pointer"
+                className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 text-xs font-semibold text-slate-200 outline-none transition focus:border-pink-500/60 focus:ring-2 focus:ring-pink-500/20 cursor-pointer"
               >
-                <option value="Full-time" className="bg-zinc-950">Full-time</option>
-                <option value="Part-time" className="bg-zinc-950">Part-time</option>
-                <option value="Contract" className="bg-zinc-950">Contract</option>
-                <option value="Internship" className="bg-zinc-950">Internship</option>
+                <option value="Full-time" className="bg-slate-950">Full-time</option>
+                <option value="Part-time" className="bg-slate-950">Part-time</option>
+                <option value="Contract" className="bg-slate-950">Contract</option>
+                <option value="Internship" className="bg-slate-950">Internship</option>
               </select>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
                 Experience Level
               </label>
               <input
@@ -249,7 +265,7 @@ const CreateJob = () => {
                 value={formData.experienceRequired}
                 onChange={handleChange}
                 placeholder="e.g. 3+ years / Mid-Senior"
-                className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-950/70 px-3.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-indigo-500/60 focus:bg-zinc-950 focus:ring-2 focus:ring-indigo-500/20"
+                className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition focus:border-pink-500/60 focus:bg-slate-950 focus:ring-2 focus:ring-pink-500/20"
               />
             </div>
           </div>
@@ -257,16 +273,16 @@ const CreateJob = () => {
 
         {/* Section 3: Semantic Skills Config */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 border-b border-zinc-800/60 pb-2">
-            <Sparkles className="h-4 w-4 text-indigo-400" />
-            <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
-              3. AI Semantic Matching Criteria
+          <div className="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+            <Target className="h-4 w-4 text-cyan-400" />
+            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-300">
+              3. AI Semantic Matching Vector Criteria
             </h2>
           </div>
 
           <div className="space-y-3">
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-              Required Target Skills (Type & press Enter)
+            <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              Required Target Skills <span className="text-slate-500 lowercase">(Type & press Enter)</span>
             </label>
             <div className="flex gap-2">
               <input
@@ -274,21 +290,21 @@ const CreateJob = () => {
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 onKeyDown={handleKeyDownSkill}
-                placeholder="e.g. React, PostgreSQL, Docker..."
-                className="h-10 flex-1 rounded-xl border border-zinc-800 bg-zinc-950/70 px-3.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-indigo-500/60 focus:bg-zinc-950 focus:ring-2 focus:ring-indigo-500/20"
+                placeholder="e.g. React, PostgreSQL, Docker, AWS..."
+                className="h-10 flex-1 rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition focus:border-cyan-500/60 focus:bg-slate-950 focus:ring-2 focus:ring-cyan-500/20"
               />
               <button
                 type="button"
                 onClick={() => handleAddSkill()}
-                className="h-10 rounded-xl border border-zinc-800 bg-zinc-900 px-4 text-xs font-medium text-zinc-200 transition hover:border-zinc-700 hover:bg-zinc-800 active:scale-95"
+                className="h-10 rounded-xl border border-slate-800 bg-slate-900 px-5 text-xs font-bold text-slate-200 transition hover:border-slate-700 hover:bg-slate-800 active:scale-95 cursor-pointer"
               >
                 Add
               </button>
             </div>
 
-            {/* Quick 1-Click Suggestions */}
+            {/* Suggested 1-Click Skills */}
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 mr-1">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 mr-1">
                 Suggested:
               </span>
               {SUGGESTED_SKILLS.filter((s) => !formData.skillsRequired.includes(s)).map((skill) => (
@@ -296,26 +312,26 @@ const CreateJob = () => {
                   key={skill}
                   type="button"
                   onClick={() => handleAddSkill(skill)}
-                  className="rounded-lg border border-zinc-800/80 bg-zinc-950/40 px-2 py-0.5 text-[10px] font-medium text-zinc-400 transition hover:border-indigo-500/40 hover:bg-indigo-500/10 hover:text-indigo-300"
+                  className="rounded-lg border border-slate-800 bg-slate-950/40 px-2 py-1 font-mono text-[10px] font-medium text-slate-400 transition hover:border-cyan-500/40 hover:bg-cyan-950/30 hover:text-cyan-300 cursor-pointer"
                 >
                   + {skill}
                 </button>
               ))}
             </div>
 
-            {/* Active Selected Skills List */}
+            {/* Active Selected Skills Badges */}
             {formData.skillsRequired.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2">
                 {formData.skillsRequired.map((skill) => (
                   <span
                     key={skill}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-cyan-500/30 bg-cyan-950/40 px-3 py-1 font-mono text-xs font-bold text-cyan-300 shadow-sm shadow-cyan-500/5"
                   >
                     <span>{skill}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveSkill(skill)}
-                      className="rounded p-0.5 text-indigo-400/80 hover:bg-indigo-500/20 hover:text-indigo-200"
+                      className="rounded p-0.5 text-cyan-400/80 hover:bg-cyan-500/20 hover:text-cyan-200 cursor-pointer"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -328,17 +344,17 @@ const CreateJob = () => {
 
         {/* Section 4: Narrative Description */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 border-b border-zinc-800/60 pb-2">
+          <div className="flex items-center gap-2 border-b border-slate-800/80 pb-2">
             <Clock className="h-4 w-4 text-indigo-400" />
-            <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-300">
               4. Job Narrative & Details
             </h2>
           </div>
 
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                Job Overview & Scope <span className="text-indigo-400">*</span>
+              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+                Job Overview & Scope <span className="text-pink-400">*</span>
               </label>
               <textarea
                 name="description"
@@ -346,13 +362,13 @@ const CreateJob = () => {
                 rows={4}
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Outline the responsibilities, project scope, and impact of this role..."
-                className="w-full rounded-2xl border border-zinc-800 bg-zinc-950/70 p-3.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-indigo-500/60 focus:bg-zinc-950 focus:ring-2 focus:ring-indigo-500/20"
+                placeholder="Outline the responsibilities, project scope, architecture stack, and expected engineering deliverables..."
+                className="w-full rounded-2xl border border-slate-800 bg-slate-950/70 p-3.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition focus:border-pink-500/60 focus:bg-slate-950 focus:ring-2 focus:ring-pink-500/20 resize-none"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
                 Key Requirements & Qualifications
               </label>
               <textarea
@@ -360,20 +376,20 @@ const CreateJob = () => {
                 rows={3}
                 value={formData.requirements}
                 onChange={handleChange}
-                placeholder="List specific must-haves, degree expectations, or certifications..."
-                className="w-full rounded-2xl border border-zinc-800 bg-zinc-950/70 p-3.5 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition focus:border-indigo-500/60 focus:bg-zinc-950 focus:ring-2 focus:ring-indigo-500/20"
+                placeholder="List must-haves, degree expectations, architectural experience, or certifications..."
+                className="w-full rounded-2xl border border-slate-800 bg-slate-950/70 p-3.5 text-xs text-slate-100 placeholder-slate-500 outline-none transition focus:border-pink-500/60 focus:bg-slate-950 focus:ring-2 focus:ring-pink-500/20 resize-none"
               />
             </div>
           </div>
         </div>
 
-        {/* Form Submission Actions */}
-        <div className="flex items-center justify-end gap-3 border-t border-zinc-800/80 pt-5">
+        {/* Form Submission Action Bar */}
+        <div className="flex items-center justify-end gap-3 border-t border-slate-800/80 pt-5">
           <button
             type="button"
             onClick={() => navigate('/recruiter/dashboard')}
             disabled={isCreating}
-            className="h-10 rounded-xl border border-zinc-800 bg-zinc-900/60 px-5 text-xs font-medium text-zinc-400 transition hover:border-zinc-700 hover:text-zinc-200 active:scale-95 disabled:opacity-50"
+            className="h-10 rounded-xl border border-slate-800 bg-slate-900/80 px-5 text-xs font-bold text-slate-400 transition hover:border-slate-700 hover:text-slate-200 active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             Cancel
           </button>
@@ -381,9 +397,8 @@ const CreateJob = () => {
           <button
             type="submit"
             disabled={isCreating}
-            className="group relative flex h-10 items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 px-6 text-xs font-medium text-white shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:from-indigo-500 hover:to-violet-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+            className="group relative flex h-10 items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 px-6 text-xs font-bold text-white shadow-xl shadow-indigo-600/20 transition-all hover:scale-[1.02] hover:shadow-indigo-600/30 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
           >
-            <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100" />
             {isCreating ? (
               <>
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -391,7 +406,7 @@ const CreateJob = () => {
               </>
             ) : (
               <>
-                <Sparkles className="h-3.5 w-3.5" />
+                <Zap className="h-3.5 w-3.5" />
                 <span>Publish Job Opening</span>
               </>
             )}

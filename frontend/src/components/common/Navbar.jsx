@@ -2,7 +2,14 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import geminiLogo from '../../assets/gemini-svg.svg';
-import { LogOut, Menu, ShieldCheck, UserCheck} from 'lucide-react';
+import { 
+  LogOut, 
+  Menu, 
+  ShieldCheck, 
+  UserCheck, 
+  ArrowRight,
+  Sparkles
+} from 'lucide-react';
 
 export const Navbar = ({ toggleSidebar }) => {
   const { user, isAuthenticated, logout, isRecruiter } = useAuthContext();
@@ -16,7 +23,8 @@ export const Navbar = ({ toggleSidebar }) => {
   const getInitials = (name) => {
     if (!name) return 'U';
     return name
-      .split(' ')
+      .trim()
+      .split(/\s+/)
       .map((n) => n[0])
       .slice(0, 2)
       .join('')
@@ -24,81 +32,86 @@ export const Navbar = ({ toggleSidebar }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex h-16 w-full items-center justify-between border-b border-zinc-200/80 bg-white/80 dark:border-zinc-800/80 dark:bg-zinc-950/80 px-4 sm:px-8 backdrop-blur-xl transition-all">
+    <header className="fixed top-0 left-0 right-0 z-50 flex h-16 w-full items-center justify-between border-b border-slate-800/80 bg-slate-950/80 px-4 sm:px-8 backdrop-blur-xl transition-all font-sans">
       {/* Left: Brand Logo & Mobile Sidebar Toggle */}
       <div className="flex items-center gap-3.5">
         {isAuthenticated && (
           <button
+            type="button"
             onClick={toggleSidebar}
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-100/60 text-zinc-600 transition-colors hover:border-zinc-300 hover:bg-zinc-200 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 lg:hidden cursor-pointer"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-800 bg-slate-900/80 text-slate-400 transition-all hover:border-slate-700 hover:bg-slate-800 hover:text-white lg:hidden cursor-pointer active:scale-95"
             aria-label="Toggle Navigation Sidebar"
           >
             <Menu className="h-4 w-4" />
           </button>
         )}
 
-        <Link to="/" className="group flex items-center gap-2.5" title="Go to Home">
-  <img 
-    src={geminiLogo} 
-    alt="RankResume AI Logo" 
-    className="h-9 w-auto shrink-0 transition-transform duration-200 group-hover:scale-105" 
-  />
-  <span className="text-sm font-extrabold tracking-tight sm:text-base select-none">
-    {/* High-contrast base */}
-    <span className="text-zinc-900 dark:text-zinc-100">Rank</span>
-    
-    {/* Vibrant Cyan-to-Purple Gradient */}
-    <span className="bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
-      Resume
-    </span>
-
-    {/* Neon Pink/Amber AI Tag */}
-    <span className="ml-1 bg-gradient-to-r from-pink-500 via-rose-500 to-amber-400 bg-clip-text text-transparent font-black">
-      AI
-    </span>
-  </span>
-</Link>
+        <Link to="/" className="group flex items-center gap-3" title="RankResume AI Home">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 p-1.5 shadow-md shadow-indigo-500/20 transition-all duration-300 group-hover:scale-105 group-hover:shadow-pink-500/30">
+            <img 
+              src={geminiLogo} 
+              alt="RankResume AI Logo" 
+              className="h-full w-full object-contain" 
+            />
+          </div>
+          
+          <div className="flex flex-col select-none">
+            <span className="text-sm font-black tracking-tight text-white sm:text-base flex items-center gap-1 leading-none">
+              RankResume{' '}
+              <span className="bg-gradient-to-r from-blue-400 via-indigo-300 to-pink-400 bg-clip-text text-transparent">
+                AI
+              </span>
+            </span>
+            <span className="text-[9px] font-mono tracking-widest uppercase text-slate-500 mt-0.5">
+              Neural ATS
+            </span>
+          </div>
+        </Link>
       </div>
 
-      {/* Right: Theme Toggle & Controls */}
-      <div className="flex items-center gap-2.5 sm:gap-4">
+      {/* Right: Authenticated Profile or Guest Actions */}
+      <div className="flex items-center gap-3 sm:gap-4">
         {isAuthenticated ? (
           <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex items-center gap-3 border-r border-zinc-200 dark:border-zinc-800/80 pr-3 sm:pr-4">
+            {/* User Profile Info */}
+            <div className="flex items-center gap-3 border-r border-slate-800/90 pr-3 sm:pr-4">
               <div className="hidden text-right sm:block">
-                <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 leading-tight">
+                <p className="text-xs font-bold text-white leading-tight">
                   {user?.name || 'Authorized User'}
                 </p>
                 <div className="mt-0.5 flex items-center justify-end gap-1.5">
                   {isRecruiter ? (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
-                      <ShieldCheck className="h-2.5 w-2.5" />
+                    <span className="inline-flex items-center gap-1 rounded-full border border-pink-500/30 bg-pink-950/40 px-2 py-0.5 font-mono text-[10px] font-bold text-pink-300">
+                      <ShieldCheck className="h-3 w-3 text-pink-400" />
                       Recruiter
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">
-                      <UserCheck className="h-2.5 w-2.5" />
+                    <span className="inline-flex items-center gap-1 rounded-full border border-cyan-500/30 bg-cyan-950/40 px-2 py-0.5 font-mono text-[10px] font-bold text-cyan-300">
+                      <UserCheck className="h-3 w-3 text-cyan-400" />
                       Candidate
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-100 font-mono text-xs font-semibold text-zinc-700 shadow-inner dark:border-zinc-700/60 dark:bg-gradient-to-b dark:from-zinc-800 dark:to-zinc-900 dark:text-zinc-200">
+              {/* Avatar with Status Pip */}
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 font-mono text-xs font-bold text-white shadow-inner">
                 {getInitials(user?.name)}
                 <span
-                  className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white dark:border-zinc-950 ${
-                    isRecruiter ? 'bg-emerald-500 ring-1 ring-emerald-400/40' : 'bg-indigo-500 ring-1 ring-indigo-400/40'
+                  className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-slate-950 ${
+                    isRecruiter ? 'bg-pink-500 ring-1 ring-pink-400/40' : 'bg-cyan-400 ring-1 ring-cyan-400/40'
                   }`}
-                  title="Active"
+                  title="Active Session"
                 />
               </div>
             </div>
 
+            {/* Logout Action */}
             <button
+              type="button"
               onClick={handleLogout}
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100/80 px-3 text-xs font-medium text-zinc-600 transition-all hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-500 active:scale-95 cursor-pointer dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400 dark:hover:text-red-400"
-              title="Sign out to Home"
+              className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-900/80 px-3 text-xs font-semibold text-slate-300 transition-all hover:border-rose-500/40 hover:bg-rose-950/30 hover:text-rose-300 active:scale-95 cursor-pointer"
+              title="Sign out of account"
             >
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden md:inline">Sign Out</span>
@@ -108,15 +121,18 @@ export const Navbar = ({ toggleSidebar }) => {
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               to="/login"
-              className="rounded-lg px-3.5 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              className="rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-300 transition-colors hover:bg-slate-800/50 hover:text-white"
             >
               Sign In
             </Link>
+            
             <Link
               to="/register"
-              className="relative inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-1.5 text-xs font-medium text-white shadow-md shadow-indigo-500/20 transition-all hover:from-indigo-500 hover:to-violet-500 active:scale-95"
+              className="group inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-indigo-600/20 transition-all hover:scale-[1.02] hover:shadow-indigo-600/30 active:scale-95"
             >
-              Get Started
+              <Sparkles className="h-3 w-3 text-pink-300" />
+              <span>Get Started</span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         )}
