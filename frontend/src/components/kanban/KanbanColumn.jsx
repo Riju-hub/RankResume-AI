@@ -1,31 +1,31 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Droppable } from '@hello-pangea/dnd';
 import CandidateCard from './CandidateCard';
 import { Inbox } from 'lucide-react';
 
-export const KanbanColumn = ({ column, applicants = [], onSelectCandidate }) => {
+export const KanbanColumn = memo(({ column, applicants = [], onSelectCandidate }) => {
   const count = applicants.length;
 
   return (
-    <div className="flex w-80 shrink-0 flex-col rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-3.5 backdrop-blur-xl shadow-lg shadow-black/20">
+    <div className="flex w-80 shrink-0 flex-col rounded-3xl border border-slate-800/80 bg-slate-900/60 p-4 backdrop-blur-xl shadow-2xl transition-all font-sans">
       {/* Column Header */}
-      <div className="mb-3 flex items-center justify-between px-1.5 py-1">
-        <div className="flex items-center gap-2">
-          {/* Status Indicator Dot */}
-          <span className="relative flex h-2 w-2">
+      <div className="mb-3.5 flex items-center justify-between px-1 py-0.5">
+        <div className="flex items-center gap-2.5">
+          {/* Status Indicator Dot with subtle pulse */}
+          <span className="relative flex h-2.5 w-2.5">
             <span
-              className={`h-2 w-2 rounded-full ${column.dotColor || 'bg-indigo-400'}`}
+              className={`h-2.5 w-2.5 rounded-full ${column.dotColor || 'bg-cyan-400'}`}
             />
           </span>
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-200">
+          <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200">
             {column.title}
           </h3>
         </div>
 
         {/* Candidate Count Badge */}
         <span
-          className={`inline-flex items-center justify-center rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold tabular-nums ${
-            column.badgeClass || 'border-zinc-800 bg-zinc-950/80 text-zinc-400'
+          className={`inline-flex items-center justify-center rounded-xl border px-2.5 py-0.5 font-mono text-[11px] font-bold tabular-nums shadow-sm ${
+            column.badgeClass || 'border-slate-800 bg-slate-950/80 text-slate-400'
           }`}
         >
           {count}
@@ -38,9 +38,9 @@ export const KanbanColumn = ({ column, applicants = [], onSelectCandidate }) => 
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={`flex min-h-[500px] flex-1 flex-col gap-3 rounded-xl p-1.5 transition-all duration-200 ${
+            className={`flex min-h-[500px] flex-1 flex-col gap-3 rounded-2xl p-1.5 transition-all duration-200 ${
               snapshot.isDraggingOver
-                ? 'border border-dashed border-indigo-500/40 bg-indigo-500/5 shadow-inner'
+                ? 'border-2 border-dashed border-cyan-500/50 bg-cyan-950/20 shadow-inner'
                 : 'border border-transparent bg-transparent'
             }`}
           >
@@ -55,12 +55,14 @@ export const KanbanColumn = ({ column, applicants = [], onSelectCandidate }) => 
 
             {provided.placeholder}
 
-            {/* Empty Column Indicator */}
+            {/* Empty Column State */}
             {count === 0 && !snapshot.isDraggingOver && (
-              <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-zinc-800/60 p-6 text-center">
-                <Inbox className="h-5 w-5 text-zinc-600" />
-                <p className="mt-2 text-xs font-medium text-zinc-500">No candidates</p>
-                <p className="mt-0.5 text-[10px] text-zinc-600">Drag cards here</p>
+              <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-800/80 bg-slate-950/30 p-6 text-center">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-600">
+                  <Inbox className="h-5 w-5" />
+                </div>
+                <p className="mt-2.5 font-mono text-xs font-bold text-slate-400">Empty Swimlane</p>
+                <p className="mt-0.5 text-[10px] text-slate-400">Drag candidate cards here</p>
               </div>
             )}
           </div>
@@ -68,6 +70,8 @@ export const KanbanColumn = ({ column, applicants = [], onSelectCandidate }) => 
       </Droppable>
     </div>
   );
-};
+});
+
+KanbanColumn.displayName = 'KanbanColumn';
 
 export default KanbanColumn;

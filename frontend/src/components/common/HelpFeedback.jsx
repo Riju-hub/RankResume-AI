@@ -41,7 +41,7 @@ const FAQS = [
 
 export const HelpFeedback = () => {
   const [feedback, setFeedback] = useState('');
-  const [category, setCategory] = useState('general');
+  const [category, setCategory] = useState('General Idea');
   const [activeFaq, setActiveFaq] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
@@ -54,43 +54,53 @@ export const HelpFeedback = () => {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-10 px-4 py-8">
-      {/* Header Banner with Glow */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/90 via-zinc-900/60 to-black/80 p-8 backdrop-blur-2xl shadow-2xl">
-        <div className="absolute -right-12 -top-12 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none" />
-        <div className="absolute -left-12 -bottom-12 h-64 w-64 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
-        
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300">
-              <Sparkles className="h-3 w-3 animate-pulse" />
-              Support & Documentation
+    <div className="mx-auto max-w-5xl space-y-8 px-4 py-8 font-sans">
+      
+      {/* ========================================================================= */}
+      {/* --- SaaS Hero Header Banner --- */}
+      {/* ========================================================================= */}
+      <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/70 p-6 sm:p-8 backdrop-blur-xl shadow-2xl">
+        {/* Hardware-Accelerated Ambient Glows */}
+        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-600/15 blur-3xl transform-gpu will-change-transform" />
+        <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-pink-600/15 blur-3xl transform-gpu will-change-transform" />
+        <div className="pointer-events-none absolute left-0 top-0 h-[1px] w-full bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+
+        <div className="relative z-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 px-3 py-0.5 text-xs font-semibold text-cyan-300">
+              <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+              <span>Support & Technical Docs</span>
             </div>
-            <h1 className="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
-              Help Center & Product Feedback
+            
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">
+              Help Center & <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-pink-400 bg-clip-text text-transparent">Feedback</span>
             </h1>
-            <p className="mt-1 text-sm text-zinc-400">
-              Explore ATS evaluation mechanics, platform guides, or directly submit architectural feedback.
+            
+            <p className="text-xs sm:text-sm text-slate-400 max-w-xl leading-relaxed">
+              Explore ATS evaluation mechanics, file constraints, or submit engineering feedback directly to the RankResume team.
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-zinc-800/80 text-indigo-400 shadow-inner">
+
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 shadow-xl shadow-cyan-500/10">
               <MailQuestion className="h-6 w-6" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* FAQ Section */}
+      {/* ========================================================================= */}
+      {/* --- FAQ Accordion Section --- */}
+      {/* ========================================================================= */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <HelpCircle className="h-4 w-4 text-indigo-400" />
-          <h2 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
+        <div className="flex items-center gap-2 px-1">
+          <HelpCircle className="h-4 w-4 text-cyan-400" />
+          <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-slate-300">
             Frequently Answered Insights
           </h2>
         </div>
         
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2">
           {FAQS.map((faq, idx) => {
             const Icon = faq.icon;
             const isOpen = activeFaq === idx;
@@ -98,38 +108,39 @@ export const HelpFeedback = () => {
               <div
                 key={idx}
                 onClick={() => setActiveFaq(isOpen ? null : idx)}
-                className={`group cursor-pointer rounded-2xl border p-5 backdrop-blur-xl transition-all duration-300 ${
+                className={`group cursor-pointer rounded-2xl border p-5 backdrop-blur-xl transition-all duration-200 ${
                   isOpen
-                    ? 'border-indigo-500/40 bg-zinc-900/80 shadow-lg shadow-indigo-950/20'
-                    : 'border-zinc-800/80 bg-zinc-900/30 hover:border-zinc-700/80 hover:bg-zinc-900/50'
+                    ? 'border-cyan-500/50 bg-slate-900/90 shadow-lg shadow-cyan-500/5'
+                    : 'border-slate-800/80 bg-slate-900/50 hover:border-slate-700 hover:bg-slate-900/80'
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-3">
-                    <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-zinc-800/80 text-indigo-400">
-                      <Icon className="h-3.5 w-3.5" />
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 shadow-inner">
+                      <Icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-400/90">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-400">
                         {faq.category}
                       </span>
-                      <h3 className="text-xs font-semibold text-zinc-100 group-hover:text-white">
+                      <h3 className="mt-0.5 text-xs font-bold text-slate-100 group-hover:text-white transition-colors">
                         {faq.q}
                       </h3>
                     </div>
                   </div>
                   <ChevronDown
-                    className={`h-4 w-4 shrink-0 text-zinc-400 transition-transform duration-300 ${
-                      isOpen ? 'rotate-180 text-indigo-400' : ''
+                    className={`h-4 w-4 shrink-0 text-slate-400 transition-transform duration-300 ${
+                      isOpen ? 'rotate-180 text-cyan-400' : 'group-hover:text-slate-200'
                     }`}
                   />
                 </div>
+                
                 <div
                   className={`grid transition-all duration-300 ease-in-out ${
-                    isOpen ? 'grid-rows-[1fr] opacity-100 mt-3.5' : 'grid-rows-[0fr] opacity-0'
+                    isOpen ? 'grid-rows-[1fr] opacity-100 mt-3 pt-3 border-t border-slate-800/80' : 'grid-rows-[0fr] opacity-0'
                   }`}
                 >
-                  <p className="overflow-hidden text-[12px] leading-relaxed text-zinc-400">
+                  <p className="overflow-hidden text-xs leading-relaxed text-slate-400">
                     {faq.a}
                   </p>
                 </div>
@@ -139,31 +150,36 @@ export const HelpFeedback = () => {
         </div>
       </div>
 
-      {/* Feedback Submission Section */}
-      <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-gradient-to-b from-zinc-900/70 via-zinc-900/30 to-zinc-950/90 p-7 backdrop-blur-2xl shadow-xl">
-        <div className="flex items-center justify-between border-b border-zinc-800/70 pb-5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">
-              <MessageSquarePlus className="h-5 w-5" />
-            </div>
-            <div>
-              <h2 className="text-sm font-bold tracking-wide text-zinc-100">Direct Engineering & Product Feedback</h2>
-              <p className="text-[11px] text-zinc-400">Report inaccuracies, suggest new scoring heuristics, or request integrations.</p>
-            </div>
+      {/* ========================================================================= */}
+      {/* --- Feedback Submission Container --- */}
+      {/* ========================================================================= */}
+      <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/70 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-5">
+        <div className="flex items-center gap-3 border-b border-slate-800/80 pb-5">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-pink-500/30 bg-pink-950/40 text-pink-400 shadow-sm shadow-pink-500/10">
+            <MessageSquarePlus className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold tracking-wide text-white">
+              Direct Engineering & Product Feedback
+            </h2>
+            <p className="text-xs text-slate-400">
+              Report inaccuracies, suggest new scoring heuristics, or request integrations.
+            </p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Category Selector Chips */}
           <div className="flex flex-wrap gap-2">
             {['General Idea', 'Bug Report', 'ATS Accuracy', 'Feature Request'].map((type) => (
               <button
                 type="button"
                 key={type}
                 onClick={() => setCategory(type)}
-                className={`rounded-xl px-3.5 py-1.5 text-[11px] font-semibold transition-all ${
+                className={`rounded-xl px-3.5 py-1.5 font-mono text-[11px] font-bold transition-all cursor-pointer ${
                   category === type
-                    ? 'border border-indigo-500/50 bg-indigo-600/20 text-indigo-300 shadow-sm'
-                    : 'border border-zinc-800 bg-zinc-950/60 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                    ? 'border border-pink-500/60 bg-pink-950/50 text-pink-300 shadow-md shadow-pink-500/10'
+                    : 'border border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700 hover:text-slate-200'
                 }`}
               >
                 {type}
@@ -171,27 +187,32 @@ export const HelpFeedback = () => {
             ))}
           </div>
 
+          {/* Feedback Textarea */}
           <textarea
             rows={4}
             required
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            placeholder="Describe the issue or feature request in detail..."
-            className="w-full rounded-2xl border border-zinc-800/80 bg-zinc-950/70 p-4 text-xs text-zinc-100 placeholder-zinc-500 outline-none transition-all focus:border-indigo-500/70 focus:bg-zinc-950 focus:ring-4 focus:ring-indigo-500/10"
+            placeholder="Describe the heuristic discrepancy, feature suggestion, or platform issue in detail..."
+            className="w-full rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-xs text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20 resize-none"
           />
 
+          {/* Submission Success Toast */}
           {submitted && (
-            <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-xs text-emerald-400">
-              <CheckCircle2 className="h-4 w-4 shrink-0" />
+            <div className="flex items-center gap-2 rounded-2xl border border-emerald-500/30 bg-emerald-950/40 px-4 py-3 text-xs font-semibold text-emerald-300">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
               <span>Feedback submitted successfully. Thank you for making RankResume AI better!</span>
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-2">
-            <span className="text-[11px] text-zinc-500">Your telemetry and app version are automatically attached.</span>
+          {/* Form Actions Footer */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2 border-t border-slate-800/80">
+            <span className="font-mono text-[10px] text-slate-500">
+              Workspace telemetry and app version context are attached securely.
+            </span>
             <button
               type="submit"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 px-6 text-xs font-semibold text-white shadow-lg shadow-indigo-600/25 transition-all hover:scale-[1.02] hover:shadow-indigo-600/35 active:scale-95"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 px-6 text-xs font-bold text-white shadow-xl shadow-indigo-600/20 transition-all hover:scale-[1.02] hover:shadow-indigo-600/30 active:scale-95 cursor-pointer self-start sm:self-auto"
             >
               <Send className="h-3.5 w-3.5" />
               <span>Submit Report</span>
@@ -199,6 +220,7 @@ export const HelpFeedback = () => {
           </div>
         </form>
       </div>
+
     </div>
   );
 };

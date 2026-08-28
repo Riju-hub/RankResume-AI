@@ -5,48 +5,57 @@ import {
   ArrowLeft, 
   Compass, 
   FileQuestion, 
-  Layers, 
-  HelpCircle,
-  Briefcase
+  Briefcase,
+  Zap,
+  Home
 } from 'lucide-react';
 
 export const NotFound = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-zinc-950 px-4 py-16 selection:bg-indigo-500 selection:text-white">
-      {/* Ambient Radial Background Glows */}
-      <div className="pointer-events-none absolute -top-40 -left-40 h-[550px] w-[550px] rounded-full bg-gradient-to-br from-indigo-600/15 via-violet-600/10 to-transparent blur-[140px]" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[550px] w-[550px] rounded-full bg-gradient-to-tl from-violet-600/15 via-indigo-600/10 to-transparent blur-[140px]" />
-
-      {/* Grid Pattern Overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-slate-950 px-4 py-16 text-slate-100 selection:bg-pink-500 selection:text-white antialiased font-sans">
+      
+      {/* ========================================================================= */}
+      {/* --- Ambient Glowing Mesh & Vector Matrix (Hardware Accelerated) --- */}
+      {/* ========================================================================= */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden transform-gpu">
+        <div className="absolute -top-32 -left-20 h-[500px] w-[500px] rounded-full bg-blue-600/15 blur-[120px] will-change-transform" />
+        <div className="absolute -bottom-32 -right-20 h-[520px] w-[520px] rounded-full bg-pink-600/15 blur-[130px] will-change-transform" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[550px] rounded-full bg-indigo-600/10 blur-[140px] will-change-transform" />
+        
+        {/* Dynamic Vector Matrix Grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
+      </div>
 
       <div className="relative z-10 w-full max-w-lg text-center">
         {/* Main 404 Glass Container Card */}
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-zinc-900/60 p-8 sm:p-10 shadow-2xl backdrop-blur-2xl transition-all hover:border-zinc-700/80">
-          {/* Subtle Top Ambient Border Highlight */}
-          <div className="absolute top-0 left-12 right-12 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+        <div className="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/80 p-8 sm:p-10 shadow-2xl backdrop-blur-2xl transition-all">
+          
+          {/* Subtle Horizon Glow Line */}
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
 
           {/* Animated 404 Emblem Badge */}
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-indigo-500/30 bg-gradient-to-tr from-indigo-500/10 via-zinc-900 to-violet-500/10 shadow-xl shadow-indigo-500/10">
-            <FileQuestion className="h-8 w-8 text-indigo-400" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-950/40 shadow-xl shadow-cyan-500/10">
+            <FileQuestion className="h-8 w-8 text-cyan-400" />
           </div>
 
           {/* Error Tag & Numeric Status */}
           <div className="mt-6 flex flex-col items-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 font-mono text-xs font-semibold text-indigo-300">
-              <Compass className="h-3.5 w-3.5 text-indigo-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 px-3 py-1 font-mono text-xs font-bold text-cyan-300">
+              <Compass className="h-3.5 w-3.5 text-cyan-400" />
               Error 404 • Resource Relocated
             </span>
 
-            <h1 className="mt-4 font-mono text-6xl font-extrabold tracking-tight text-zinc-100 sm:text-7xl">
-              4<span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">0</span>4
+            <h1 className="mt-4 font-mono text-6xl font-black tracking-tight text-white sm:text-7xl">
+              4<span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-pink-400 bg-clip-text text-transparent">0</span>4
             </h1>
-            <h2 className="mt-2 text-lg font-bold text-zinc-100 sm:text-xl">
+            
+            <h2 className="mt-2 text-lg font-bold text-white sm:text-xl">
               Page Lost in the Pipeline
             </h2>
-            <p className="mt-2 text-xs leading-relaxed text-zinc-400 max-w-sm">
+            
+            <p className="mt-2 max-w-sm text-xs leading-relaxed text-slate-400">
               The page, job posting, or candidate view you are looking for has been archived, renamed, or does not exist.
             </p>
           </div>
@@ -55,24 +64,28 @@ export const NotFound = () => {
           <div className="mt-7 grid grid-cols-2 gap-2.5 text-left">
             <Link
               to="/jobs"
-              className="group flex flex-col rounded-2xl border border-zinc-800/80 bg-zinc-950/50 p-3 transition-all hover:border-indigo-500/30 hover:bg-indigo-500/5 cursor-pointer"
+              className="group flex flex-col rounded-2xl border border-slate-800 bg-slate-950/60 p-3.5 transition-all hover:border-cyan-500/40 hover:bg-cyan-950/20 cursor-pointer"
             >
               <div className="flex items-center gap-2">
-                <Briefcase className="h-3.5 w-3.5 text-indigo-400" />
-                <span className="text-xs font-semibold text-zinc-200 group-hover:text-indigo-300">Job Board</span>
+                <Briefcase className="h-4 w-4 text-cyan-400" />
+                <span className="text-xs font-bold text-slate-200 group-hover:text-cyan-300 transition-colors">
+                  Job Board
+                </span>
               </div>
-              <p className="mt-1 text-[10px] text-zinc-500">Explore open positions</p>
+              <p className="mt-1 font-mono text-[10px] text-slate-400">Explore open positions</p>
             </Link>
 
             <Link
               to="/"
-              className="group flex flex-col rounded-2xl border border-zinc-800/80 bg-zinc-950/50 p-3 transition-all hover:border-violet-500/30 hover:bg-violet-500/5 cursor-pointer"
+              className="group flex flex-col rounded-2xl border border-slate-800 bg-slate-950/60 p-3.5 transition-all hover:border-pink-500/40 hover:bg-pink-950/20 cursor-pointer"
             >
               <div className="flex items-center gap-2">
-                <Sparkles className="h-3.5 w-3.5 text-violet-400" />
-                <span className="text-xs font-semibold text-zinc-200 group-hover:text-violet-300">Landing Page</span>
+                <Sparkles className="h-4 w-4 text-pink-400" />
+                <span className="text-xs font-bold text-slate-200 group-hover:text-pink-300 transition-colors">
+                  Landing Page
+                </span>
               </div>
-              <p className="mt-1 text-[10px] text-zinc-500">ATS platform home</p>
+              <p className="mt-1 font-mono text-[10px] text-slate-400">Platform overview</p>
             </Link>
           </div>
 
@@ -81,7 +94,7 @@ export const NotFound = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/60 px-5 text-xs font-medium text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-100 active:scale-95 sm:w-auto cursor-pointer"
+              className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-800 bg-slate-900/80 px-5 text-xs font-bold text-slate-300 transition-all hover:border-slate-700 hover:text-white active:scale-95 sm:w-auto cursor-pointer"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               <span>Go Back</span>
@@ -89,17 +102,17 @@ export const NotFound = () => {
 
             <Link
               to="/"
-              className="group relative inline-flex h-11 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 px-6 text-xs font-medium text-white shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:from-indigo-500 hover:to-violet-500 active:scale-95 sm:w-auto cursor-pointer"
+              className="group relative inline-flex h-11 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 px-6 text-xs font-bold text-white shadow-xl shadow-indigo-600/20 transition-all hover:scale-[1.02] hover:shadow-indigo-600/30 active:scale-95 sm:w-auto cursor-pointer"
             >
-              <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100" />
+              <Home className="h-3.5 w-3.5" />
               <span>Return Home</span>
             </Link>
           </div>
         </div>
 
         {/* System Telemetry Footer */}
-        <p className="mt-6 text-[11px] text-zinc-600">
-          RankResume AI • Autonomous Semantic Screening Engine
+        <p className="mt-6 font-mono text-[11px] text-slate-400">
+          RankResume AI • Autonomous Multi-Modal ATS Engine
         </p>
       </div>
     </div>

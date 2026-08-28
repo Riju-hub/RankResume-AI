@@ -2,7 +2,19 @@ import React, { useState } from 'react';
 import { useAuthContext } from '../../context/AuthContext';
 import { authService } from '../../services/authService';
 import { DeleteAccountModal } from '../../components/common/DeleteAccountModal';
-import { User, Mail, ShieldCheck, UserCheck, CheckCircle2, AlertCircle, Loader2, Trash2 } from 'lucide-react';
+import { 
+  User, 
+  Mail, 
+  ShieldCheck, 
+  UserCheck, 
+  CheckCircle2, 
+  AlertCircle, 
+  Loader2, 
+  Trash2,
+  Sparkles,
+  Zap,
+  ShieldAlert
+} from 'lucide-react';
 
 export const Profile = () => {
   const { user, isRecruiter, updateUserState } = useAuthContext();
@@ -34,78 +46,124 @@ export const Profile = () => {
   };
 
   const initials = (user?.name || 'U')
-    .split(' ')
+    .trim()
+    .split(/\s+/)
     .map((n) => n[0])
     .slice(0, 2)
     .join('')
     .toUpperCase();
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-zinc-100 sm:text-2xl">Account Profile</h1>
-        <p className="text-xs text-zinc-400">Manage your identity and authentication credentials.</p>
+    <div className="mx-auto max-w-3xl space-y-6 font-sans">
+      
+      {/* ========================================================================= */}
+      {/* --- Header Section --- */}
+      {/* ========================================================================= */}
+      <div className="space-y-1">
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 px-3 py-0.5 text-xs font-semibold text-cyan-300">
+          <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+          <span>Identity & Access Control</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+          Account <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-pink-400 bg-clip-text text-transparent">Profile</span>
+        </h1>
+        <p className="text-xs text-slate-400">
+          Manage your verified credentials, workspace role, and system authorizations.
+        </p>
       </div>
 
+      {/* ========================================================================= */}
+      {/* --- Feedback Alert Toast --- */}
+      {/* ========================================================================= */}
       {feedback.message && (
         <div
-          className={`flex items-center gap-2.5 rounded-2xl p-4 text-xs backdrop-blur-md border ${
+          className={`flex items-center gap-2.5 rounded-2xl p-4 text-xs font-medium backdrop-blur-md border ${
             feedback.type === 'success'
-              ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300'
-              : 'border-rose-500/25 bg-rose-500/10 text-rose-300'
+              ? 'border-emerald-500/30 bg-emerald-950/40 text-emerald-300'
+              : 'border-rose-500/30 bg-rose-950/40 text-rose-300'
           }`}
         >
-          {feedback.type === 'success' ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+          {feedback.type === 'success' ? (
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+          ) : (
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+          )}
           <span>{feedback.message}</span>
         </div>
       )}
 
-      {/* Profile Overview Card */}
-      <div className="rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-6 sm:p-7 backdrop-blur-xl shadow-xl">
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-700 bg-zinc-800 font-mono text-base font-bold text-zinc-100">
-            {initials}
-          </div>
-          <div>
-            <h2 className="text-base font-semibold text-zinc-100">{user?.name}</h2>
-            <div className="mt-1 flex items-center gap-2">
-              <span className="text-xs text-zinc-400">{user?.email}</span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 text-[10px] font-semibold text-indigo-400">
-                {isRecruiter ? <ShieldCheck className="h-3 w-3 text-emerald-400" /> : <UserCheck className="h-3 w-3 text-indigo-400" />}
-                {isRecruiter ? 'Recruiter' : 'Candidate'}
-              </span>
+      {/* ========================================================================= */}
+      {/* --- Profile Overview & Edit Form Card --- */}
+      {/* ========================================================================= */}
+      <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/70 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-6">
+        {/* Hardware-Accelerated Ambient Top Horizon Glow */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+
+        {/* Identity Row */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-800 bg-slate-950 font-mono text-base font-black text-white shadow-inner">
+              {initials}
+              <span
+                className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-slate-900 ${
+                  isRecruiter ? 'bg-pink-500 ring-1 ring-pink-400/40' : 'bg-cyan-400 ring-1 ring-cyan-400/40'
+                }`}
+                title="Active Session"
+              />
+            </div>
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-white">{user?.name || 'Authorized User'}</h2>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <span className="font-mono text-xs text-slate-400">{user?.email}</span>
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${
+                    isRecruiter
+                      ? 'border-pink-500/30 bg-pink-950/40 text-pink-300'
+                      : 'border-cyan-500/30 bg-cyan-950/40 text-cyan-300'
+                  }`}
+                >
+                  {isRecruiter ? <ShieldCheck className="h-3 w-3 text-pink-400" /> : <UserCheck className="h-3 w-3 text-cyan-400" />}
+                  {isRecruiter ? 'Recruiter' : 'Candidate'}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Update Form */}
-        <form onSubmit={handleUpdate} className="mt-6 space-y-4 border-t border-zinc-800/60 pt-5">
+        {/* Edit Form */}
+        <form onSubmit={handleUpdate} className="space-y-4 border-t border-slate-800/80 pt-6">
           <div className="space-y-1.5">
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Full Name</label>
+            <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              Full Name
+            </label>
             <div className="relative">
-              <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+              <User className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
               <input
                 type="text"
                 name="name"
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-950/70 pl-10 pr-4 text-xs text-zinc-100 outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20"
+                placeholder="Your full name"
+                className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 pl-10 pr-4 text-xs font-medium text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Email Address</label>
+            <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              Email Address
+            </label>
             <div className="relative">
-              <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+              <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
               <input
                 type="email"
                 name="email"
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-950/70 pl-10 pr-4 text-xs text-zinc-100 outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20"
+                placeholder="name@company.com"
+                className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 pl-10 pr-4 text-xs font-medium text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>
           </div>
@@ -114,34 +172,54 @@ export const Profile = () => {
             <button
               type="submit"
               disabled={isUpdating}
-              className="inline-flex h-9 items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-5 text-xs font-medium text-white shadow-md hover:from-indigo-500 hover:to-violet-500 active:scale-95 disabled:opacity-50"
+              className="group relative inline-flex h-10 items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 px-6 text-xs font-bold text-white shadow-xl shadow-indigo-600/20 transition-all hover:scale-[1.02] hover:shadow-indigo-600/30 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
-              {isUpdating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
-              <span>Save Changes</span>
+              {isUpdating ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <span>Updating Credentials...</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="h-3.5 w-3.5" />
+                  <span>Save Changes</span>
+                </>
+              )}
             </button>
           </div>
         </form>
       </div>
 
-      {/* Danger Zone */}
-      <div className="rounded-3xl border border-rose-500/20 bg-rose-500/5 p-6 sm:p-7 backdrop-blur-xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-bold text-rose-300">Danger Zone</h3>
-            <p className="mt-1 text-xs text-zinc-400">Permanently delete your account and all associated pipeline records.</p>
+      {/* ========================================================================= */}
+      {/* --- Danger Zone Container --- */}
+      {/* ========================================================================= */}
+      <div className="rounded-3xl border border-rose-500/25 bg-rose-950/20 p-6 sm:p-7 backdrop-blur-xl shadow-xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 font-bold text-rose-400">
+              <ShieldAlert className="h-4 w-4" />
+              <h3 className="font-mono text-xs uppercase tracking-wider">Danger Zone</h3>
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Permanently purge this account, parsed PDF evaluations, and active hiring pipelines.
+            </p>
           </div>
+
           <button
             type="button"
             onClick={() => setShowDeleteModal(true)}
-            className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 text-xs font-semibold text-rose-300 hover:bg-rose-500/20 active:scale-95 cursor-pointer"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-rose-500/30 bg-rose-950/40 px-5 text-xs font-bold text-rose-300 transition-all hover:border-rose-500/60 hover:bg-rose-950/70 hover:text-rose-200 active:scale-95 cursor-pointer shrink-0"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-4 w-4 text-rose-400" />
             <span>Delete Account</span>
           </button>
         </div>
       </div>
 
-      <DeleteAccountModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
+      <DeleteAccountModal 
+        isOpen={showDeleteModal} 
+        onClose={() => setShowDeleteModal(false)} 
+      />
     </div>
   );
 };

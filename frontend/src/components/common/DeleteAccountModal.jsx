@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
-import { AlertOctagon, Loader2, X, Trash2, ShieldAlert } from 'lucide-react';
+import { 
+  AlertOctagon, 
+  Loader2, 
+  X, 
+  Trash2, 
+  ShieldAlert, 
+  AlertCircle 
+} from 'lucide-react';
 
 export const DeleteAccountModal = ({ isOpen, onClose }) => {
   const { deleteAccount, user } = useAuthContext();
@@ -29,45 +36,61 @@ export const DeleteAccountModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-xl animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-rose-500/30 bg-zinc-950/95 p-7 shadow-2xl shadow-rose-950/30 backdrop-blur-2xl">
-        {/* Glow Element */}
-        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-rose-500/10 blur-3xl pointer-events-none" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md transition-all font-sans">
+      
+      {/* Background Ambient Glow Flare (Hardware-Accelerated) */}
+      <div className="pointer-events-none fixed h-96 w-96 rounded-full bg-rose-600/10 blur-[120px] transform-gpu will-change-transform" />
+
+      {/* Main Modal Window */}
+      <div className="relative z-10 w-full max-w-lg overflow-hidden rounded-3xl border border-rose-500/30 bg-slate-900/95 p-6 sm:p-7 shadow-2xl backdrop-blur-2xl transition-all">
+        
+        {/* Top Gradient Warning Horizon */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
 
         {/* Modal Header */}
-        <div className="flex items-start justify-between border-b border-zinc-800/80 pb-5">
+        <div className="flex items-start justify-between border-b border-slate-800/80 pb-4">
           <div className="flex items-center gap-3.5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-400 shadow-inner">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-950/40 text-rose-400 shadow-inner">
               <AlertOctagon className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-zinc-100">Permanent Account Deletion</h3>
-              <p className="text-xs font-semibold uppercase tracking-wider text-rose-400">Irreversible Action</p>
+              <h3 className="text-base font-bold text-white">
+                Permanent Account Deletion
+              </h3>
+              <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-400">
+                Irreversible Action
+              </p>
             </div>
           </div>
+          
           <button
+            type="button"
             onClick={onClose}
-            className="rounded-xl p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-200"
+            disabled={isDeleting}
+            className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-800 bg-slate-950 text-slate-400 transition hover:border-slate-700 hover:text-white disabled:opacity-50 cursor-pointer"
+            aria-label="Close delete modal"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Warning Body */}
-        <div className="mt-5 space-y-4 text-xs leading-relaxed text-zinc-400">
-          <div className="rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 text-rose-200/90">
-            <div className="flex items-center gap-2 font-semibold text-rose-400">
+        <div className="mt-5 space-y-4 text-xs leading-relaxed text-slate-400">
+          <div className="rounded-2xl border border-rose-500/20 bg-rose-950/30 p-4 text-rose-200/90 shadow-inner">
+            <div className="flex items-center gap-2 font-bold text-rose-400">
               <ShieldAlert className="h-4 w-4" />
-              <span>Data Cascading Notice</span>
+              <span className="font-mono text-[11px] uppercase tracking-wider">
+                Data Cascading Notice
+              </span>
             </div>
-            <p className="mt-1 text-[11px] text-zinc-300">
-              Terminating <span className="font-semibold text-white">{user?.email || 'this account'}</span> will permanently erase all PDF resumes, parsed applicant records, ATS candidate pipelines, and Gemini evaluations.
+            <p className="mt-1.5 text-xs text-slate-300 leading-relaxed">
+              Terminating <span className="font-bold text-white">{user?.email || 'this account'}</span> will permanently erase all PDF resumes, parsed applicant records, ATS candidate pipelines, and multi-modal Gemini vector evaluations.
             </p>
           </div>
 
-          <div className="space-y-2 pt-1">
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-              Type <span className="font-mono font-bold text-rose-400">DELETE</span> to confirm
+          <div className="space-y-1.5 pt-1">
+            <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              Type <span className="text-rose-400 font-black">DELETE</span> to confirm
             </label>
             <input
               type="text"
@@ -77,32 +100,35 @@ export const DeleteAccountModal = ({ isOpen, onClose }) => {
                 if (error) setError('');
               }}
               placeholder="DELETE"
-              className="h-11 w-full rounded-xl border border-zinc-800 bg-zinc-900/80 px-4 font-mono text-xs font-bold text-white placeholder-zinc-600 outline-none transition-all focus:border-rose-500/70 focus:ring-4 focus:ring-rose-500/10"
+              disabled={isDeleting}
+              className="h-11 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-4 font-mono text-xs font-bold text-white placeholder-slate-600 outline-none transition-all focus:border-rose-500/70 focus:bg-slate-950 focus:ring-2 focus:ring-rose-500/20"
             />
           </div>
 
           {error && (
-            <p className="rounded-lg bg-rose-500/10 px-3 py-1.5 text-xs font-medium text-rose-400 border border-rose-500/20">
-              {error}
-            </p>
+            <div className="flex items-center gap-2 rounded-xl border border-rose-500/30 bg-rose-950/40 p-3 text-xs font-medium text-rose-300">
+              <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+              <span>{error}</span>
+            </div>
           )}
         </div>
 
         {/* Action Controls */}
-        <div className="mt-6 flex items-center justify-end gap-3 border-t border-zinc-800/80 pt-5">
+        <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-800/80 pt-5">
           <button
             type="button"
             onClick={onClose}
             disabled={isDeleting}
-            className="h-10 rounded-xl border border-zinc-800 bg-zinc-900/90 px-5 text-xs font-semibold text-zinc-300 transition-all hover:bg-zinc-800 active:scale-95"
+            className="h-10 rounded-xl border border-slate-800 bg-slate-900/80 px-5 text-xs font-bold text-slate-400 transition hover:border-slate-700 hover:text-slate-200 active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             Cancel
           </button>
+          
           <button
             type="button"
             onClick={handleDelete}
             disabled={confirmText !== 'DELETE' || isDeleting}
-            className="inline-flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 via-rose-500 to-red-600 px-5 text-xs font-semibold text-white shadow-lg shadow-rose-600/25 transition-all hover:scale-[1.02] hover:shadow-rose-600/35 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 via-rose-500 to-red-600 px-5 text-xs font-bold text-white shadow-lg shadow-rose-600/25 transition-all hover:scale-[1.02] hover:shadow-rose-600/35 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100 cursor-pointer"
           >
             {isDeleting ? (
               <>
@@ -117,6 +143,7 @@ export const DeleteAccountModal = ({ isOpen, onClose }) => {
             )}
           </button>
         </div>
+
       </div>
     </div>
   );

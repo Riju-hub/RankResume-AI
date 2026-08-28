@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, FileCheck, Lock, DatabaseZap, Scale, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, DatabaseZap, Scale, Sparkles, FileText, CheckCircle2 } from 'lucide-react';
 
 const SECTIONS = [
   {
@@ -28,50 +28,75 @@ const SECTIONS = [
     badge: 'Section 04',
     title: 'Permanent Data Purging & Account Cascade Erasure',
     content:
-      'Users maintain complete sovereignty over their data. Executing an account termination permanently deletes all associated Supabase resume blobs, vectorized embeddings, match evaluations, and personal authentication records within 24 hours.'
+      'Users maintain complete sovereignty over their data. Executing an account termination permanently deletes all associated resume blobs, vectorized embeddings, match evaluations, and personal authentication records within 24 hours.'
   }
 ];
 
 export const TermsConditions = () => {
   return (
-    <div className="mx-auto max-w-5xl space-y-10 px-4 py-8">
-      {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/90 via-zinc-900/60 to-black/80 p-8 backdrop-blur-2xl shadow-2xl">
-        <div className="absolute -right-12 -top-12 h-64 w-64 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
-        
-        <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300">
-          <ShieldCheck className="h-3 w-3" />
-          Governance & Compliance
+    <div className="mx-auto max-w-5xl space-y-8 px-4 py-8 font-sans">
+      
+      {/* ========================================================================= */}
+      {/* --- SaaS Hero Header Banner --- */}
+      {/* ========================================================================= */}
+      <div className="relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/70 p-6 sm:p-8 backdrop-blur-xl shadow-2xl">
+        {/* Hardware-Accelerated Ambient Glows */}
+        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-600/15 blur-3xl transform-gpu will-change-transform" />
+        <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-pink-600/15 blur-3xl transform-gpu will-change-transform" />
+        <div className="pointer-events-none absolute left-0 top-0 h-[1px] w-full bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+
+        <div className="relative z-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/40 px-3 py-0.5 text-xs font-semibold text-cyan-300">
+              <ShieldCheck className="h-3.5 w-3.5 text-cyan-400" />
+              <span>Governance & Algorithmic Ethics</span>
+            </div>
+            
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white">
+              Terms of Service & <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-pink-400 bg-clip-text text-transparent">AI Ethics</span>
+            </h1>
+            
+            <p className="text-xs sm:text-sm text-slate-400 max-w-xl leading-relaxed">
+              Last revised: August 2026. Standard operating protocols governing parsing pipelines, applicant sovereignty, and algorithmic match scoring.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 shadow-xl shadow-cyan-500/10">
+              <FileText className="h-6 w-6" />
+            </div>
+          </div>
         </div>
-        <h1 className="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
-          Terms of Service & AI Ethics Policy
-        </h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          Last revised: August 2026. Standard protocol governing parsing pipelines, applicant privacy, and algorithmic scoring.
-        </p>
       </div>
 
-      {/* Structured Terms Grid */}
+      {/* ========================================================================= */}
+      {/* --- Structured Terms Grid --- */}
+      {/* ========================================================================= */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {SECTIONS.map((item, idx) => {
           const Icon = item.icon;
           return (
             <div
               key={idx}
-              className="relative overflow-hidden rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-6 backdrop-blur-xl transition-all duration-300 hover:border-zinc-700/80 hover:bg-zinc-900/60 hover:shadow-xl hover:shadow-black/40"
+              className="group relative overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 sm:p-7 backdrop-blur-xl transition-all duration-200 hover:border-cyan-500/40 hover:bg-slate-900/90 shadow-xl"
             >
+              {/* Top Card Horizon Accent */}
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-slate-700/50 to-transparent group-hover:via-cyan-500/40 transition-all duration-300" />
+
               <div className="flex items-center justify-between">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">
-                  <Icon className="h-4 w-4" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 shadow-inner">
+                  <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-500">
                   {item.badge}
                 </span>
               </div>
-              <h2 className="mt-4 text-sm font-bold text-zinc-100">
+
+              <h2 className="mt-4 text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
                 {item.title}
               </h2>
-              <p className="mt-2 text-xs leading-relaxed text-zinc-400">
+              
+              <p className="mt-2.5 text-xs leading-relaxed text-slate-400">
                 {item.content}
               </p>
             </div>
@@ -79,11 +104,19 @@ export const TermsConditions = () => {
         })}
       </div>
 
-      {/* Compliance Footer Note */}
-      <div className="flex items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-950/60 p-4 text-[11px] text-zinc-400 backdrop-blur-md">
-        <span>Questions regarding our privacy frameworks? Contact <span className="text-indigo-400 font-medium">privacy@rankresume.ai</span></span>
-        <span className="font-semibold text-zinc-300">SOC-2 & GDPR Compatible</span>
+      {/* ========================================================================= */}
+      {/* --- Compliance & Privacy Footer Bar --- */}
+      {/* ========================================================================= */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-xs text-slate-400 backdrop-blur-md shadow-inner">
+        <div className="flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+          <span>Questions regarding our privacy frameworks? Contact <a href="mailto:privacy@rankresume.ai" className="font-semibold text-cyan-400 hover:text-cyan-300 underline underline-offset-2">privacy@rankresume.ai</a></span>
+        </div>
+        <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-300 border border-slate-800 bg-slate-900 px-3 py-1 rounded-xl self-start sm:self-auto">
+          SOC-2 & GDPR Compliant
+        </span>
       </div>
+
     </div>
   );
 };
