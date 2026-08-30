@@ -151,6 +151,7 @@ export const Navbar = ({ toggleSidebar }) => {
             </Link>
           </div>
         )}
+        
       </div>
     </header>
   );
