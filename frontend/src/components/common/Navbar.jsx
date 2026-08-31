@@ -45,7 +45,6 @@ export const Navbar = ({ toggleSidebar }) => {
             <Menu className="h-4 w-4" />
           </button>
         )}
-
         <Link to="/" className="group flex items-center gap-3" title="RankResume AI Home">
           <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-600 to-pink-500 p-1.5 shadow-md shadow-indigo-500/20 transition-all duration-300 group-hover:scale-105 group-hover:shadow-pink-500/30">
             <img 
@@ -54,7 +53,6 @@ export const Navbar = ({ toggleSidebar }) => {
               className="h-full w-full object-contain" 
             />
           </div>
-          
           <div className="flex flex-col select-none">
             <span className="text-sm font-black tracking-tight text-white sm:text-base flex items-center gap-1 leading-none">
               RankResume{' '}
@@ -104,7 +102,6 @@ export const Navbar = ({ toggleSidebar }) => {
                   {/* Subtle verified badge */}
                   <span className="inline-block h-1.5 w-1.5 rounded-full bg-cyan-400" />
                 </div>
-
                 <div className="flex items-center gap-1.5">
                   {isRecruiter ? (
                     <span className="inline-flex items-center gap-1 font-mono text-[9px] font-bold uppercase tracking-wider text-pink-400">
@@ -140,7 +137,6 @@ export const Navbar = ({ toggleSidebar }) => {
             >
               Sign In
             </Link>
-            
             <Link
               to="/register"
               className="group inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-600 to-pink-500 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-indigo-600/20 transition-all hover:scale-[1.02] hover:shadow-indigo-600/30 active:scale-95"
