@@ -1,3 +1,4 @@
+// C:\Projects\RankResume-AI\backend\src\services\aiService.js
 import { geminiModel } from '../config/gemini.js';
 import { generateResumeEvaluationPrompt } from '../utils/promptTemplates.js';
 
