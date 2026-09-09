@@ -1,3 +1,356 @@
+// import React, { useState, useMemo } from 'react';
+// import { Link } from 'react-router-dom';
+// import { useAuth } from '../../hooks/useAuth';
+// import geminiLogo from '../../assets/gemini-svg.svg';
+// import { 
+//   Mail, 
+//   Lock, 
+//   User, 
+//   Eye, 
+//   EyeOff, 
+//   ArrowRight, 
+//   AlertCircle, 
+//   Loader2, 
+//   ShieldCheck, 
+//   UserCheck,
+//   Check,
+//   Sparkles,
+//   Zap
+// } from 'lucide-react';
+
+// const Register = () => {
+//   const { register, isRegistering, registerError } = useAuth();
+//   const [formData, setFormData] = useState({
+//     name: '',
+//     email: '',
+//     password: '',
+//     role: 'candidate',
+//   });
+//   const [showPassword, setShowPassword] = useState(false);
+
+//   const handleChange = (e) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       [e.target.name]: e.target.value,
+//     }));
+//   };
+
+//   const handleRoleSelect = (role) => {
+//     setFormData((prev) => ({ ...prev, role }));
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       await register(formData);
+//     } catch {
+//       // Handled via useAuth hook state
+//     }
+//   };
+
+//   const strength = useMemo(() => {
+//     const pass = formData.password;
+//     if (!pass) return { score: 0, label: '', color: 'bg-slate-800' };
+//     let score = 0;
+//     if (pass.length >= 6) score += 1;
+//     if (pass.length >= 10) score += 1;
+//     if (/[A-Z]/.test(pass) && /[0-9]/.test(pass)) score += 1;
+//     if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+
+//     if (score <= 1) return { score: 1, label: 'Weak', color: 'bg-rose-500', text: 'text-rose-400' };
+//     if (score === 2) return { score: 2, label: 'Fair', color: 'bg-amber-500', text: 'text-amber-400' };
+//     if (score === 3) return { score: 3, label: 'Good', color: 'bg-blue-500', text: 'text-blue-400' };
+//     return { score: 4, label: 'Strong', color: 'bg-emerald-500', text: 'text-emerald-400' };
+//   }, [formData.password]);
+
+//   return (
+//     <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-slate-950 px-4 py-12 text-slate-100 selection:bg-pink-500 selection:text-white antialiased font-sans">
+      
+//       {/* ========================================================================= */}
+//       {/* --- Ambient Glowing Mesh (Hardware Accelerated) --- */}
+//       {/* ========================================================================= */}
+//       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden transform-gpu">
+//         <div className="absolute -top-32 -left-20 h-[500px] w-[500px] rounded-full bg-blue-600/15 blur-[120px] will-change-transform" />
+//         <div className="absolute -bottom-32 -right-20 h-[520px] w-[520px] rounded-full bg-pink-600/15 blur-[130px] will-change-transform" />
+//         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[550px] rounded-full bg-indigo-600/10 blur-[140px] will-change-transform" />
+        
+//         {/* Dynamic Vector Matrix Grid */}
+//         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
+//       </div>
+
+//       {/* ========================================================================= */}
+//       {/* --- Register Glass Container --- */}
+//       {/* ========================================================================= */}
+//       <div className="relative z-10 w-full max-w-[460px]">
+//         <div className="relative rounded-3xl border border-slate-800 bg-slate-900/80 p-7 sm:p-9 shadow-2xl backdrop-blur-2xl">
+          
+//           {/* Subtle Ambient Border Glow */}
+//           <div className="absolute -inset-px rounded-3xl bg-gradient-to-r from-blue-500/20 via-pink-500/20 to-purple-500/20 opacity-40 blur-sm pointer-events-none" />
+
+//           {/* Header & Logo */}
+//           <div className="relative flex flex-col items-center text-center">
+//             <Link
+//               to="/"
+//               className="group flex items-center justify-center transition-transform duration-300 hover:scale-105"
+//               title="Return to Landing Page"
+//             >
+//               <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 p-2.5 shadow-lg shadow-indigo-500/20 group-hover:shadow-pink-500/30 transition-all">
+//                 <img 
+//                   src={geminiLogo} 
+//                   alt="RankResume AI" 
+//                   className="h-full w-full object-contain" 
+//                 />
+//               </div>
+//             </Link>
+
+//             <h1 className="mt-4 text-2xl font-black tracking-tight text-white">
+//               Create your account
+//             </h1>
+//             <p className="mt-1 text-xs text-slate-400">
+//               Start ranking and matching resumes with{' '}
+//               <span className="font-bold bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+//                 RankResume AI
+//               </span>
+//             </p>
+//           </div>
+
+//           {/* Error Banner */}
+//           {registerError && (
+//             <div className="relative mt-5 flex items-center gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-950/40 p-3 text-xs font-medium text-rose-300 backdrop-blur-md">
+//               <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+//               <span>{registerError}</span>
+//             </div>
+//           )}
+
+//           {/* Role Selection */}
+//           <div className="relative mt-6 space-y-2">
+//             <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+//               <Sparkles className="h-3 w-3 text-pink-400" /> Select Workspace Role
+//             </label>
+//             <div className="grid grid-cols-2 gap-3">
+              
+//               {/* Candidate Button */}
+//               <button
+//                 type="button"
+//                 onClick={() => handleRoleSelect('candidate')}
+//                 className={`group relative flex flex-col items-start rounded-2xl border p-3.5 text-left transition-all duration-200 cursor-pointer ${
+//                   formData.role === 'candidate'
+//                     ? 'border-cyan-500/60 bg-cyan-950/30 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/50'
+//                     : 'border-slate-800 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-900/60'
+//                 }`}
+//               >
+//                 <div className="flex w-full items-center justify-between">
+//                   <div className={`flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
+//                     formData.role === 'candidate'
+//                       ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+//                       : 'bg-slate-800 text-slate-400'
+//                   }`}>
+//                     <UserCheck className="h-4 w-4" />
+//                   </div>
+//                   {formData.role === 'candidate' && (
+//                     <span className="flex h-4 w-4 items-center justify-center rounded-full bg-cyan-500 text-slate-950 shadow-xs">
+//                       <Check className="h-2.5 w-2.5 stroke-[3]" />
+//                     </span>
+//                   )}
+//                 </div>
+//                 <div className="mt-2.5">
+//                   <p className={`text-xs font-bold ${formData.role === 'candidate' ? 'text-cyan-300' : 'text-slate-300'}`}>
+//                     Candidate
+//                   </p>
+//                   <p className="text-[10px] text-slate-400">Apply & parse CV</p>
+//                 </div>
+//               </button>
+
+//               {/* Recruiter Button */}
+//               <button
+//                 type="button"
+//                 onClick={() => handleRoleSelect('recruiter')}
+//                 className={`group relative flex flex-col items-start rounded-2xl border p-3.5 text-left transition-all duration-200 cursor-pointer ${
+//                   formData.role === 'recruiter'
+//                     ? 'border-pink-500/60 bg-pink-950/30 shadow-lg shadow-pink-500/10 ring-1 ring-pink-500/50'
+//                     : 'border-slate-800 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-900/60'
+//                 }`}
+//               >
+//                 <div className="flex w-full items-center justify-between">
+//                   <div className={`flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
+//                     formData.role === 'recruiter'
+//                       ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
+//                       : 'bg-slate-800 text-slate-400'
+//                   }`}>
+//                     <ShieldCheck className="h-4 w-4" />
+//                   </div>
+//                   {formData.role === 'recruiter' && (
+//                     <span className="flex h-4 w-4 items-center justify-center rounded-full bg-pink-500 text-white shadow-xs">
+//                       <Check className="h-2.5 w-2.5 stroke-[3]" />
+//                     </span>
+//                   )}
+//                 </div>
+//                 <div className="mt-2.5">
+//                   <p className={`text-xs font-bold ${formData.role === 'recruiter' ? 'text-pink-300' : 'text-slate-300'}`}>
+//                     Recruiter
+//                   </p>
+//                   <p className="text-[10px] text-slate-400">Post jobs & review</p>
+//                 </div>
+//               </button>
+//             </div>
+//           </div>
+
+//           {/* Form */}
+//           <form onSubmit={handleSubmit} className="relative mt-5 space-y-3.5">
+            
+//             {/* Name Input */}
+//             <div className="space-y-1.5">
+//               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+//                 Full Name
+//               </label>
+//               <div className="relative">
+//                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+//                   <User className="h-4 w-4" />
+//                 </div>
+//                 <input
+//                   type="text"
+//                   name="name"
+//                   required
+//                   value={formData.name}
+//                   onChange={handleChange}
+//                   placeholder="e.g. Alex Mercer"
+//                   className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 pl-10 text-xs font-medium text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20"
+//                 />
+//               </div>
+//             </div>
+
+//             {/* Email Input */}
+//             <div className="space-y-1.5">
+//               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+//                 Email Address
+//               </label>
+//               <div className="relative">
+//                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+//                   <Mail className="h-4 w-4" />
+//                 </div>
+//                 <input
+//                   type="email"
+//                   name="email"
+//                   required
+//                   value={formData.email}
+//                   onChange={handleChange}
+//                   placeholder="name@company.com"
+//                   className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 pl-10 text-xs font-medium text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20"
+//                 />
+//               </div>
+//             </div>
+
+//             {/* Password Input */}
+//             <div className="space-y-1.5">
+//               <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+//                 Password
+//               </label>
+//               <div className="relative">
+//                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+//                   <Lock className="h-4 w-4" />
+//                 </div>
+//                 <input
+//                   type={showPassword ? 'text' : 'password'}
+//                   name="password"
+//                   required
+//                   minLength={6}
+//                   value={formData.password}
+//                   onChange={handleChange}
+//                   placeholder="Create a secure password"
+//                   className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 pl-10 pr-10 text-xs font-medium text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20"
+//                 />
+//                 <button
+//                   type="button"
+//                   onClick={() => setShowPassword(!showPassword)}
+//                   className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 transition hover:text-slate-300 cursor-pointer"
+//                   aria-label={showPassword ? 'Hide password' : 'Show password'}
+//                 >
+//                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+//                 </button>
+//               </div>
+
+//               {/* Password Strength Indicator */}
+//               {formData.password && (
+//                 <div className="space-y-1 pt-1.5">
+//                   <div className="flex h-1.5 w-full gap-1 overflow-hidden rounded-full bg-slate-800/80">
+//                     {[1, 2, 3, 4].map((step) => (
+//                       <div
+//                         key={step}
+//                         className={`h-full flex-1 rounded-full transition-all duration-300 ${
+//                           step <= strength.score ? strength.color : 'bg-slate-800'
+//                         }`}
+//                       />
+//                     ))}
+//                   </div>
+//                   <div className="flex justify-between text-[10px] font-mono">
+//                     <span className="text-slate-500">Security Score</span>
+//                     <span className={`font-bold ${strength.text}`}>{strength.label}</span>
+//                   </div>
+//                 </div>
+//               )}
+//             </div>
+
+//             {/* Terms text */}
+//             <p className="text-[11px] leading-relaxed text-slate-400">
+//               By creating an account, you agree to our{' '}
+//               <a href="#terms" className="font-semibold text-cyan-400 underline underline-offset-2 hover:text-pink-400">
+//                 Terms of Service
+//               </a>{' '}
+//               and{' '}
+//               <a href="#privacy" className="font-semibold text-cyan-400 underline underline-offset-2 hover:text-pink-400">
+//                 Privacy Policy
+//               </a>.
+//             </p>
+
+//             {/* Submit Button */}
+//             <button
+//               type="submit"
+//               disabled={isRegistering}
+//               className="group relative mt-2 flex h-11 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 font-bold text-xs text-white shadow-xl shadow-indigo-600/20 transition-all hover:scale-[1.01] hover:shadow-indigo-600/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+//             >
+//               {isRegistering ? (
+//                 <>
+//                   <Loader2 className="h-4 w-4 animate-spin" />
+//                   <span>Creating Account...</span>
+//                 </>
+//               ) : (
+//                 <>
+//                   <Zap className="h-3.5 w-3.5" />
+//                   <span>Create Account</span>
+//                   <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+//                 </>
+//               )}
+//             </button>
+//           </form>
+
+//           {/* Sign In Link */}
+//           <div className="relative mt-5 border-t border-slate-800/80 pt-4 text-center">
+//             <p className="text-xs text-slate-400">
+//               Already have an account?{' '}
+//               <Link
+//                 to="/login"
+//                 className="font-bold text-cyan-400 underline-offset-4 transition hover:text-pink-400 hover:underline"
+//               >
+//                 Sign in
+//               </Link>
+//             </p>
+//           </div>
+
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Register;
+
+
+
+
+
+
+
+
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
@@ -15,7 +368,8 @@ import {
   UserCheck,
   Check,
   Sparkles,
-  Zap
+  Zap,
+  ArrowLeft
 } from 'lucide-react';
 
 const Register = () => {
@@ -50,42 +404,59 @@ const Register = () => {
 
   const strength = useMemo(() => {
     const pass = formData.password;
-    if (!pass) return { score: 0, label: '', color: 'bg-slate-800' };
+    if (!pass) return { score: 0, label: '', color: 'bg-slate-200' };
     let score = 0;
     if (pass.length >= 6) score += 1;
     if (pass.length >= 10) score += 1;
     if (/[A-Z]/.test(pass) && /[0-9]/.test(pass)) score += 1;
     if (/[^A-Za-z0-9]/.test(pass)) score += 1;
 
-    if (score <= 1) return { score: 1, label: 'Weak', color: 'bg-rose-500', text: 'text-rose-400' };
-    if (score === 2) return { score: 2, label: 'Fair', color: 'bg-amber-500', text: 'text-amber-400' };
-    if (score === 3) return { score: 3, label: 'Good', color: 'bg-blue-500', text: 'text-blue-400' };
-    return { score: 4, label: 'Strong', color: 'bg-emerald-500', text: 'text-emerald-400' };
+    if (score <= 1) return { score: 1, label: 'Weak', color: 'bg-rose-500', text: 'text-rose-600' };
+    if (score === 2) return { score: 2, label: 'Fair', color: 'bg-amber-500', text: 'text-amber-600' };
+    if (score === 3) return { score: 3, label: 'Good', color: 'bg-blue-600', text: 'text-blue-700' };
+    return { score: 4, label: 'Strong', color: 'bg-emerald-500', text: 'text-emerald-700' };
   }, [formData.password]);
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-slate-950 px-4 py-12 text-slate-100 selection:bg-pink-500 selection:text-white antialiased font-sans">
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-[#f4f8ff] px-4 py-12 text-slate-900 selection:bg-pink-500 selection:text-white antialiased font-sans">
       
       {/* ========================================================================= */}
-      {/* --- Ambient Glowing Mesh (Hardware Accelerated) --- */}
+      {/* --- Ambient Aura Mesh (Hardware Accelerated, Smooth 60 FPS) --- */}
       {/* ========================================================================= */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden transform-gpu">
-        <div className="absolute -top-32 -left-20 h-[500px] w-[500px] rounded-full bg-blue-600/15 blur-[120px] will-change-transform" />
-        <div className="absolute -bottom-32 -right-20 h-[520px] w-[520px] rounded-full bg-pink-600/15 blur-[130px] will-change-transform" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[550px] rounded-full bg-indigo-600/10 blur-[140px] will-change-transform" />
+        {/* Electric Royal Blue - Upper Left */}
+        <div className="absolute -top-32 -left-24 h-[650px] w-[650px] rounded-full bg-gradient-to-br from-blue-500/40 via-cyan-400/30 to-indigo-500/20 blur-[130px] transform-gpu will-change-transform" />
         
-        {/* Dynamic Vector Matrix Grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
+        {/* Neon Fuchsia & Hot Pink - Upper Right */}
+        <div className="absolute -top-24 -right-24 h-[680px] w-[680px] rounded-full bg-gradient-to-bl from-pink-500/45 via-fuchsia-500/35 to-rose-400/25 blur-[140px] transform-gpu will-change-transform" />
+        
+        {/* Sky-Blue Glow - Bottom Left */}
+        <div className="absolute -bottom-36 -left-28 h-[600px] w-[600px] rounded-full bg-gradient-to-tr from-sky-400/35 via-blue-600/30 to-transparent blur-[140px] transform-gpu will-change-transform" />
+
+        {/* Hot Pink / Magenta - Bottom Right */}
+        <div className="absolute -bottom-32 -right-28 h-[650px] w-[650px] rounded-full bg-gradient-to-tl from-pink-600/40 via-rose-400/30 to-transparent blur-[140px] transform-gpu will-change-transform" />
+
+        {/* Dual-Tone Vector Dot Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.25)_1px,transparent_1px),radial-gradient(circle_at_center,rgba(236,72,153,0.2)_1px,transparent_1px)] [background-size:26px_26px] opacity-40 [mask-image:radial-gradient(ellipse_80%_70%_at_50%_50%,#000_70%,transparent_100%)]" />
       </div>
+
+      {/* Top Floating Return Action */}
+      <Link 
+        to="/" 
+        className="fixed top-6 left-6 z-20 hidden sm:flex items-center gap-2 rounded-full border border-slate-300/80 bg-white/95 px-4 py-2 text-xs font-bold text-slate-800 shadow-[0_4px_15px_rgba(37,99,235,0.12)] backdrop-blur-md transition-all hover:border-pink-400 hover:text-slate-950 hover:shadow-md hover:scale-[1.02]"
+      >
+        <ArrowLeft className="h-4 w-4 text-blue-600 stroke-[2.5]" />
+        <span>Back to Home</span>
+      </Link>
 
       {/* ========================================================================= */}
       {/* --- Register Glass Container --- */}
       {/* ========================================================================= */}
       <div className="relative z-10 w-full max-w-[460px]">
-        <div className="relative rounded-3xl border border-slate-800 bg-slate-900/80 p-7 sm:p-9 shadow-2xl backdrop-blur-2xl">
+        <div className="relative rounded-3xl border border-white/95 bg-white/90 p-7 sm:p-9 shadow-[0_20px_60px_rgba(37,99,235,0.16),0_10px_30px_rgba(236,72,153,0.14)] backdrop-blur-2xl transition-all duration-300">
           
-          {/* Subtle Ambient Border Glow */}
-          <div className="absolute -inset-px rounded-3xl bg-gradient-to-r from-blue-500/20 via-pink-500/20 to-purple-500/20 opacity-40 blur-sm pointer-events-none" />
+          {/* Top Multi-Color Neon Rim */}
+          <div className="absolute -top-px left-1/2 h-[3px] w-3/4 -translate-x-1/2 bg-gradient-to-r from-blue-600 via-pink-500 to-indigo-600 rounded-full shadow-[0_0_12px_rgba(236,72,153,0.6)]" />
 
           {/* Header & Logo */}
           <div className="relative flex flex-col items-center text-center">
@@ -94,21 +465,21 @@ const Register = () => {
               className="group flex items-center justify-center transition-transform duration-300 hover:scale-105"
               title="Return to Landing Page"
             >
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 p-2.5 shadow-lg shadow-indigo-500/20 group-hover:shadow-pink-500/30 transition-all">
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 p-2.5 shadow-lg shadow-blue-500/30 group-hover:shadow-pink-500/40 transition-all">
                 <img 
                   src={geminiLogo} 
                   alt="RankResume AI" 
-                  className="h-full w-full object-contain" 
+                  className="h-full w-full object-contain filter brightness-110" 
                 />
               </div>
             </Link>
 
-            <h1 className="mt-4 text-2xl font-black tracking-tight text-white">
+            <h1 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-slate-950">
               Create your account
             </h1>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1.5 text-xs sm:text-sm text-slate-700 font-medium">
               Start ranking and matching resumes with{' '}
-              <span className="font-bold bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="font-extrabold bg-gradient-to-r from-blue-700 via-indigo-600 to-pink-600 bg-clip-text text-transparent">
                 RankResume AI
               </span>
             </p>
@@ -116,82 +487,83 @@ const Register = () => {
 
           {/* Error Banner */}
           {registerError && (
-            <div className="relative mt-5 flex items-center gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-950/40 p-3 text-xs font-medium text-rose-300 backdrop-blur-md">
-              <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+            <div className="relative mt-5 flex items-center gap-2.5 rounded-2xl border border-rose-300 bg-rose-50 p-3 text-xs font-bold text-rose-800 shadow-sm backdrop-blur-md">
+              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 stroke-[2.5]" />
               <span>{registerError}</span>
             </div>
           )}
 
           {/* Role Selection */}
           <div className="relative mt-6 space-y-2">
-            <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-              <Sparkles className="h-3 w-3 text-pink-400" /> Select Workspace Role
+            <label className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-pink-600" /> Select Workspace Role
             </label>
             <div className="grid grid-cols-2 gap-3">
               
-              {/* Candidate Button */}
+              {/* Candidate Option */}
               <button
                 type="button"
                 onClick={() => handleRoleSelect('candidate')}
                 className={`group relative flex flex-col items-start rounded-2xl border p-3.5 text-left transition-all duration-200 cursor-pointer ${
                   formData.role === 'candidate'
-                    ? 'border-cyan-500/60 bg-cyan-950/30 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/50'
-                    : 'border-slate-800 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-900/60'
+                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 via-white to-blue-100/50 shadow-md shadow-blue-500/20 ring-2 ring-blue-500/30'
+                    : 'border-slate-300 bg-white/80 hover:border-blue-300 hover:bg-blue-50/30'
                 }`}
               >
                 <div className="flex w-full items-center justify-between">
                   <div className={`flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
                     formData.role === 'candidate'
-                      ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                      : 'bg-slate-800 text-slate-400'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-600'
                   }`}>
-                    <UserCheck className="h-4 w-4" />
+                    <UserCheck className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   {formData.role === 'candidate' && (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-cyan-500 text-slate-950 shadow-xs">
-                      <Check className="h-2.5 w-2.5 stroke-[3]" />
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-white shadow-xs">
+                      <Check className="h-3 w-3 stroke-[3]" />
                     </span>
                   )}
                 </div>
                 <div className="mt-2.5">
-                  <p className={`text-xs font-bold ${formData.role === 'candidate' ? 'text-cyan-300' : 'text-slate-300'}`}>
+                  <p className={`text-xs font-bold ${formData.role === 'candidate' ? 'text-blue-900' : 'text-slate-800'}`}>
                     Candidate
                   </p>
-                  <p className="text-[10px] text-slate-400">Apply & parse CV</p>
+                  <p className="text-[11px] text-slate-600 font-medium">Apply & parse CV</p>
                 </div>
               </button>
 
-              {/* Recruiter Button */}
+              {/* Recruiter Option */}
               <button
                 type="button"
                 onClick={() => handleRoleSelect('recruiter')}
                 className={`group relative flex flex-col items-start rounded-2xl border p-3.5 text-left transition-all duration-200 cursor-pointer ${
                   formData.role === 'recruiter'
-                    ? 'border-pink-500/60 bg-pink-950/30 shadow-lg shadow-pink-500/10 ring-1 ring-pink-500/50'
-                    : 'border-slate-800 bg-slate-950/60 hover:border-slate-700 hover:bg-slate-900/60'
+                    ? 'border-pink-500 bg-gradient-to-br from-pink-50 via-white to-pink-100/50 shadow-md shadow-pink-500/20 ring-2 ring-pink-500/30'
+                    : 'border-slate-300 bg-white/80 hover:border-pink-300 hover:bg-pink-50/30'
                 }`}
               >
                 <div className="flex w-full items-center justify-between">
                   <div className={`flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
                     formData.role === 'recruiter'
-                      ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
-                      : 'bg-slate-800 text-slate-400'
+                      ? 'bg-pink-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-600'
                   }`}>
-                    <ShieldCheck className="h-4 w-4" />
+                    <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   {formData.role === 'recruiter' && (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-pink-500 text-white shadow-xs">
-                      <Check className="h-2.5 w-2.5 stroke-[3]" />
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-pink-600 text-white shadow-xs">
+                      <Check className="h-3 w-3 stroke-[3]" />
                     </span>
                   )}
                 </div>
                 <div className="mt-2.5">
-                  <p className={`text-xs font-bold ${formData.role === 'recruiter' ? 'text-pink-300' : 'text-slate-300'}`}>
+                  <p className={`text-xs font-bold ${formData.role === 'recruiter' ? 'text-pink-900' : 'text-slate-800'}`}>
                     Recruiter
                   </p>
-                  <p className="text-[10px] text-slate-400">Post jobs & review</p>
+                  <p className="text-[11px] text-slate-600 font-medium">Post jobs & review</p>
                 </div>
               </button>
+
             </div>
           </div>
 
@@ -200,12 +572,12 @@ const Register = () => {
             
             {/* Name Input */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800">
                 Full Name
               </label>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                  <User className="h-4 w-4" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-blue-600">
+                  <User className="h-4 w-4 stroke-[2.2]" />
                 </div>
                 <input
                   type="text"
@@ -214,19 +586,19 @@ const Register = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="e.g. Alex Mercer"
-                  className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 pl-10 text-xs font-medium text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20"
+                  className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 pl-10 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-500/20 shadow-xs"
                 />
               </div>
             </div>
 
             {/* Email Input */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800">
                 Email Address
               </label>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                  <Mail className="h-4 w-4" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-blue-600">
+                  <Mail className="h-4 w-4 stroke-[2.2]" />
                 </div>
                 <input
                   type="email"
@@ -235,19 +607,19 @@ const Register = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="name@company.com"
-                  className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 pl-10 text-xs font-medium text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20"
+                  className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 pl-10 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-500/20 shadow-xs"
                 />
               </div>
             </div>
 
             {/* Password Input */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800">
                 Password
               </label>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                  <Lock className="h-4 w-4" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-pink-600">
+                  <Lock className="h-4 w-4 stroke-[2.2]" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -257,47 +629,47 @@ const Register = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Create a secure password"
-                  className="h-10 w-full rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 pl-10 pr-10 text-xs font-medium text-slate-100 placeholder-slate-500 outline-none transition-all focus:border-indigo-500 focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/20"
+                  className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 pl-10 pr-10 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition-all focus:border-pink-600 focus:bg-white focus:ring-4 focus:ring-pink-500/20 shadow-xs"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 transition hover:text-slate-300 cursor-pointer"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 transition hover:text-slate-800 cursor-pointer"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff className="h-4 w-4 stroke-[2.2]" /> : <Eye className="h-4 w-4 text-blue-600 stroke-[2.2]" />}
                 </button>
               </div>
 
               {/* Password Strength Indicator */}
               {formData.password && (
                 <div className="space-y-1 pt-1.5">
-                  <div className="flex h-1.5 w-full gap-1 overflow-hidden rounded-full bg-slate-800/80">
+                  <div className="flex h-1.5 w-full gap-1 overflow-hidden rounded-full bg-slate-200">
                     {[1, 2, 3, 4].map((step) => (
                       <div
                         key={step}
                         className={`h-full flex-1 rounded-full transition-all duration-300 ${
-                          step <= strength.score ? strength.color : 'bg-slate-800'
+                          step <= strength.score ? strength.color : 'bg-slate-200'
                         }`}
                       />
                     ))}
                   </div>
-                  <div className="flex justify-between text-[10px] font-mono">
-                    <span className="text-slate-500">Security Score</span>
-                    <span className={`font-bold ${strength.text}`}>{strength.label}</span>
+                  <div className="flex justify-between text-[11px] font-mono">
+                    <span className="text-slate-600 font-semibold">Security Score</span>
+                    <span className={`font-extrabold ${strength.text}`}>{strength.label}</span>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Terms text */}
-            <p className="text-[11px] leading-relaxed text-slate-400">
+            <p className="text-xs leading-relaxed text-slate-700 font-medium pt-1">
               By creating an account, you agree to our{' '}
-              <a href="#terms" className="font-semibold text-cyan-400 underline underline-offset-2 hover:text-pink-400">
+              <a href="#terms" className="font-bold text-blue-700 underline underline-offset-2 hover:text-pink-600">
                 Terms of Service
               </a>{' '}
               and{' '}
-              <a href="#privacy" className="font-semibold text-cyan-400 underline underline-offset-2 hover:text-pink-400">
+              <a href="#privacy" className="font-bold text-blue-700 underline underline-offset-2 hover:text-pink-600">
                 Privacy Policy
               </a>.
             </p>
@@ -306,30 +678,30 @@ const Register = () => {
             <button
               type="submit"
               disabled={isRegistering}
-              className="group relative mt-2 flex h-11 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-500 font-bold text-xs text-white shadow-xl shadow-indigo-600/20 transition-all hover:scale-[1.01] hover:shadow-indigo-600/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="group relative mt-2 flex h-11 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-600 font-extrabold text-xs text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-pink-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               {isRegistering ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin text-white" />
                   <span>Creating Account...</span>
                 </>
               ) : (
                 <>
-                  <Zap className="h-3.5 w-3.5" />
+                  <Zap className="h-4 w-4 fill-white text-white" />
                   <span>Create Account</span>
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  <ArrowRight className="h-4 w-4 stroke-[2.5] transition-transform duration-200 group-hover:translate-x-1" />
                 </>
               )}
             </button>
           </form>
 
           {/* Sign In Link */}
-          <div className="relative mt-5 border-t border-slate-800/80 pt-4 text-center">
-            <p className="text-xs text-slate-400">
+          <div className="relative mt-5 border-t border-slate-200 pt-4 text-center">
+            <p className="text-xs font-semibold text-slate-700">
               Already have an account?{' '}
               <Link
                 to="/login"
-                className="font-bold text-cyan-400 underline-offset-4 transition hover:text-pink-400 hover:underline"
+                className="font-extrabold text-blue-700 underline-offset-4 transition hover:text-pink-600 hover:underline ml-1"
               >
                 Sign in
               </Link>

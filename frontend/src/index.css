@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 
 @layer base {
   body {
@@ -10,7 +10,6 @@
   }
 }
 
-/* Custom ATS scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -27,4 +26,67 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
+} */
+
+
+
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #f8fbff;
+    color: #090d16;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Vibrant dual-tone text selection */
+  ::selection {
+    background-color: #ec4899;
+    color: #ffffff;
+  }
+}
+
+/* ========================================================================= */
+/* --- Cross-Browser WebKit Scrollbar (Chrome, Safari, Edge, iOS, Android) --- */
+/* ========================================================================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3b82f6, #ec4899);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #2563eb, #db2777);
+}
+
+/* ========================================================================= */
+/* --- Modern Standard Scrollbar (Guarded to silence linter warnings) --- */
+/* ========================================================================= */
+@supports (scrollbar-width: thin) and (scrollbar-color: auto) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #3b82f6 #f1f5f9;
+  }
 }
