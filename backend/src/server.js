@@ -1,6 +1,5 @@
 import dns from 'node:dns';
 
-// Force Google Public DNS (IPv4 and IPv6)
 dns.setServers([
   '8.8.8.8',
   '8.8.4.4',

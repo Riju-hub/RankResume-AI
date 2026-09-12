@@ -5,18 +5,22 @@ export const authService = {
     const res = await api.post('/auth/login', credentials);
     return res.data;
   },
+
   register: async (userData) => {
     const res = await api.post('/auth/register', userData);
     return res.data;
   },
+
   getProfile: async () => {
     const res = await api.get('/auth/me');
     return res.data;
   },
+
   updateProfile: async (payload) => {
     const res = await api.put('/auth/profile', payload);
     return res.data;
   },
+  
   deleteAccount: async () => {
     const res = await api.delete('/auth/account');
     return res.data;

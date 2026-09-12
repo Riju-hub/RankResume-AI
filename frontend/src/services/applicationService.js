@@ -7,14 +7,17 @@ export const applicationService = {
     });
     return res.data;
   },
+
   getJobApplications: async (jobId) => {
     const res = await api.get(`/applications/job/${jobId}`);
     return res.data;
   },
+
   getMyApplications: async () => {
     const res = await api.get('/applications/my-applications');
     return res.data;
   },
+  
   updateStatus: async (applicationId, status) => {
     const res = await api.patch(`/applications/${applicationId}/status`, { status });
     return res.data;
