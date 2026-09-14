@@ -1,6 +1,9 @@
 node_modules/
 frontend/.env
+frontend/.env.local
+frontend/.vercel
 backend/.env
+.vercel
 
 
 # RankResume-AI/
@@ -18,6 +21,7 @@ backend/.env
 # │   │   │   ├── common/
 # │   │   │   │   ├── DeleteAccountModal.jsx
 # │   │   │   │   ├── HelpFeedback.jsx
+# │   │   │   │   ├── Chatbot.jsx
 # │   │   │   │   ├── Navbar.jsx
 # │   │   │   │   ├── Profile.jsx
 # │   │   │   │   ├── Sidebar.jsx
@@ -100,3 +104,4 @@ backend/.env
 #     │   └── server.js              # Server entry point (starts HTTP listener)
 #     ├── .env
 #     └── package.json
+.vercel

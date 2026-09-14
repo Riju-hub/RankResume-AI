@@ -5,6 +5,7 @@ import { useAuthContext } from './context/AuthContext';
 // Common Components
 import Navbar from './components/common/Navbar';
 import Sidebar from './components/common/Sidebar';
+import Chatbot from './components/common/Chatbot';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import ATS from './components/common/ATS';
 
@@ -73,6 +74,7 @@ const AppLayout = () => {
 
 function App() {
   return (
+    <> 
     <Routes>
 
       {/* =========================================
@@ -209,6 +211,8 @@ function App() {
       />
 
     </Routes>
+    <Chatbot />
+    </>
   );
 }
 
