@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useJobs } from '../../hooks/useJobs';
+import geminiLogo from '../../assets/gemini-svg.svg';
 import {
   Briefcase,
   Users,
@@ -21,6 +22,8 @@ import {
   Target,
   Zap,
   ChevronRight,
+  CheckCircle2,
+  X
 } from 'lucide-react';
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -50,9 +53,132 @@ const cardHover = {
   y: -4,
   transition: { duration: 0.22, ease: EASE },
 };
+// ============================================================================
+// Modern Centered Greeting Modal (Recruiter Tailored)
+// ============================================================================
+
+const WelcomeModal = memo(({ isOpen, onClose }) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 font-sans">
+          {/* Backdrop with soft blur */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-slate-950/75 backdrop-blur-md"
+            aria-hidden="true"
+          />
+
+          {/* Modal Container */}
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 16 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 320 }}
+            className="relative w-full max-w-lg overflow-hidden rounded-[32px] border border-cyan-300/30 bg-[#070d1e]/95 p-6 sm:p-8 text-center text-white shadow-[0_25px_90px_rgba(0,0,0,0.8),0_0_60px_rgba(34,211,238,0.18)]"
+          >
+            {/* Top gradient border highlight */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+
+            {/* Soft background ambient radial lights */}
+            <div className="pointer-events-none absolute -right-20 -top-20 h-52 w-52 rounded-full bg-cyan-500/15 blur-3xl" />
+            <div className="pointer-events-none absolute -left-20 -bottom-20 h-52 w-52 rounded-full bg-indigo-500/15 blur-3xl" />
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-colors hover:border-cyan-300/30 hover:bg-cyan-500/10 hover:text-cyan-300"
+              aria-label="Close greeting"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            {/* Icon Banner */}
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/30 bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-400 p-3.5 shadow-[0_0_35px_rgba(34,211,238,0.35)]">
+              <img
+                src={geminiLogo}
+                alt="RankResume AI"
+                className="h-full w-full object-contain filter brightness-125"
+              />
+            </div>
+
+            {/* Live System Badge */}
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-wider text-cyan-300">
+              <Sparkles className="h-3 w-3 animate-pulse text-cyan-300" />
+              Recruiter Command Center Active
+            </div>
+
+            {/* Headline */}
+            <h3 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Welcome back,{' '}
+              <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                Hiring Lead
+              </span>
+            </h3>
+
+            {/* Description */}
+            <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-300">
+              Your AI hiring pipeline is running. Rank candidate batches in seconds, spot high-fit technical talent with cosine accuracy, and advance applicants through your Kanban stages.
+            </p>
+
+            {/* Key Value Points */}
+            <div className="mt-5 grid grid-cols-2 gap-2.5 text-left">
+              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-300" />
+                <span className="text-[11px] font-semibold text-slate-200">Bulk Ingestion Ready</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-fuchsia-400" />
+                <span className="text-[11px] font-semibold text-slate-200">Automated Shortlists</span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 text-xs font-bold text-white shadow-[0_0_25px_rgba(34,211,238,0.25)] transition-all hover:shadow-[0_0_35px_rgba(34,211,238,0.4)] hover:scale-[1.02] active:scale-95"
+              >
+                <span>Review Candidates</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white"
+              >
+                Dismiss
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+});
+
+WelcomeModal.displayName = 'WelcomeModal';
 
 const Dashboard = () => {
   const { jobs = [], isLoading, error } = useJobs();
+  const [showGreetingModal, setShowGreetingModal] = useState(false);
+
+  useEffect(() => {
+    // 2-second delay for greeting popup on every refresh/mount
+    const greetingTimer = window.setTimeout(() => {
+      setShowGreetingModal(true);
+    }, 2000);
+
+    return () => window.clearTimeout(greetingTimer);
+  }, []);
 
   const activeJobs = useMemo(
     () => jobs.filter((job) => job.status !== 'closed'),
@@ -546,6 +672,12 @@ const Dashboard = () => {
           </motion.div>
         </motion.div>
       </main>
+
+      {/* TIMED CENTER GREETING MODAL */}
+      <WelcomeModal
+        isOpen={showGreetingModal}
+        onClose={() => setShowGreetingModal(false)}
+      />
     </>
   );
 };

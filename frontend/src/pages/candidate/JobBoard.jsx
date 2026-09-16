@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useJobs } from '../../hooks/useJobs';
 import ApplyJobModal from './ApplyJobModal';
 import JobCard from '../../components/jobs/JobCard';
 import JobFilter from '../../components/jobs/JobFilter';
+import geminiLogo from '../../assets/gemini-svg.svg';
 import {
   Sparkles,
   Loader2,
@@ -17,6 +19,9 @@ import {
   Target,
   Activity,
   ChevronRight,
+  ArrowRight,
+  X,
+  FileCheck2
 } from 'lucide-react';
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -38,6 +43,129 @@ const itemVariants = {
     transition: { duration: 0.42, ease: EASE },
   },
 };
+// ============================================================================
+// Candidate-Centric Discovery Modal (Candidate Friendly Copy)
+// ============================================================================
+
+const CandidateWelcomeModal = memo(({ isOpen, onClose, totalRoles = 0 }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted || typeof document === 'undefined') return null;
+
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[999999] flex h-screen w-screen items-center justify-center p-4 sm:p-6 font-sans">
+          {/* True Full-Window Backdrop Blur */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            onClick={onClose}
+            className="fixed inset-0 h-full w-full bg-slate-950/70 backdrop-blur-md"
+            aria-hidden="true"
+          />
+
+          {/* Modal Card */}
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            initial={{ opacity: 0, scale: 0.92, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 12 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 340 }}
+            className="relative z-10 w-full max-w-lg overflow-hidden rounded-[30px] border border-cyan-300/30 bg-[#070d1e]/95 p-6 sm:p-8 text-center text-white shadow-[0_25px_90px_rgba(0,0,0,0.85),0_0_60px_rgba(34,211,238,0.2)]"
+          >
+            {/* Top gradient highlight */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+
+            {/* Ambient background glows */}
+            <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-cyan-500/15 blur-3xl" />
+            <div className="pointer-events-none absolute -left-20 -bottom-20 h-48 w-48 rounded-full bg-indigo-500/15 blur-3xl" />
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-colors hover:border-cyan-300/30 hover:bg-cyan-500/10 hover:text-cyan-300"
+              aria-label="Close modal"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            {/* Icon Banner */}
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/30 bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-400 p-3.5 shadow-[0_0_35px_rgba(34,211,238,0.35)]">
+              <img
+                src={geminiLogo}
+                alt="RankResume AI"
+                className="h-full w-full object-contain filter brightness-125"
+              />
+            </div>
+
+            {/* System Badge */}
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-wider text-cyan-300">
+              <Sparkles className="h-3 w-3 animate-pulse text-cyan-300" />
+              Your Career Co-Pilot
+            </div>
+
+            {/* Headline */}
+            <h3 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Ready to find your{' '}
+              <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                next big role?
+              </span>
+            </h3>
+
+            {/* Description */}
+            <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-300">
+              Never wonder if your resume made the cut. We evaluate your real-world experience, practical skills, and project impact—so you get matched directly with {totalRoles ? `${totalRoles} verified tech openings` : 'top engineering roles'} without keyword traps.
+            </p>
+
+            {/* Key Candidate Benefits */}
+            <div className="mt-5 grid grid-cols-2 gap-2.5 text-left">
+              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
+                <Target className="h-4 w-4 shrink-0 text-cyan-300" />
+                <span className="text-[11px] font-semibold text-slate-200">Instant Match Telemetry</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
+                <FileCheck2 className="h-4 w-4 shrink-0 text-fuchsia-400" />
+                <span className="text-[11px] font-semibold text-slate-200">No Keyword Traps</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 text-xs font-bold text-white shadow-[0_0_25px_rgba(34,211,238,0.25)] transition-all hover:shadow-[0_0_35px_rgba(34,211,238,0.4)] hover:scale-[1.02] active:scale-95"
+              >
+                <span>Explore Jobs Now</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white"
+              >
+                Maybe Later
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>,
+    document.body
+  );
+});
+
+CandidateWelcomeModal.displayName = 'CandidateWelcomeModal';
 
 const JobBoard = () => {
   const { jobs = [], isLoading, isError, refetch } = useJobs();
@@ -47,6 +175,15 @@ const JobBoard = () => {
   const [typeFilter, setTypeFilter] = useState('All');
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showGreetingModal, setShowGreetingModal] = useState(false);
+
+  useEffect(() => {
+    const greetingTimer = window.setTimeout(() => {
+      setShowGreetingModal(true);
+    }, 2000);
+
+    return () => window.clearTimeout(greetingTimer);
+  }, []);
 
   const handleApplyClick = (job) => {
     setSelectedJob(job);
@@ -165,21 +302,13 @@ const JobBoard = () => {
         }
 
         @keyframes rrBoardFloatA {
-          0%, 100% {
-            transform: translate3d(0, 0, 0) scale(1);
-          }
-          50% {
-            transform: translate3d(18px, -18px, 0) scale(1.04);
-          }
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+          50% { transform: translate3d(18px, -18px, 0) scale(1.04); }
         }
 
         @keyframes rrBoardFloatB {
-          0%, 100% {
-            transform: translate3d(0, 0, 0) scale(1);
-          }
-          50% {
-            transform: translate3d(-18px, 18px, 0) scale(1.05);
-          }
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+          50% { transform: translate3d(-18px, 18px, 0) scale(1.05); }
         }
 
         @keyframes rrBoardPulse {
@@ -230,7 +359,6 @@ const JobBoard = () => {
       `}</style>
 
       <main className="relative isolate min-h-screen overflow-hidden font-sans antialiased text-slate-900">
-        {/* Premium lightweight background */}
         <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-pink-50/35">
           <div className="rr-board-float-a absolute -left-40 -top-36 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-[115px] transform-gpu" />
           <div className="rr-board-float-b absolute -right-40 top-[30%] h-[520px] w-[520px] rounded-full bg-pink-500/10 blur-[125px] transform-gpu" />
@@ -474,6 +602,13 @@ const JobBoard = () => {
             </div>
           </motion.div>
         </motion.div>
+
+        {/* TIMED CANDIDATE DISCOVERY MODAL (Portal Rooted) */}
+        <CandidateWelcomeModal
+          isOpen={showGreetingModal}
+          onClose={() => setShowGreetingModal(false)}
+          totalRoles={jobs.length}
+        />
 
         <ApplyJobModal
           job={selectedJob}

@@ -22,7 +22,8 @@ import {
   BarChart3,
   Download,
   ExternalLink,
-  X
+  X,
+  Bot
 } from 'lucide-react';
 
 
@@ -151,8 +152,6 @@ SmoothMulticolorTypewriter.displayName =
 // ============================================================================
 
 const Snowfall = memo(() => {
-  // Lightweight CSS-only snowfall. Fewer flakes + transform-only animation
-  // keeps the page smooth while scrolling.
   const flakes = useMemo(
     () =>
       Array.from({ length: 44 }, (_, i) => ({
@@ -204,14 +203,9 @@ const Snowfall = memo(() => {
         }
       `}</style>
 
-      {/* Static background: no continuously repainting animated gradients. */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(30,64,175,0.26),transparent_42%),linear-gradient(180deg,#020817_0%,#06132e_48%,#081a38_100%)]" />
-
-      {/* Very subtle static atmosphere. */}
       <div className="pointer-events-none absolute -top-32 left-[8%] h-80 w-80 rounded-full bg-blue-500/10 blur-[70px]" />
       <div className="pointer-events-none absolute top-[34%] right-[-6%] h-96 w-96 rounded-full bg-cyan-400/8 blur-[80px]" />
-
-      {/* Static stars. */}
       <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.75)_0.65px,transparent_0.9px)] [background-size:80px_80px]" />
 
       {flakes.map((flake) => (
@@ -237,9 +231,124 @@ Snowfall.displayName = 'Snowfall';
 
 
 // ============================================================================
+// Modern Centered Greeting Modal
+// ============================================================================
+
+const WelcomeModal = memo(({ isOpen, onClose }) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+          {/* Backdrop with soft blur */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-slate-950/75 backdrop-blur-md"
+            aria-hidden="true"
+          />
+
+          {/* Modal Container */}
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 16 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 320 }}
+            className="relative w-full max-w-lg overflow-hidden rounded-[32px] border border-cyan-300/30 bg-[#070d1e]/95 p-6 sm:p-8 text-center shadow-[0_25px_90px_rgba(0,0,0,0.8),0_0_60px_rgba(34,211,238,0.18)]"
+          >
+            {/* Top gradient border highlight */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+            
+            {/* Soft background ambient radial lights */}
+            <div className="pointer-events-none absolute -right-20 -top-20 h-52 w-52 rounded-full bg-cyan-500/15 blur-3xl" />
+            <div className="pointer-events-none absolute -left-20 -bottom-20 h-52 w-52 rounded-full bg-indigo-500/15 blur-3xl" />
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-colors hover:border-cyan-300/30 hover:bg-cyan-500/10 hover:text-cyan-300"
+              aria-label="Close greeting"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            {/* Icon Banner */}
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/30 bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-400 p-3.5 shadow-[0_0_35px_rgba(34,211,238,0.35)]">
+              <img
+                src={geminiLogo}
+                alt="RankResume AI"
+                className="h-full w-full object-contain filter brightness-125"
+              />
+            </div>
+
+            {/* Live System Badge */}
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-wider text-cyan-300">
+              <Sparkles className="h-3 w-3 animate-pulse text-cyan-300" />
+              Greetings from RankResume
+            </div>
+
+            {/* Headline */}
+            <h3 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Welcome to{' '}
+              <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                RankResume AI
+              </span>
+            </h3>
+
+            {/* Description */}
+            <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-300">
+              Experience the next generation of autonomous ATS intelligence. Parse resumes with zero hallucinations, analyze multi-dimensional cosine vectors, and fast-track top tech talent effortlessly.
+            </p>
+
+            {/* Key Value Points */}
+            <div className="mt-5 grid grid-cols-2 gap-2.5 text-left">
+              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-300" />
+                <span className="text-[11px] font-semibold text-slate-200">Zero Hallucinations</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-fuchsia-400" />
+                <span className="text-[11px] font-semibold text-slate-200">Dense Vector Match</span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 text-xs font-bold text-white shadow-[0_0_25px_rgba(34,211,238,0.25)] transition-all hover:shadow-[0_0_35px_rgba(34,211,238,0.4)] hover:scale-[1.02] active:scale-95"
+              >
+                <span>Enter Workspace</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white"
+              >
+                Dismiss
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+});
+
+WelcomeModal.displayName = 'WelcomeModal';
+
+
+// ============================================================================
 // ResumeIQ ATS floating launch panel
 // ============================================================================
-const ATS_URL = 'https://resumeiq-jxzub6fh22sedvgffpftsr.streamlit.app/';
+const ATS_URL = 'https://resume-iq-ats-live.streamlit.app/';
 
 const ATSLaunchPanel = memo(({ onClose }) => (
   <motion.aside
@@ -254,7 +363,6 @@ const ATSLaunchPanel = memo(({ onClose }) => (
     role="dialog"
     aria-label="ResumeIQ ATS"
   >
-    {/* Lightweight static accents — no animated blur layers. */}
     <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-pink-500 via-fuchsia-500 to-indigo-500 opacity-80" />
     <div className="pointer-events-none absolute -right-16 -top-20 h-40 w-40 rounded-full bg-fuchsia-500/10 blur-3xl" />
     <div className="pointer-events-none absolute -left-16 bottom-0 h-36 w-36 rounded-full bg-indigo-500/10 blur-3xl" />
@@ -262,7 +370,6 @@ const ATSLaunchPanel = memo(({ onClose }) => (
     <div className="relative">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          {/* ResumeIQ icon */}
           <motion.div
             whileHover={{ scale: 1.06, rotate: 3 }}
             className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-fuchsia-300/30 bg-gradient-to-br from-pink-500 via-fuchsia-500 to-indigo-600 text-white shadow-[0_8px_28px_rgba(217,70,239,0.30)]"
@@ -303,7 +410,6 @@ const ATSLaunchPanel = memo(({ onClose }) => (
         </button>
       </div>
 
-      {/* Feature cards */}
       <div className="mt-4 grid grid-cols-3 gap-2">
         <motion.div
           whileHover={{ y: -3, scale: 1.02 }}
@@ -334,7 +440,6 @@ const ATSLaunchPanel = memo(({ onClose }) => (
         Check your resume score, identify ATS gaps, and generate a detailed report in PDF or text format.
       </p>
 
-      {/* CTA */}
       <a
         href={ATS_URL}
         target="_blank"
@@ -344,7 +449,6 @@ const ATSLaunchPanel = memo(({ onClose }) => (
         <span className="relative z-10">Open ResumeIQ ATS</span>
         <ExternalLink className="relative z-10 h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
 
-        {/* Static shine — animated only on hover through CSS. */}
         <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/15 transition-transform duration-500 group-hover:translate-x-[420%]" />
       </a>
 
@@ -362,16 +466,25 @@ ATSLaunchPanel.displayName = 'ATSLaunchPanel';
 // ============================================================================
 
 export const LandingPage = () => {
-  const [activeTab, setActiveTab] =
-    useState('recruiter');
+  const [activeTab, setActiveTab] = useState('recruiter');
   const [showATSPanel, setShowATSPanel] = useState(false);
+  const [showGreetingModal, setShowGreetingModal] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    // ATS floating panel trigger
+    const atsTimer = window.setTimeout(() => {
       setShowATSPanel(true);
     }, 500);
 
-    return () => window.clearTimeout(timer);
+    // 2-second delay for greeting popup on every refresh/mount
+    const greetingTimer = window.setTimeout(() => {
+      setShowGreetingModal(true);
+    }, 2000);
+
+    return () => {
+      window.clearTimeout(atsTimer);
+      window.clearTimeout(greetingTimer);
+    };
   }, []);
 
   return (
@@ -389,17 +502,10 @@ export const LandingPage = () => {
       "
     >
 
-      {/* ================================================================
-          GLOBAL WINTER BACKGROUND
-      ================================================================ */}
-
+      {/* GLOBAL WINTER BACKGROUND */}
       <Snowfall />
 
-
-      {/* ================================================================
-          NAVBAR
-      ================================================================ */}
-
+      {/* NAVBAR */}
       <motion.header
         initial={{
           y: -24,
@@ -422,8 +528,6 @@ export const LandingPage = () => {
           shadow-[0_8px_35px_rgba(0,0,0,0.25)]
         "
       >
-
-        {/* Frozen top light */}
         <div
           className="
             absolute top-0 left-0 right-0
@@ -448,9 +552,7 @@ export const LandingPage = () => {
             sm:px-8
           "
         >
-
           {/* Brand */}
-
           <Link
             to="/"
             className="
@@ -547,9 +649,7 @@ export const LandingPage = () => {
             </div>
           </Link>
 
-
           {/* Engine Status */}
-
           <div
             className="
               hidden md:flex
@@ -566,7 +666,6 @@ export const LandingPage = () => {
             "
           >
             <span className="relative flex h-2 w-2">
-
               <motion.span
                 animate={{
                   scale: [1, 1.8, 1],
@@ -615,9 +714,7 @@ export const LandingPage = () => {
             </span>
           </div>
 
-
           {/* Actions */}
-
           <div
             className="
               flex items-center
@@ -625,7 +722,6 @@ export const LandingPage = () => {
               shrink-0
             "
           >
-
             <Link
               to="/login"
               className="
@@ -702,16 +798,11 @@ export const LandingPage = () => {
                 "
               />
             </Link>
-
           </div>
         </nav>
       </motion.header>
 
-
-      {/* ================================================================
-          HERO
-      ================================================================ */}
-
+      {/* HERO */}
       <motion.section
         initial={{
           opacity: 0,
@@ -738,9 +829,6 @@ export const LandingPage = () => {
           lg:pt-24
         "
       >
-
-        {/* Badge */}
-
         <motion.div
           initial={{
             opacity: 0,
@@ -796,9 +884,6 @@ export const LandingPage = () => {
           </span>
         </motion.div>
 
-
-        {/* Headline */}
-
         <motion.h1
           initial={{
             opacity: 0,
@@ -842,9 +927,6 @@ export const LandingPage = () => {
           </span>
         </motion.h1>
 
-
-        {/* Typewriter */}
-
         <div
           className="
             mt-6
@@ -856,9 +938,6 @@ export const LandingPage = () => {
         >
           <SmoothMulticolorTypewriter />
         </div>
-
-
-        {/* Description */}
 
         <motion.p
           initial={{
@@ -926,9 +1005,6 @@ export const LandingPage = () => {
           </span>.
         </motion.p>
 
-
-        {/* CTAs */}
-
         <motion.div
           initial={{
             opacity: 0,
@@ -952,7 +1028,6 @@ export const LandingPage = () => {
             sm:flex-row
           "
         >
-
           <Link
             to="/register"
             className="
@@ -992,7 +1067,6 @@ export const LandingPage = () => {
               Launch Free Trial
             </span>
           </Link>
-
 
           <Link
             to="/jobs"
@@ -1042,14 +1116,9 @@ export const LandingPage = () => {
             <span>Check Resume with ATS</span>
             <ExternalLink className="h-3.5 w-3.5 text-cyan-300" />
           </a>
-
         </motion.div>
 
-
-        {/* ================================================================
-            TELEMETRY CARD
-        ================================================================ */}
-
+        {/* TELEMETRY CARD */}
         <motion.div
           initial={{
             opacity: 0,
@@ -1063,7 +1132,6 @@ export const LandingPage = () => {
             delay: 0.7,
             duration: 0.8
           }}
-
           className="
             relative
             mx-auto
@@ -1078,9 +1146,6 @@ export const LandingPage = () => {
             backdrop-blur-none
           "
         >
-
-          {/* Card glow */}
-
           <div
             className="
               pointer-events-none
@@ -1090,7 +1155,6 @@ export const LandingPage = () => {
               bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.08),transparent_35%)]
             "
           />
-
 
           <div
             className="
@@ -1106,7 +1170,6 @@ export const LandingPage = () => {
               sm:justify-between
             "
           >
-
             <div
               className="
                 flex
@@ -1114,9 +1177,7 @@ export const LandingPage = () => {
                 gap-3.5
               "
             >
-
               <span className="relative flex h-3.5 w-3.5">
-
                 <motion.span
                   animate={{
                     scale: [1, 1.8, 1],
@@ -1146,12 +1207,9 @@ export const LandingPage = () => {
                     bg-cyan-300
                   "
                 />
-
               </span>
 
-
               <div>
-
                 <span
                   className="
                     font-mono
@@ -1173,7 +1231,6 @@ export const LandingPage = () => {
                   "
                 >
                   Alex Mercer
-
                   <span
                     className="
                       font-normal
@@ -1183,11 +1240,8 @@ export const LandingPage = () => {
                     {' '}· Senior Full-Stack Engineer
                   </span>
                 </h3>
-
               </div>
-
             </div>
-
 
             <div
               className="
@@ -1196,7 +1250,6 @@ export const LandingPage = () => {
                 gap-2
               "
             >
-
               <span
                 className="
                   inline-flex
@@ -1221,16 +1274,10 @@ export const LandingPage = () => {
                     text-fuchsia-300
                   "
                 />
-
                 97.4% Match Vector
               </span>
-
             </div>
-
           </div>
-
-
-          {/* Metrics */}
 
           <div
             className="
@@ -1242,9 +1289,7 @@ export const LandingPage = () => {
               sm:grid-cols-3
             "
           >
-
             {/* Cosine */}
-
             <motion.div
               whileHover={{
                 y: -4,
@@ -1282,7 +1327,6 @@ export const LandingPage = () => {
                     text-cyan-300
                   "
                 />
-
                 Cosine Match
               </div>
 
@@ -1308,9 +1352,7 @@ export const LandingPage = () => {
               </p>
             </motion.div>
 
-
             {/* Tech Alignment */}
-
             <motion.div
               whileHover={{
                 y: -4,
@@ -1348,7 +1390,6 @@ export const LandingPage = () => {
                     text-fuchsia-300
                   "
                 />
-
                 Tech Alignment
               </div>
 
@@ -1374,9 +1415,7 @@ export const LandingPage = () => {
               </p>
             </motion.div>
 
-
             {/* Workflow */}
-
             <motion.div
               whileHover={{
                 y: -4,
@@ -1414,7 +1453,6 @@ export const LandingPage = () => {
                     text-indigo-300
                   "
                 />
-
                 Workflow State
               </div>
 
@@ -1439,17 +1477,11 @@ export const LandingPage = () => {
                 Autonomous calendar trigger sent
               </p>
             </motion.div>
-
           </div>
         </motion.div>
-
       </motion.section>
 
-
-      {/* ================================================================
-          ARCHITECTURAL PILLARS
-      ================================================================ */}
-
+      {/* ARCHITECTURAL PILLARS */}
       <motion.section
         initial={{
           opacity: 0,
@@ -1476,9 +1508,7 @@ export const LandingPage = () => {
           backdrop-blur-none
         "
       >
-
         <div className="mx-auto max-w-6xl">
-
           <div
             className="
               text-center
@@ -1486,7 +1516,6 @@ export const LandingPage = () => {
               mx-auto
             "
           >
-
             <span
               className="
                 font-mono
@@ -1525,9 +1554,7 @@ export const LandingPage = () => {
               contextual experience, project impact, and system design
               capability.
             </p>
-
           </div>
-
 
           <div
             className="
@@ -1538,9 +1565,7 @@ export const LandingPage = () => {
               sm:grid-cols-3
             "
           >
-
             {/* Card 1 */}
-
             <motion.div
               whileHover={{
                 y: -7
@@ -1558,7 +1583,6 @@ export const LandingPage = () => {
                 transition-[transform,opacity,border-color,background-color,box-shadow]
               "
             >
-
               <div
                 className="
                   flex
@@ -1603,12 +1627,9 @@ export const LandingPage = () => {
                 multi-column structures, GitHub references,
                 and technical deliverables without truncation.
               </p>
-
             </motion.div>
 
-
             {/* Card 2 */}
-
             <motion.div
               whileHover={{
                 y: -7
@@ -1626,7 +1647,6 @@ export const LandingPage = () => {
                 transition-[transform,opacity,border-color,background-color,box-shadow]
               "
             >
-
               <div
                 className="
                   flex
@@ -1671,12 +1691,9 @@ export const LandingPage = () => {
                 team deliverables using high-dimensional cosine
                 similarity vectors.
               </p>
-
             </motion.div>
 
-
             {/* Card 3 */}
-
             <motion.div
               whileHover={{
                 y: -7
@@ -1694,7 +1711,6 @@ export const LandingPage = () => {
                 transition-[transform,opacity,border-color,background-color,box-shadow]
               "
             >
-
               <div
                 className="
                   flex
@@ -1739,20 +1755,12 @@ export const LandingPage = () => {
                 across customized interview rounds, generating
                 briefing sheets for hiring leads.
               </p>
-
             </motion.div>
-
           </div>
-
         </div>
-
       </motion.section>
 
-
-      {/* ================================================================
-          DUAL ROLE WORKSPACES
-      ================================================================ */}
-
+      {/* DUAL ROLE WORKSPACES */}
       <motion.section
         initial={{
           opacity: 0
@@ -1774,16 +1782,13 @@ export const LandingPage = () => {
           z-10
         "
       >
-
         <div className="mx-auto max-w-5xl">
-
           <div
             className="
               text-center
               mb-10
             "
           >
-
             <h2
               className="
                 text-2xl
@@ -1806,9 +1811,7 @@ export const LandingPage = () => {
               Switch roles to view specialized workflows
             </p>
 
-
             {/* Tabs */}
-
             <div
               className="
                 mt-6
@@ -1821,12 +1824,9 @@ export const LandingPage = () => {
                 backdrop-blur-none
               "
             >
-
               <button
                 type="button"
-                onClick={() =>
-                  setActiveTab('recruiter')
-                }
+                onClick={() => setActiveTab('recruiter')}
                 className={`
                   flex
                   items-center
@@ -1844,24 +1844,18 @@ export const LandingPage = () => {
                   }
                 `}
               >
-
                 <Sliders
                   className="
                     h-3.5
                     w-3.5
                   "
                 />
-
                 For Recruiters
-
               </button>
-
 
               <button
                 type="button"
-                onClick={() =>
-                  setActiveTab('candidate')
-                }
+                onClick={() => setActiveTab('candidate')}
                 className={`
                   flex
                   items-center
@@ -1879,25 +1873,18 @@ export const LandingPage = () => {
                   }
                 `}
               >
-
                 <MousePointerClick
                   className="
                     h-3.5
                     w-3.5
                   "
                 />
-
                 For Candidates
-
               </button>
-
             </div>
-
           </div>
 
-
           {/* Workspace cards */}
-
           <div
             className="
               grid
@@ -1906,11 +1893,7 @@ export const LandingPage = () => {
               sm:grid-cols-2
             "
           >
-
-            {/* ============================================================
-                Recruiter
-            ============================================================ */}
-
+            {/* Recruiter */}
             <motion.div
               whileHover={{
                 y: -6
@@ -1932,9 +1915,7 @@ export const LandingPage = () => {
                 }
               `}
             >
-
               <div>
-
                 <div
                   className="
                     flex
@@ -1942,7 +1923,6 @@ export const LandingPage = () => {
                     gap-2
                   "
                 >
-
                   <span
                     className="
                       rounded-full
@@ -1959,7 +1939,6 @@ export const LandingPage = () => {
                   >
                     TALENT ACQUISITION
                   </span>
-
                 </div>
 
                 <h3
@@ -1987,7 +1966,6 @@ export const LandingPage = () => {
                   executed real-world production code.
                 </p>
 
-
                 <ul
                   className="
                     mt-5
@@ -1996,7 +1974,6 @@ export const LandingPage = () => {
                     text-slate-300
                   "
                 >
-
                   <li
                     className="
                       flex
@@ -2011,7 +1988,6 @@ export const LandingPage = () => {
                         text-fuchsia-300
                       "
                     />
-
                     Automated candidate scoring matrices
                   </li>
 
@@ -2029,14 +2005,10 @@ export const LandingPage = () => {
                         text-fuchsia-300
                       "
                     />
-
                     One-click interview stage progression
                   </li>
-
                 </ul>
-
               </div>
-
 
               <Link
                 to="/register"
@@ -2054,7 +2026,6 @@ export const LandingPage = () => {
                 "
               >
                 Explore Recruiter Workspace
-
                 <ArrowUpRight
                   className="
                     h-4
@@ -2065,14 +2036,9 @@ export const LandingPage = () => {
                   "
                 />
               </Link>
-
             </motion.div>
 
-
-            {/* ============================================================
-                Candidate
-            ============================================================ */}
-
+            {/* Candidate */}
             <motion.div
               whileHover={{
                 y: -6
@@ -2094,9 +2060,7 @@ export const LandingPage = () => {
                 }
               `}
             >
-
               <div>
-
                 <div
                   className="
                     flex
@@ -2104,7 +2068,6 @@ export const LandingPage = () => {
                     gap-2
                   "
                 >
-
                   <span
                     className="
                       rounded-full
@@ -2121,7 +2084,6 @@ export const LandingPage = () => {
                   >
                     SOFTWARE ENGINEERS
                   </span>
-
                 </div>
 
                 <h3
@@ -2149,7 +2111,6 @@ export const LandingPage = () => {
                   before submitting.
                 </p>
 
-
                 <ul
                   className="
                     mt-5
@@ -2158,7 +2119,6 @@ export const LandingPage = () => {
                     text-slate-300
                   "
                 >
-
                   <li
                     className="
                       flex
@@ -2173,7 +2133,6 @@ export const LandingPage = () => {
                         text-cyan-300
                       "
                     />
-
                     Semantic keyword gap diagnostics
                   </li>
 
@@ -2191,14 +2150,10 @@ export const LandingPage = () => {
                         text-cyan-300
                       "
                     />
-
                     Real-time application stage visibility
                   </li>
-
                 </ul>
-
               </div>
-
 
               <Link
                 to="/register"
@@ -2216,7 +2171,6 @@ export const LandingPage = () => {
                 "
               >
                 Create Candidate Profile
-
                 <ArrowUpRight
                   className="
                     h-4
@@ -2227,24 +2181,23 @@ export const LandingPage = () => {
                   "
                 />
               </Link>
-
             </motion.div>
-
           </div>
-
         </div>
-
       </motion.section>
 
-
+      {/* FLOATING ATS PANEL */}
       <AnimatePresence>
         {showATSPanel && <ATSLaunchPanel onClose={() => setShowATSPanel(false)} />}
       </AnimatePresence>
 
-      {/* ================================================================
-          FOOTER
-      ================================================================ */}
+      {/* TIMED CENTER GREETING MODAL */}
+      <WelcomeModal
+        isOpen={showGreetingModal}
+        onClose={() => setShowGreetingModal(false)}
+      />
 
+      {/* FOOTER */}
       <motion.footer
         initial={{
           opacity: 0
@@ -2272,7 +2225,6 @@ export const LandingPage = () => {
           backdrop-blur-none
         "
       >
-
         <div
           className="
             mx-auto
@@ -2285,7 +2237,6 @@ export const LandingPage = () => {
             gap-4
           "
         >
-
           <div
             className="
               flex
@@ -2293,7 +2244,6 @@ export const LandingPage = () => {
               gap-2
             "
           >
-
             <motion.span
               animate={{
                 opacity: [0.5, 1, 0.5]
@@ -2319,21 +2269,16 @@ export const LandingPage = () => {
             >
               RankResume AI · Next-Generation Multi-Modal Recruitment
             </span>
-
           </div>
 
           <p>
             © 2026 RankResume AI. All rights reserved.
           </p>
-
         </div>
-
       </motion.footer>
 
     </div>
   );
 };
 
-
 export default LandingPage;
-

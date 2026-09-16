@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 const ATS_URL =
-  'https://resumeiq-jxzub6fh22sedvgffpftsr.streamlit.app/';
+  'https://resume-iq-ats-live.streamlit.app/';
 
 const ATS = () => {
   const openATS = () => {
