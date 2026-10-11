@@ -1,43 +1,34 @@
 // backend/src/services/emailService.js
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-const getTransporter = () => {
-  const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_PASS;
-
-  if (!user || !pass) {
-    throw new Error('EMAIL_USER or EMAIL_PASS is missing in environment variables.');
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is missing in environment variables.');
   }
-
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: user.trim(),
-      pass: pass.trim().replace(/\s+/g, '') // remove spaces from 16-char app password
-    }
-  });
+  return new Resend(apiKey);
 };
 
 export const sendStatusEmail = async (candidateEmail, candidateName, jobTitle, status) => {
-  const transporter = getTransporter();
-  const mailOptions = {
-    from: `"RankResume AI" <${process.env.EMAIL_USER}>`,
+  const resend = getResendClient();
+  return resend.emails.send({
+    from: 'RankResume AI <onboarding@resend.dev>',
     to: candidateEmail,
     subject: `Application Update: ${jobTitle}`,
     html: `
-      <h3>Hello ${candidateName},</h3>
-      <p>Your application status for the position <strong>${jobTitle}</strong> has been updated to: <strong>${status.toUpperCase()}</strong>.</p>
-      <p>Log in to your dashboard to view complete details.</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px; color: #0f172a;">
+        <h3>Hello ${candidateName},</h3>
+        <p>Your application status for the position <strong>${jobTitle}</strong> has been updated to: <strong>${status.toUpperCase()}</strong>.</p>
+        <p>Log in to your dashboard to view complete details.</p>
+      </div>
     `
-  };
-
-  return transporter.sendMail(mailOptions);
+  });
 };
 
 export const sendResetPasswordEmail = async (userEmail, resetUrl) => {
-  const transporter = getTransporter();
-  const mailOptions = {
-    from: `"RankResume AI Support" <${process.env.EMAIL_USER}>`,
+  const resend = getResendClient();
+  return resend.emails.send({
+    from: 'RankResume AI Support <onboarding@resend.dev>',
     to: userEmail,
     subject: 'Password Reset Request - RankResume AI',
     html: `
@@ -56,7 +47,5 @@ export const sendResetPasswordEmail = async (userEmail, resetUrl) => {
         </p>
       </div>
     `
-  };
-
-  return transporter.sendMail(mailOptions);
+  });
 };
