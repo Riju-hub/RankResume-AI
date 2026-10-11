@@ -1,7 +1,9 @@
+// frontend/src/pages/recruiter/CreateJob.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useJobs } from '../../hooks/useJobs';
 import JobCard from '../../components/jobs/JobCard';
+import ActionConfirmModal from '../../components/common/ActionConfirmModal';
 import { 
   Loader2, 
   Sparkles, 
@@ -14,7 +16,10 @@ import {
   Eye,
   EyeOff,
   Zap,
-  Target
+  Target,
+  Building2,
+  DollarSign,
+  Flame
 } from 'lucide-react';
 
 const SUGGESTED_SKILLS = [
@@ -22,12 +27,17 @@ const SUGGESTED_SKILLS = [
   'MongoDB', 'PostgreSQL', 'Docker', 'AWS', 'Next.js', 'REST APIs', 'GraphQL'
 ];
 
+const DEFAULT_PREVIEW_SKILLS = ['React', 'TypeScript', 'Node.js', 'Docker'];
+
 const CreateJob = () => {
   const navigate = useNavigate();
   const { createJob, isCreating } = useJobs();
 
   const [formData, setFormData] = useState({
     title: '',
+    companyName: '',
+    salary: '',
+    isActivelyHiring: true,
     department: '',
     location: 'Remote',
     jobType: 'Full-time',
@@ -40,9 +50,14 @@ const CreateJob = () => {
   const [skillInput, setSkillInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [showPreview, setShowPreview] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   };
 
   const handleAddSkill = (skillToAdd) => {
@@ -71,29 +86,40 @@ const CreateJob = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  // 1. Intercept standard form submission to show confirmation modal
+  const handlePreSubmit = (e) => {
     e.preventDefault();
     setErrorMsg('');
+
+    if (!formData.title.trim() || !formData.description.trim()) {
+      setErrorMsg('Please provide a valid Job Title and Overview Description.');
+      return;
+    }
+
+    setShowConfirmModal(true);
+  };
+
+  // 2. Confirmed submission
+  const handleConfirmedPublish = async () => {
     try {
       await createJob(formData);
+      setShowConfirmModal(false);
       navigate('/recruiter/dashboard');
     } catch (err) {
+      setShowConfirmModal(false);
       setErrorMsg(err.response?.data?.message || 'Failed to publish job position.');
     }
   };
 
   return (
     <div className="relative mx-auto max-w-4xl space-y-6 font-sans text-slate-900 antialiased">
-      
-      {/* Background Ambient Orbs (Hardware-Accelerated) */}
+      {/* Background Ambient Orbs */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden transform-gpu">
         <div className="absolute -top-32 -left-20 h-[500px] w-[500px] rounded-full bg-blue-500/25 blur-[120px] will-change-transform" />
         <div className="absolute top-1/3 -right-20 h-[520px] w-[520px] rounded-full bg-pink-500/25 blur-[130px] will-change-transform" />
       </div>
 
-      {/* ========================================================================= */}
-      {/* --- Header Navigation & Preview Toggle --- */}
-      {/* ========================================================================= */}
+      {/* Header Navigation & Live Preview Toggle */}
       <div className="relative z-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1.5">
           <Link
@@ -109,11 +135,10 @@ const CreateJob = () => {
           </h1>
           
           <p className="text-xs sm:text-sm font-semibold text-slate-600">
-            Define requirements and target skills to configure the Gemini ATS semantic vector matcher.
+            Configure job specifications, CTC compensation, and ATS semantic matching parameters.
           </p>
         </div>
 
-        {/* Live Preview Toggle Button */}
         <button
           type="button"
           onClick={() => setShowPreview(!showPreview)}
@@ -132,9 +157,7 @@ const CreateJob = () => {
         </button>
       </div>
 
-      {/* ========================================================================= */}
-      {/* --- Live Candidate Preview Card --- */}
-      {/* ========================================================================= */}
+      {/* Live Preview Card */}
       {showPreview && (
         <div className="relative z-10 rounded-3xl border border-pink-200/90 bg-gradient-to-br from-pink-50/60 via-white to-blue-50/40 p-5 backdrop-blur-xl transition-all shadow-lg shadow-pink-500/5">
           <div className="mb-3 flex items-center justify-between">
@@ -150,11 +173,19 @@ const CreateJob = () => {
             job={{
               _id: 'preview-mode',
               title: formData.title || 'Senior Software Engineer (Preview)',
+              companyName: formData.companyName || 'Acme Technologies',
+              salary: formData.salary || '₹18 - ₹24 LPA',
+              isActivelyHiring: formData.isActivelyHiring,
               department: formData.department || 'Engineering',
               location: formData.location || 'Remote',
               jobType: formData.jobType,
+              experienceRequired: formData.experienceRequired,
               description: formData.description || 'Job description preview will populate here as you type...',
-              skillsRequired: formData.skillsRequired,
+              requirements: formData.requirements,
+              // Fallback to sample skills when empty so the badge row always shows
+              skillsRequired: formData.skillsRequired.length > 0 
+                ? formData.skillsRequired 
+                : DEFAULT_PREVIEW_SKILLS,
               createdAt: new Date().toISOString(),
               applicantCount: 0,
             }}
@@ -163,9 +194,7 @@ const CreateJob = () => {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* --- Error Alert Box --- */}
-      {/* ========================================================================= */}
+      {/* Error Alert Box */}
       {errorMsg && (
         <div className="relative z-10 flex items-center gap-2.5 rounded-2xl border border-rose-300 bg-rose-50 p-4 text-xs font-bold text-rose-800 shadow-sm backdrop-blur-md">
           <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 stroke-[2.5]" />
@@ -173,27 +202,24 @@ const CreateJob = () => {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* --- Main Creation Form Container --- */}
-      {/* ========================================================================= */}
+      {/* Form Container */}
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handlePreSubmit}
         className="relative z-10 overflow-hidden rounded-3xl border border-white/90 bg-white/90 p-6 sm:p-8 backdrop-blur-2xl shadow-[0_20px_60px_rgba(37,99,235,0.12),0_10px_30px_rgba(236,72,153,0.1)] space-y-8"
       >
-        {/* Top Multi-Color Accent Rim */}
         <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-600 via-pink-500 to-indigo-600 shadow-[0_0_12px_rgba(236,72,153,0.4)]" />
 
-        {/* Section 1: Role Overview */}
+        {/* Section 1: Role & Company Identity */}
         <div className="space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-2.5">
             <Briefcase className="h-4 w-4 text-pink-600 stroke-[2.5]" />
             <h2 className="font-mono text-xs font-extrabold uppercase tracking-wider text-slate-800">
-              1. Role Identity
+              1. Role & Organization Identity
             </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2 space-y-1.5">
+            <div className="space-y-1.5 sm:col-span-2">
               <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800">
                 Job Title <span className="text-pink-600">*</span>
               </label>
@@ -205,6 +231,36 @@ const CreateJob = () => {
                 onChange={handleChange}
                 placeholder="e.g. Senior Full-Stack Engineer"
                 className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition focus:border-pink-500 focus:ring-4 focus:ring-pink-500/15 shadow-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                <Building2 className="h-3.5 w-3.5 text-blue-600" />
+                Company Name
+              </label>
+              <input
+                type="text"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleChange}
+                placeholder="e.g. Acme Labs or Stripe"
+                className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 shadow-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                <DollarSign className="h-3.5 w-3.5 text-emerald-600" />
+                Compensation / CTC
+              </label>
+              <input
+                type="text"
+                name="salary"
+                value={formData.salary}
+                onChange={handleChange}
+                placeholder="e.g. ₹18 - ₹24 LPA or $120k - $140k"
+                className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 shadow-xs"
               />
             </div>
 
@@ -231,9 +287,30 @@ const CreateJob = () => {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="e.g. Remote / San Francisco, CA"
+                placeholder="e.g. Remote / Bangalore / San Francisco"
                 className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 shadow-xs"
               />
+            </div>
+
+            <div className="sm:col-span-2 pt-2">
+              <label className="relative flex cursor-pointer items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-3.5 transition hover:bg-emerald-50">
+                <input
+                  type="checkbox"
+                  name="isActivelyHiring"
+                  checked={formData.isActivelyHiring}
+                  onChange={handleChange}
+                  className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                />
+                <div className="flex flex-col">
+                  <span className="flex items-center gap-1.5 text-xs font-extrabold text-emerald-900">
+                    <Flame className="h-3.5 w-3.5 text-emerald-600 fill-emerald-500" />
+                    Tag as "Actively Hiring"
+                  </span>
+                  <span className="text-[11px] font-semibold text-emerald-700/80">
+                    Displays high-priority urgent recruitment badge on candidate job discovery feeds.
+                  </span>
+                </div>
+              </label>
             </div>
           </div>
         </div>
@@ -313,7 +390,6 @@ const CreateJob = () => {
               </button>
             </div>
 
-            {/* Suggested 1-Click Skills */}
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
               <span className="font-mono text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mr-1">
                 Suggested:
@@ -330,7 +406,6 @@ const CreateJob = () => {
               ))}
             </div>
 
-            {/* Active Selected Skills Badges */}
             {formData.skillsRequired.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2">
                 {formData.skillsRequired.map((skill) => (
@@ -343,7 +418,6 @@ const CreateJob = () => {
                       type="button"
                       onClick={() => handleRemoveSkill(skill)}
                       className="rounded p-0.5 text-blue-500 hover:bg-blue-200 hover:text-blue-900 cursor-pointer"
-                      aria-label={`Remove ${skill}`}
                     >
                       <X className="h-3.5 w-3.5 stroke-[2.5]" />
                     </button>
@@ -354,7 +428,7 @@ const CreateJob = () => {
           </div>
         </div>
 
-        {/* Section 4: Narrative Description */}
+        {/* Section 4: Narrative Details */}
         <div className="space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-2.5">
             <Clock className="h-4 w-4 text-pink-600 stroke-[2.5]" />
@@ -374,7 +448,7 @@ const CreateJob = () => {
                 rows={4}
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Outline the responsibilities, project scope, architecture stack, and expected engineering deliverables..."
+                placeholder="Outline the responsibilities, project scope, architecture stack, and expected deliverables..."
                 className="w-full rounded-2xl border border-slate-300 bg-white p-3.5 text-xs font-semibold text-slate-950 placeholder:text-slate-400 outline-none transition focus:border-pink-500 focus:ring-4 focus:ring-pink-500/15 shadow-xs resize-none"
               />
             </div>
@@ -395,7 +469,7 @@ const CreateJob = () => {
           </div>
         </div>
 
-        {/* Form Submission Action Bar */}
+        {/* Action Bar */}
         <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-5">
           <button
             type="button"
@@ -425,6 +499,19 @@ const CreateJob = () => {
           </button>
         </div>
       </form>
+
+      {/* Centered Publish Confirmation Modal */}
+      <ActionConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={handleConfirmedPublish}
+        title="Publish Position Opening?"
+        description={`Are you ready to publish "${formData.title || 'Untitled Opening'}"? This position will become immediately searchable by engineering talent.`}
+        confirmLabel="Yes, Publish Opening"
+        cancelLabel="Review Details"
+        type="primary"
+        isLoading={isCreating}
+      />
     </div>
   );
 };

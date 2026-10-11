@@ -1,8 +1,11 @@
+// frontend/src/pages/auth/Login.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthContext } from '../../context/AuthContext';
 import geminiLogo from '../../assets/gemini-svg.svg';
+import ForgotPasswordModal from '../../components/common/ForgotPasswordModal';
 import { 
   Mail, 
   Lock, 
@@ -11,11 +14,7 @@ import {
   ArrowRight, 
   AlertCircle, 
   Loader2, 
-  ShieldCheck, 
-  UserCheck,
-  CheckCircle2,
   Sparkles,
-  Zap,
   ArrowLeft
 } from 'lucide-react';
 
@@ -29,7 +28,7 @@ const Login = () => {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [activeDemoRole, setActiveDemoRole] = useState(null);
+  const [showForgotModal, setShowForgotModal] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -44,21 +43,6 @@ const Login = () => {
     }));
   };
 
-  const handleQuickFill = (role) => {
-    setActiveDemoRole(role);
-    if (role === 'recruiter') {
-      setFormData({
-        email: 'recruiter@rankresume.ai',
-        password: 'Password123!',
-      });
-    } else {
-      setFormData({
-        email: 'candidate@rankresume.ai',
-        password: 'Password123!',
-      });
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -69,133 +53,89 @@ const Login = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-[#f4f8ff] px-4 py-12 text-slate-900 selection:bg-pink-500 selection:text-white antialiased font-sans">
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-slate-50 px-4 py-12 text-slate-900 antialiased selection:bg-cyan-500/20 selection:text-slate-900 font-sans">
       
-      {/* ========================================================================= */}
-      {/* --- Ambient Aura Mesh (Hardware Accelerated, Smooth 60 FPS) --- */}
-      {/* ========================================================================= */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden transform-gpu">
-        {/* Electric Royal Blue - Upper Left */}
-        <div className="absolute -top-32 -left-24 h-[650px] w-[650px] rounded-full bg-gradient-to-br from-blue-500/40 via-cyan-400/30 to-indigo-500/20 blur-[130px] transform-gpu will-change-transform" />
-        
-        {/* Neon Fuchsia & Hot Pink - Upper Right */}
-        <div className="absolute -top-24 -right-24 h-[680px] w-[680px] rounded-full bg-gradient-to-bl from-pink-500/45 via-fuchsia-500/35 to-rose-400/25 blur-[140px] transform-gpu will-change-transform" />
-        
-        {/* Sky-Blue Glow - Bottom Left */}
-        <div className="absolute -bottom-36 -left-28 h-[600px] w-[600px] rounded-full bg-gradient-to-tr from-sky-400/35 via-blue-600/30 to-transparent blur-[140px] transform-gpu will-change-transform" />
-
-        {/* Hot Pink / Magenta - Bottom Right */}
-        <div className="absolute -bottom-32 -right-28 h-[650px] w-[650px] rounded-full bg-gradient-to-tl from-pink-600/40 via-rose-400/30 to-transparent blur-[140px] transform-gpu will-change-transform" />
-
-        {/* Dual-Tone Vector Dot Pattern */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.25)_1px,transparent_1px),radial-gradient(circle_at_center,rgba(236,72,153,0.2)_1px,transparent_1px)] [background-size:26px_26px] opacity-40 [mask-image:radial-gradient(ellipse_80%_70%_at_50%_50%,#000_70%,transparent_100%)]" />
+      {/* Universal Pearlescent Aurora Backdrop */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0]" />
+        <div className="absolute -top-40 left-[10%] h-[550px] w-[550px] rounded-full bg-cyan-400/20 blur-[130px]" />
+        <div className="absolute top-[20%] right-[-5%] h-[600px] w-[600px] rounded-full bg-indigo-500/15 blur-[150px]" />
+        <div className="absolute bottom-[10%] left-[20%] h-[650px] w-[650px] rounded-full bg-violet-400/15 blur-[160px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a08_1px,transparent_1px),linear-gradient(to_bottom,#0f172a08_1px,transparent_1px)] bg-[size:3.5rem_3.5rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,#000_70%,transparent_100%)]" />
       </div>
 
-      {/* Top Floating Return Action */}
+      {/* Return to Landing Page */}
       <Link 
         to="/" 
-        className="fixed top-6 left-6 z-20 hidden sm:flex items-center gap-2 rounded-full border border-slate-300/80 bg-white/95 px-4 py-2 text-xs font-bold text-slate-800 shadow-[0_4px_15px_rgba(37,99,235,0.12)] backdrop-blur-md transition-all hover:border-pink-400 hover:text-slate-950 hover:shadow-md hover:scale-[1.02]"
+        className="fixed top-6 left-6 z-20 hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200/90 bg-white/80 px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur-md transition-all hover:bg-white hover:text-slate-900 hover:shadow-md"
       >
-        <ArrowLeft className="h-4 w-4 text-blue-600 stroke-[2.5]" />
+        <ArrowLeft className="h-4 w-4 text-indigo-600 stroke-[2.2]" />
         <span>Back to Home</span>
       </Link>
 
-      {/* ========================================================================= */}
-      {/* --- Login Glass Container --- */}
-      {/* ========================================================================= */}
-      <div className="relative z-10 w-full max-w-[440px]">
-        <div className="relative rounded-3xl border border-white/95 bg-white/90 p-7 sm:p-9 shadow-[0_20px_60px_rgba(37,99,235,0.16),0_10px_30px_rgba(236,72,153,0.14)] backdrop-blur-2xl transition-all duration-300">
+      {/* Login Card Container */}
+      <motion.div 
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+        className="relative z-10 w-full max-w-[430px]"
+      >
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-7 sm:p-9 shadow-[0_20px_55px_rgba(15,23,42,0.08)] backdrop-blur-2xl">
           
-          {/* Top Multi-Color Neon Rim */}
-          <div className="absolute -top-px left-1/2 h-[3px] w-3/4 -translate-x-1/2 bg-gradient-to-r from-blue-600 via-pink-500 to-indigo-600 rounded-full shadow-[0_0_12px_rgba(236,72,153,0.6)]" />
+          {/* Top Rainbow Accent Strip */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500" />
 
-          {/* Header & Logo */}
+          {/* Header */}
           <div className="relative flex flex-col items-center text-center">
             <Link
               to="/"
               className="group flex items-center justify-center transition-transform duration-300 hover:scale-105"
               title="Return to Landing Page"
             >
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 p-2.5 shadow-lg shadow-blue-500/30 group-hover:shadow-pink-500/40 transition-all">
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-cyan-50 p-2.5 shadow-sm">
                 <img 
                   src={geminiLogo} 
                   alt="RankResume AI" 
-                  className="h-full w-full object-contain filter brightness-110" 
+                  className="h-full w-full object-contain" 
                 />
               </div>
             </Link>
 
-            <h1 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-slate-950">
+            <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
               Welcome back
             </h1>
-            <p className="mt-1.5 text-xs sm:text-sm text-slate-700 font-medium">
+            <p className="mt-1.5 text-xs sm:text-sm text-slate-500 font-medium">
               Access your{' '}
-              <span className="font-extrabold bg-gradient-to-r from-blue-700 via-indigo-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="font-bold bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
                 RankResume AI
               </span>{' '}
               workspace
             </p>
           </div>
 
-          {/* 1-Click Demo Accounts Box */}
-          <div className="relative mt-6 flex flex-col gap-2.5 rounded-2xl border border-blue-200/90 bg-gradient-to-b from-blue-50/70 via-white to-pink-50/60 p-3.5 shadow-sm">
-            <div className="flex items-center justify-between px-1">
-              <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-pink-600" /> Demo Accounts
-              </span>
-              <span className="flex items-center gap-1 font-mono text-[10px] font-extrabold text-pink-700 bg-pink-100 border border-pink-300 px-2 py-0.5 rounded-full shadow-xs">
-                <CheckCircle2 className="h-3 w-3 text-pink-600 stroke-[2.5]" /> 1-Click Auto Fill
-              </span>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickFill('recruiter')}
-                className={`flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all cursor-pointer ${
-                  activeDemoRole === 'recruiter'
-                    ? 'border-pink-500 bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md shadow-pink-500/30 scale-[1.02]'
-                    : 'border-slate-300 bg-white text-slate-800 hover:border-pink-400 hover:text-pink-700 hover:bg-pink-50/40 shadow-xs'
-                }`}
-              >
-                <ShieldCheck className={`h-4 w-4 ${activeDemoRole === 'recruiter' ? 'text-white' : 'text-pink-600'} stroke-[2.5]`} />
-                Recruiter
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickFill('candidate')}
-                className={`flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all cursor-pointer ${
-                  activeDemoRole === 'candidate'
-                    ? 'border-blue-500 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30 scale-[1.02]'
-                    : 'border-slate-300 bg-white text-slate-800 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50/40 shadow-xs'
-                }`}
-              >
-                <UserCheck className={`h-4 w-4 ${activeDemoRole === 'candidate' ? 'text-white' : 'text-blue-600'} stroke-[2.5]`} />
-                Candidate
-              </button>
-            </div>
-          </div>
-
           {/* Error Banner */}
           {loginError && (
-            <div className="relative mt-4 flex items-center gap-2.5 rounded-2xl border border-rose-300 bg-rose-50 p-3 text-xs font-bold text-rose-800 shadow-sm backdrop-blur-md">
-              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 stroke-[2.5]" />
+            <motion.div 
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="relative mt-5 flex items-center gap-2.5 rounded-2xl border border-rose-200 bg-rose-50 p-3 text-xs font-medium text-rose-800 shadow-sm"
+            >
+              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 stroke-[2.2]" />
               <span>{loginError}</span>
-            </div>
+            </motion.div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="relative mt-5 space-y-4">
+          <form onSubmit={handleSubmit} className="relative mt-6 space-y-4">
             
             {/* Email Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800">
+              <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700">
                 Email Address
               </label>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-blue-600">
-                  <Mail className="h-4 w-4 stroke-[2.2]" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                  <Mail className="h-4 w-4 stroke-[2]" />
                 </div>
                 <input
                   type="email"
@@ -204,7 +144,7 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="name@company.com"
-                  className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 pl-10 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-500/20 shadow-xs"
+                  className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 pl-10 text-xs font-semibold text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
                 />
               </div>
             </div>
@@ -212,20 +152,21 @@ const Login = () => {
             {/* Password Field */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800">
+                <label className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700">
                   Password
                 </label>
-                <Link
-                  to="/forgot-password"
-                  className="text-xs font-extrabold text-pink-600 transition hover:text-blue-700 hover:underline"
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(true)}
+                  className="text-xs font-semibold text-indigo-600 transition hover:text-indigo-800 cursor-pointer"
                 >
-                  Forgot?
-                </Link>
+                  Forgot password?
+                </button>
               </div>
               
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-pink-600">
-                  <Lock className="h-4 w-4 stroke-[2.2]" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                  <Lock className="h-4 w-4 stroke-[2]" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -234,24 +175,24 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••••••"
-                  className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 pl-10 pr-10 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition-all focus:border-pink-600 focus:bg-white focus:ring-4 focus:ring-pink-500/20 shadow-xs"
+                  className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 pl-10 pr-10 text-xs font-semibold text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 transition hover:text-slate-800 cursor-pointer"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 transition hover:text-slate-700 cursor-pointer"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4 stroke-[2.2]" /> : <Eye className="h-4 w-4 text-blue-600 stroke-[2.2]" />}
+                  {showPassword ? <EyeOff className="h-4 w-4 stroke-[2]" /> : <Eye className="h-4 w-4 stroke-[2]" />}
                 </button>
               </div>
             </div>
 
-            {/* Submit CTA */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoggingIn}
-              className="group relative mt-2 flex h-11 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-600 font-extrabold text-xs text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-pink-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="group relative mt-2 flex h-11 w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 font-bold text-xs text-white shadow-[0_4px_16px_rgba(99,102,241,0.25)] transition-all hover:shadow-[0_6px_22px_rgba(99,102,241,0.35)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               {isLoggingIn ? (
                 <>
@@ -260,21 +201,21 @@ const Login = () => {
                 </>
               ) : (
                 <>
-                  <Zap className="h-4 w-4 fill-white text-white" />
+                  <Sparkles className="h-4 w-4 text-cyan-200" />
                   <span>Sign In to Platform</span>
-                  <ArrowRight className="h-4 w-4 stroke-[2.5] transition-transform duration-200 group-hover:translate-x-1" />
+                  <ArrowRight className="h-4 w-4 stroke-[2.2] transition-transform duration-200 group-hover:translate-x-0.5" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Footer / Switch to Register */}
-          <div className="relative mt-6 border-t border-slate-200 pt-4 text-center">
-            <p className="text-xs font-semibold text-slate-700">
+          {/* Switch to Register */}
+          <div className="relative mt-6 border-t border-slate-100 pt-4 text-center">
+            <p className="text-xs font-medium text-slate-500">
               Don't have an account yet?{' '}
               <Link
                 to="/register"
-                className="font-extrabold text-blue-700 underline-offset-4 transition hover:text-pink-600 hover:underline ml-1"
+                className="font-bold text-indigo-600 underline-offset-4 transition hover:text-indigo-800 hover:underline ml-1"
               >
                 Sign up
               </Link>
@@ -282,7 +223,13 @@ const Login = () => {
           </div>
 
         </div>
-      </div>
+      </motion.div>
+
+      {/* Integrated Forgot Password Modal */}
+      <ForgotPasswordModal 
+        isOpen={showForgotModal} 
+        onClose={() => setShowForgotModal(false)} 
+      />
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
   Sparkles,
   ArrowRight,
   ChevronRight,
+  ChevronDown,
   Target,
   CheckCircle2,
   FileSearch,
@@ -23,7 +24,9 @@ import {
   Download,
   ExternalLink,
   X,
-  Bot
+  Bot,
+  HelpCircle,
+  ShieldCheck
 } from 'lucide-react';
 
 
@@ -143,8 +146,7 @@ const SmoothMulticolorTypewriter = memo(() => {
   );
 });
 
-SmoothMulticolorTypewriter.displayName =
-  'SmoothMulticolorTypewriter';
+SmoothMulticolorTypewriter.displayName = 'SmoothMulticolorTypewriter';
 
 
 // ============================================================================
@@ -239,7 +241,6 @@ const WelcomeModal = memo(({ isOpen, onClose }) => {
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-          {/* Backdrop with soft blur */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -250,7 +251,6 @@ const WelcomeModal = memo(({ isOpen, onClose }) => {
             aria-hidden="true"
           />
 
-          {/* Modal Container */}
           <motion.div
             role="dialog"
             aria-modal="true"
@@ -260,14 +260,10 @@ const WelcomeModal = memo(({ isOpen, onClose }) => {
             transition={{ type: 'spring', damping: 25, stiffness: 320 }}
             className="relative w-full max-w-lg overflow-hidden rounded-[32px] border border-cyan-300/30 bg-[#070d1e]/95 p-6 sm:p-8 text-center shadow-[0_25px_90px_rgba(0,0,0,0.8),0_0_60px_rgba(34,211,238,0.18)]"
           >
-            {/* Top gradient border highlight */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
-            
-            {/* Soft background ambient radial lights */}
             <div className="pointer-events-none absolute -right-20 -top-20 h-52 w-52 rounded-full bg-cyan-500/15 blur-3xl" />
             <div className="pointer-events-none absolute -left-20 -bottom-20 h-52 w-52 rounded-full bg-indigo-500/15 blur-3xl" />
 
-            {/* Close Button */}
             <button
               type="button"
               onClick={onClose}
@@ -277,7 +273,6 @@ const WelcomeModal = memo(({ isOpen, onClose }) => {
               <X className="h-4 w-4" />
             </button>
 
-            {/* Icon Banner */}
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/30 bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-400 p-3.5 shadow-[0_0_35px_rgba(34,211,238,0.35)]">
               <img
                 src={geminiLogo}
@@ -286,13 +281,11 @@ const WelcomeModal = memo(({ isOpen, onClose }) => {
               />
             </div>
 
-            {/* Live System Badge */}
             <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-wider text-cyan-300">
               <Sparkles className="h-3 w-3 animate-pulse text-cyan-300" />
               Greetings from RankResume
             </div>
 
-            {/* Headline */}
             <h3 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-white">
               Welcome to{' '}
               <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
@@ -300,12 +293,10 @@ const WelcomeModal = memo(({ isOpen, onClose }) => {
               </span>
             </h3>
 
-            {/* Description */}
             <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-300">
               Experience the next generation of autonomous ATS intelligence. Parse resumes with zero hallucinations, analyze multi-dimensional cosine vectors, and fast-track top tech talent effortlessly.
             </p>
 
-            {/* Key Value Points */}
             <div className="mt-5 grid grid-cols-2 gap-2.5 text-left">
               <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-300" />
@@ -317,7 +308,6 @@ const WelcomeModal = memo(({ isOpen, onClose }) => {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
               <button
                 type="button"
@@ -462,6 +452,166 @@ ATSLaunchPanel.displayName = 'ATSLaunchPanel';
 
 
 // ============================================================================
+// Animated FAQ Section Component
+// ============================================================================
+
+const FAQ_DATA = [
+  {
+    question: 'How does RankResume AI prevent ATS keyword hallucinations?',
+    answer:
+      'Unlike legacy keyword checkers that simply regex count matching terms, RankResume AI uses Gemini 2.5 multi-modal extraction alongside dense cosine embedding calculations. It verifies actual syntax, technical scope, production contributions, and system architecture context rather than blind keyword density.',
+    category: 'Architecture'
+  },
+  {
+    question: 'Can recruiters process bulk candidate resume batches at once?',
+    answer:
+      'Yes. Recruiters can upload batches of 500+ resumes simultaneously. Our asynchronous vector pipeline extracts competency vectors in parallel, dynamically ranks every applicant, and maps them instantly to the role’s real-time Kanban pipeline.',
+    category: 'Recruiting'
+  },
+  {
+    question: 'How does ResumeIQ ATS scoring compare to the live job ranking engine?',
+    answer:
+      'ResumeIQ is our standalone candidate diagnostic utility that scores your existing CV against global industry benchmarks and exports in-depth PDF audit reports. The core RankResume platform takes this further by actively matching your extracted semantic vector against live job postings in the database.',
+    category: 'Telemetry'
+  },
+  {
+    question: 'What file formats and layout structures are supported?',
+    answer:
+      'We support standard single-page and multi-column PDF resumes, docx files, and plain text. Our vision model directly parses visual bounding boxes, meaning columns, graphical skill tags, and header hierarchies won’t result in garbled text.',
+    category: 'Multi-Modal'
+  },
+  {
+    question: 'Is my candidate data and uploaded resume information secure?',
+    answer:
+      'All uploaded documents are processed over end-to-end encrypted TLS tunnels and stored in private ephemeral buckets. Candidate data is never used to train public foundational models, and records can be purged at any time.',
+    category: 'Security'
+  }
+];
+
+const FAQSection = memo(() => {
+  const [openIndex, setOpenIndex] = useState(0);
+
+  const toggleAccordion = (idx) => {
+    setOpenIndex(openIndex === idx ? null : idx);
+  };
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.7 }}
+      className="relative z-10 border-t border-white/10 bg-slate-950/45 py-24 px-4 sm:px-6 lg:px-8"
+    >
+      <div className="mx-auto max-w-4xl">
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-400/10 px-3.5 py-1 text-[10px] font-mono font-bold uppercase tracking-widest text-cyan-300">
+            <HelpCircle className="h-3.5 w-3.5 text-cyan-300" />
+            Frequently Asked Questions
+          </div>
+
+          <h2 className="mt-4 text-2xl sm:text-4xl font-black tracking-tight text-white">
+            Everything You Need to Know About{' '}
+            <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+              RankResume AI
+            </span>
+          </h2>
+
+          <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Got questions about multi-modal parsing, cosine similarity alignment, or batch processing? We've got answers.
+          </p>
+        </div>
+
+        <div className="mt-12 space-y-3.5">
+          {FAQ_DATA.map((item, idx) => {
+            const isOpen = openIndex === idx;
+
+            return (
+              <motion.div
+                key={idx}
+                initial={false}
+                className={`overflow-hidden rounded-2xl border transition-all duration-300 ${
+                  isOpen
+                    ? 'border-cyan-300/40 bg-gradient-to-b from-slate-900/90 to-blue-950/40 shadow-[0_10px_35px_rgba(34,211,238,0.12)]'
+                    : 'border-white/10 bg-slate-950/60 hover:border-white/20 hover:bg-slate-900/40'
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => toggleAccordion(idx)}
+                  className="flex w-full items-center justify-between p-5 text-left transition-colors cursor-pointer"
+                  aria-expanded={isOpen}
+                >
+                  <div className="flex items-center gap-3 pr-4">
+                    <span className="rounded-lg border border-cyan-300/20 bg-cyan-400/10 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-cyan-300 shrink-0">
+                      {item.category}
+                    </span>
+                    <span className="text-sm sm:text-base font-bold text-white leading-snug">
+                      {item.question}
+                    </span>
+                  </div>
+
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.25, ease: 'easeInOut' }}
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl border transition-colors ${
+                      isOpen
+                        ? 'border-cyan-300/30 bg-cyan-400/20 text-cyan-300'
+                        : 'border-white/10 bg-white/5 text-slate-400'
+                    }`}
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </motion.div>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <div className="border-t border-white/5 px-5 pt-3.5 pb-5 text-xs sm:text-sm font-medium leading-relaxed text-slate-300">
+                        {item.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Support Help Box */}
+        <div className="mt-10 rounded-2xl border border-white/10 bg-slate-950/40 p-4 text-center sm:flex sm:items-center sm:justify-between sm:text-left">
+          <div className="flex items-center gap-3 justify-center sm:justify-start">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-cyan-300/20 bg-cyan-400/10 text-cyan-300">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">Have custom enterprise questions?</p>
+              <p className="text-[10px] text-slate-400">Our engineering support team is available 24/7.</p>
+            </div>
+          </div>
+
+          <Link
+            to="/register"
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300 hover:text-cyan-200 sm:mt-0 transition-colors"
+          >
+            <span>Speak with an ATS specialist</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </div>
+    </motion.section>
+  );
+});
+
+FAQSection.displayName = 'FAQSection';
+
+
+// ============================================================================
 // Main Landing Page
 // ============================================================================
 
@@ -471,12 +621,10 @@ export const LandingPage = () => {
   const [showGreetingModal, setShowGreetingModal] = useState(false);
 
   useEffect(() => {
-    // ATS floating panel trigger
     const atsTimer = window.setTimeout(() => {
       setShowATSPanel(true);
     }, 500);
 
-    // 2-second delay for greeting popup on every refresh/mount
     const greetingTimer = window.setTimeout(() => {
       setShowGreetingModal(true);
     }, 2000);
@@ -2185,6 +2333,9 @@ export const LandingPage = () => {
           </div>
         </div>
       </motion.section>
+
+      {/* FAQS SECTION */}
+      <FAQSection />
 
       {/* FLOATING ATS PANEL */}
       <AnimatePresence>

@@ -1,386 +1,315 @@
-import React, { memo } from 'react';
+// frontend/src/components/jobs/JobCard.jsx
+import React, { memo, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import {
   Building2,
   MapPin,
   Clock,
-  ArrowRight,
+  ArrowUpRight,
   Users,
+  Coins,
+  Flame,
+  Pencil,
+  Trash2,
+  Briefcase,
+  Bookmark,
   Layers,
-  Zap,
-  Sparkles,
-  BriefcaseBusiness,
+  GraduationCap,
+  Eye,
 } from 'lucide-react';
 
-const TONE_STYLES = {
-  blue: {
-    icon: 'border-blue-200/80 bg-blue-50 text-blue-600',
-    glow: 'bg-blue-500/15',
-    badge: 'border-blue-200 bg-blue-50 text-blue-700',
-  },
-  pink: {
-    icon: 'border-pink-200/80 bg-pink-50 text-pink-600',
-    glow: 'bg-pink-500/15',
-    badge: 'border-pink-200 bg-pink-50 text-pink-700',
-  },
-  violet: {
-    icon: 'border-violet-200/80 bg-violet-50 text-violet-600',
-    glow: 'bg-violet-500/15',
-    badge: 'border-violet-200 bg-violet-50 text-violet-700',
-  },
-  cyan: {
-    icon: 'border-cyan-200/80 bg-cyan-50 text-cyan-600',
-    glow: 'bg-cyan-500/15',
-    badge: 'border-cyan-200 bg-cyan-50 text-cyan-700',
-  },
-};
-
-const SKILL_TONES = [
-  'border-blue-200 bg-blue-50/70 text-blue-700',
-  'border-violet-200 bg-violet-50/70 text-violet-700',
-  'border-pink-200 bg-pink-50/70 text-pink-700',
-  'border-cyan-200 bg-cyan-50/70 text-cyan-700',
-  'border-indigo-200 bg-indigo-50/70 text-indigo-700',
+const SKILL_THEMES = [
+  'bg-blue-50/80 text-blue-700 ring-blue-500/20',
+  'bg-indigo-50/80 text-indigo-700 ring-indigo-500/20',
+  'bg-violet-50/80 text-violet-700 ring-violet-500/20',
+  'bg-fuchsia-50/80 text-fuchsia-700 ring-fuchsia-500/20',
+  'bg-sky-50/80 text-sky-700 ring-sky-500/20',
 ];
 
+const getUserId = (userObj) => {
+  if (!userObj) return null;
+  if (typeof userObj === 'string') return userObj;
+  return userObj._id || userObj.id || userObj.userId || userObj.sub || null;
+};
+
 const JobCard = memo(
-  ({ job, onApply, isRecruiter = false, onViewApplicants }) => {
+  ({
+    job,
+    onApply,
+    isRecruiter = false,
+    onViewApplicants,
+    onEdit,
+    onDelete,
+    onBookmark,
+    isBookmarked = false,
+  }) => {
+    const navigate = useNavigate();
+    const authContext = useAuth ? useAuth() : null;
+
     const {
       _id,
-      title,
+      title = 'Untitled Position',
+      companyName = 'Confidential Company',
+      salary = 'Competitive CTC',
+      isActivelyHiring = true,
       department = 'Engineering',
       location = 'Remote',
       jobType = 'Full-time',
-      description,
+      experienceRequired = '2-4 years',
       skillsRequired = [],
       createdAt,
       applicantCount = 0,
+      status = 'open',
+      recruiterId,
     } = job || {};
+
+    // Determine current user ID
+    const currentUserId = useMemo(() => {
+      if (authContext?.user) {
+        const idFromContext = getUserId(authContext.user);
+        if (idFromContext) return String(idFromContext);
+      }
+      try {
+        const stored = localStorage.getItem('user') || localStorage.getItem('authUser');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          const resolved = parsed?.user || parsed?.data || parsed;
+          const idFromStorage = getUserId(resolved);
+          if (idFromStorage) return String(idFromStorage);
+        }
+      } catch (e) {}
+      return null;
+    }, [authContext]);
+
+    // Check ownership
+    const creatorId = getUserId(recruiterId);
+    const isOwner = Boolean(
+      currentUserId &&
+      creatorId &&
+      String(currentUserId).trim() === String(creatorId).trim()
+    );
 
     const formattedDate = createdAt
       ? new Date(createdAt).toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',
-          year: 'numeric',
         })
-      : 'Recent';
+      : 'Just now';
+
+    const isClosed = status === 'closed';
+
+    const handleNavigateDetails = () => {
+      if (_id && _id !== 'preview-mode') {
+        navigate(`/candidate/jobs/${_id}`);
+      }
+    };
 
     return (
-      <>
-        <style>{`
-          @keyframes jobCardSpectrum {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-          }
+      <article
+        onClick={handleNavigateDetails}
+        className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-5 sm:p-6 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 cursor-pointer ${
+          isClosed
+            ? 'border-slate-200/60 bg-slate-100/60 opacity-75'
+            : 'border-slate-200/80 bg-gradient-to-br from-white via-slate-50/60 to-indigo-50/30 hover:border-indigo-200/80 hover:via-white hover:to-blue-50/40'
+        }`}
+      >
+        {!isClosed && (
+          <div className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-blue-400/10 blur-2xl transition-all duration-500 group-hover:bg-indigo-400/20" />
+        )}
 
-          @keyframes jobCardGlow {
-            0%, 100% { opacity: .45; transform: scale(1); }
-            50% { opacity: .72; transform: scale(1.05); }
-          }
-
-          @keyframes jobCardShimmer {
-            0% { transform: translateX(-130%); }
-            100% { transform: translateX(160%); }
-          }
-
-          .job-card-spectrum {
-            background-size: 220% 100%;
-            animation: jobCardSpectrum 7s ease-in-out infinite;
-            will-change: background-position;
-          }
-
-          .job-card-glow {
-            animation: jobCardGlow 5s ease-in-out infinite;
-            will-change: transform, opacity;
-          }
-
-          .job-card-shimmer {
-            animation: jobCardShimmer 3.5s ease-in-out infinite;
-            will-change: transform;
-          }
-
-          @media (prefers-reduced-motion: reduce) {
-            .job-card-spectrum,
-            .job-card-glow,
-            .job-card-shimmer {
-              animation: none !important;
-            }
-          }
-        `}</style>
-
-        <article
-          className="
-            group relative isolate flex min-h-[250px] flex-col justify-between
-            overflow-hidden rounded-[1.75rem] border border-white/90
-            bg-white/80 p-5 font-sans text-slate-900 antialiased
-            shadow-[0_12px_35px_rgba(15,23,42,0.06)]
-            backdrop-blur-2xl
-            transition-[transform,box-shadow,border-color,background-color]
-            duration-300 ease-out
-            hover:-translate-y-1
-            hover:border-blue-200/90
-            hover:bg-white/95
-            hover:shadow-[0_24px_60px_rgba(37,99,235,0.12),0_10px_30px_rgba(236,72,153,0.07)]
-            transform-gpu
-            sm:p-6 lg:flex-row lg:items-center lg:gap-8
-          "
-        >
-          {/* Lightweight multicolor top spectrum */}
-          <div
-            className="
-              job-card-spectrum pointer-events-none absolute left-0 right-0 top-0
-              h-[3px] rounded-t-[1.75rem]
-              bg-gradient-to-r from-cyan-400 via-blue-600 via-violet-500 to-pink-500
-              opacity-70
-            "
-          />
-
-          {/* Ambient card glow */}
-          <div
-            className="
-              job-card-glow pointer-events-none absolute -right-20 -top-24
-              h-48 w-48 rounded-full bg-blue-500/10 blur-3xl
-              transform-gpu
-            "
-          />
-
-          <div
-            className="
-              pointer-events-none absolute -bottom-24 -left-16
-              h-40 w-40 rounded-full bg-pink-500/10 blur-3xl
-              opacity-0 transition-opacity duration-300
-              group-hover:opacity-100 transform-gpu
-            "
-          />
-
-          {/* Main details */}
-          <div className="relative z-10 min-w-0 flex-1 space-y-4">
-            {/* Title row */}
-            <div className="flex items-start gap-3">
-              <div
-                className="
-                  hidden h-11 w-11 shrink-0 items-center justify-center
-                  rounded-2xl border border-blue-200/80
-                  bg-gradient-to-br from-blue-50 via-white to-pink-50
-                  text-blue-600 shadow-sm sm:flex
-                  transition-transform duration-300
-                  group-hover:scale-105
-                "
-              >
-                <BriefcaseBusiness className="h-5 w-5 stroke-[2.1]" />
+        <div className="relative z-10">
+          {/* Header Row: Company Monogram, Title, & Bookmarking */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500/10 via-blue-500/10 to-violet-500/10 ring-1 ring-indigo-500/20 text-indigo-700 shadow-xs group-hover:scale-105 transition-transform">
+                <Building2 className="h-5 w-5 text-indigo-600 transition-colors" />
               </div>
 
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3
-                    className="
-                      min-w-0 text-base font-black tracking-tight text-slate-950
-                      transition-colors duration-200
-                      group-hover:text-blue-700
-                      sm:text-lg
-                    "
-                  >
-                    {title}
-                  </h3>
-
-                  <span
-                    className="
-                      inline-flex items-center rounded-lg border
-                      border-blue-200 bg-blue-50 px-2.5 py-1
-                      font-mono text-[9px] font-extrabold uppercase
-                      tracking-wider text-blue-700 shadow-sm
-                    "
-                  >
-                    {jobType}
-                  </span>
-
-                  <span
-                    className="
-                      inline-flex items-center gap-1.5 rounded-lg border
-                      border-slate-200 bg-slate-50 px-2.5 py-1
-                      font-mono text-[9px] font-bold text-slate-700 shadow-sm
-                    "
-                  >
-                    <Layers className="h-3 w-3 text-slate-500 stroke-[2.3]" />
-                    {department}
-                  </span>
-                </div>
-
-                {/* Metadata */}
-                <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold text-slate-600">
-                  <span className="inline-flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 text-blue-600 stroke-[2.2]" />
-                    {location}
-                  </span>
-
-                  <span className="hidden text-slate-300 sm:inline">•</span>
-
-                  <span className="inline-flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-slate-500 stroke-[2.2]" />
-                    Posted {formattedDate}
-                  </span>
-
-                  {isRecruiter && (
-                    <>
-                      <span className="hidden text-slate-300 sm:inline">•</span>
-
-                      <span
-                        className="
-                          inline-flex items-center gap-1.5 rounded-full
-                          border border-pink-200 bg-pink-50 px-2.5 py-1
-                          font-mono text-[9px] font-extrabold text-pink-700
-                          shadow-sm
-                        "
-                      >
-                        <Users className="h-3 w-3 text-pink-600 stroke-[2.2]" />
-                        {applicantCount}{' '}
-                        {applicantCount === 1 ? 'Applicant' : 'Applicants'}
-                      </span>
-                    </>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h4 className="truncate text-xs font-semibold tracking-wider text-slate-500 uppercase">
+                    {companyName}
+                  </h4>
+                  {isActivelyHiring && !isClosed && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/70 px-2 py-0.5 text-[11px] font-semibold text-emerald-800 ring-1 ring-emerald-600/20">
+                      <Flame className="h-3 w-3 fill-emerald-600 text-emerald-600" />
+                      Hiring
+                    </span>
                   )}
                 </div>
+                <h3 className="mt-0.5 truncate text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors sm:text-lg">
+                  {title}
+                </h3>
               </div>
             </div>
 
-            {/* Description */}
-            {description && (
-              <div className="relative max-w-3xl rounded-2xl border border-slate-100/90 bg-slate-50/60 px-4 py-3 transition-colors duration-200 group-hover:border-blue-100 group-hover:bg-blue-50/25">
-                <p className="line-clamp-2 text-xs font-semibold leading-5 text-slate-600 sm:text-[13px]">
-                  {description}
-                </p>
-              </div>
-            )}
-
-            {/* Skills */}
-            {skillsRequired.length > 0 && (
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="mr-1 inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-slate-400">
-                  <Sparkles className="h-3 w-3" />
-                  Skills
+            {/* Status chip or bookmark */}
+            <div className="flex items-center gap-2 shrink-0">
+              {isClosed ? (
+                <span className="rounded-full bg-slate-200/80 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600">
+                  Closed
                 </span>
+              ) : !isRecruiter && (
+                <button
+                  type="button"
+                  aria-label={isBookmarked ? 'Unsave job' : 'Save job'}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onBookmark && onBookmark(_id);
+                  }}
+                  className={`rounded-xl p-2 transition active:scale-90 cursor-pointer ${
+                    isBookmarked
+                      ? 'bg-blue-50 text-blue-600 ring-1 ring-blue-500/20'
+                      : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700'
+                  }`}
+                >
+                  <Bookmark
+                    className={`h-4 w-4 transition-colors ${
+                      isBookmarked ? 'fill-blue-600 text-blue-600' : ''
+                    }`}
+                  />
+                </button>
+              )}
+            </div>
+          </div>
 
-                {skillsRequired.slice(0, 5).map((skill, idx) => (
-                  <span
-                    key={`${skill}-${idx}`}
-                    className={`
-                      rounded-lg border px-2.5 py-1
-                      font-mono text-[9px] font-bold shadow-sm
-                      transition-transform duration-200
-                      hover:-translate-y-0.5
-                      ${SKILL_TONES[idx % SKILL_TONES.length]}
-                    `}
-                  >
-                    {skill}
-                  </span>
-                ))}
+          {/* Key Parameters */}
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-800 ring-1 ring-emerald-600/20">
+              <Coins className="h-3.5 w-3.5 text-emerald-600" />
+              {salary}
+            </span>
 
-                {skillsRequired.length > 5 && (
-                  <span
-                    className="
-                      rounded-lg border border-pink-200 bg-pink-50/70
-                      px-2.5 py-1 font-mono text-[9px] font-extrabold
-                      text-pink-600 shadow-sm
-                    "
-                  >
-                    +{skillsRequired.length - 5} more
-                  </span>
-                )}
-              </div>
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-sky-50 px-2.5 py-1 font-medium text-sky-800 ring-1 ring-sky-500/20">
+              <MapPin className="h-3.5 w-3.5 text-sky-600" />
+              {location}
+            </span>
+
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100/90 px-2.5 py-1 font-medium text-slate-700 ring-1 ring-slate-300/50">
+              <Briefcase className="h-3.5 w-3.5 text-slate-500" />
+              {jobType}
+            </span>
+
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-2.5 py-1 font-medium text-amber-800 ring-1 ring-amber-600/20">
+              <GraduationCap className="h-3.5 w-3.5 text-amber-600" />
+              {experienceRequired}
+            </span>
+
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-purple-50 px-2.5 py-1 font-medium text-purple-800 ring-1 ring-purple-600/20">
+              <Layers className="h-3.5 w-3.5 text-purple-600" />
+              {department}
+            </span>
+
+            {/* Show applicant counter only to the owning recruiter */}
+            {isRecruiter && isOwner && (
+              <span className="inline-flex items-center gap-1.5 rounded-lg bg-pink-50 px-2.5 py-1 font-semibold text-pink-800 ring-1 ring-pink-600/20">
+                <Users className="h-3.5 w-3.5 text-pink-600" />
+                {applicantCount} {applicantCount === 1 ? 'Applicant' : 'Applicants'}
+              </span>
             )}
           </div>
 
-          {/* CTA */}
-          <div
-            className="
-              relative z-10 flex shrink-0 items-center justify-end
-              border-t border-slate-100/90 pt-4
-              lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0
-            "
-          >
-            {isRecruiter ? (
-              <button
-                type="button"
-                onClick={() => onViewApplicants && onViewApplicants(_id)}
-                className="
-                  group/btn relative inline-flex h-11 w-full cursor-pointer
-                  items-center justify-center gap-2 overflow-hidden
-                  rounded-xl border border-pink-300/90
-                  bg-gradient-to-r from-pink-50 to-rose-50
-                  px-5 text-xs font-extrabold text-pink-700
-                  shadow-sm
-                  transition-[transform,box-shadow,border-color,background-color]
-                  duration-200
-                  hover:-translate-y-0.5
-                  hover:border-pink-400
-                  hover:shadow-[0_10px_25px_rgba(236,72,153,0.16)]
-                  active:translate-y-0 active:scale-[0.98]
-                  sm:w-auto
-                  transform-gpu
-                "
-              >
-                <span className="relative z-10">Review Candidates</span>
-                <ArrowRight
-                  className="
-                    relative z-10 h-3.5 w-3.5 stroke-[2.6]
-                    transition-transform duration-200
-                    group-hover/btn:translate-x-1
-                  "
-                />
-
+          {/* Skills Required Row */}
+          {skillsRequired.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-1.5">
+              {skillsRequired.slice(0, 4).map((skill, idx) => (
                 <span
-                  className="
-                    pointer-events-none absolute inset-y-0 left-0 w-1/3
-                    -translate-x-[130%] bg-gradient-to-r
-                    from-transparent via-white/70 to-transparent
-                    group-hover/btn:animate-[jobCardShimmer_1.5s_ease-out]
-                  "
-                />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => onApply && onApply(job)}
-                className="
-                  group/btn relative inline-flex h-11 w-full cursor-pointer
-                  items-center justify-center gap-2 overflow-hidden
-                  rounded-xl bg-gradient-to-r
-                  from-blue-600 via-violet-600 to-pink-600
-                  bg-[length:180%_100%]
-                  px-6 text-xs font-extrabold text-white
-                  shadow-[0_10px_25px_rgba(37,99,235,0.24)]
-                  transition-[transform,box-shadow,background-position]
-                  duration-300
-                  hover:-translate-y-0.5
-                  hover:bg-[position:100%_50%]
-                  hover:shadow-[0_14px_32px_rgba(236,72,153,0.25)]
-                  active:translate-y-0 active:scale-[0.98]
-                  sm:w-auto
-                  transform-gpu
-                "
-              >
-                <Zap className="relative z-10 h-3.5 w-3.5 fill-white text-white" />
-                <span className="relative z-10">Apply Now</span>
-                <ArrowRight
-                  className="
-                    relative z-10 h-3.5 w-3.5 stroke-[2.6]
-                    transition-transform duration-200
-                    group-hover/btn:translate-x-1
-                  "
-                />
+                  key={`${skill}-${idx}`}
+                  className={`rounded-md px-2 py-0.5 text-[11px] font-medium ring-1 backdrop-blur-xs ${
+                    SKILL_THEMES[idx % SKILL_THEMES.length]
+                  }`}
+                >
+                  {skill}
+                </span>
+              ))}
+              {skillsRequired.length > 4 && (
+                <span className="rounded-md bg-slate-100/60 px-1.5 py-0.5 text-[11px] font-medium text-slate-500">
+                  +{skillsRequired.length - 4} more
+                </span>
+              )}
+            </div>
+          )}
+        </div>
 
-                {/* Button shine */}
-                <span
-                  className="
-                    pointer-events-none absolute inset-y-0 left-0 w-1/3
-                    -translate-x-[130%] bg-gradient-to-r
-                    from-transparent via-white/35 to-transparent
-                    group-hover/btn:animate-[jobCardShimmer_1.5s_ease-out]
-                  "
-                />
-              </button>
-            )}
+        {/* Footer Area with Authorization Guards */}
+        <div className="relative z-10 mt-5 flex items-center justify-between border-t border-slate-200/60 pt-3.5">
+          <div className="flex items-center gap-1 text-[11px] font-medium text-slate-400">
+            <Clock className="h-3 w-3" />
+            <span>Posted {formattedDate}</span>
           </div>
-        </article>
-      </>
+
+          {/* Recruiter Actions: ONLY IF OWNER */}
+          {isRecruiter && isOwner ? (
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit && onEdit(job);
+                }}
+                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition active:scale-95 cursor-pointer"
+                title="Edit Position"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete && onDelete(_id);
+                }}
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition active:scale-95 cursor-pointer"
+                title="Delete Position"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewApplicants && onViewApplicants(_id);
+                }}
+                className="inline-flex items-center gap-1 rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-indigo-600 active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Applicants</span>
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : isRecruiter && !isOwner ? (
+            /* Recruiter viewing ANOTHER recruiter's job -> No edit/delete, only inspect details */
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNavigateDetails();
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 transition active:scale-95 cursor-pointer"
+            >
+              <Eye className="h-3.5 w-3.5 text-slate-500" />
+              <span>View Opening</span>
+            </button>
+          ) : (
+            /* Candidate Apply Button */
+            <button
+              type="button"
+              disabled={isClosed}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!isClosed) onApply && onApply(job);
+              }}
+              className={`inline-flex items-center gap-1 rounded-xl px-4 py-1.5 text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer ${
+                isClosed
+                  ? 'cursor-not-allowed bg-slate-200 text-slate-400 shadow-none'
+                  : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 text-white shadow-indigo-500/20 hover:brightness-105 hover:shadow-md'
+              }`}
+            >
+              <span>{isClosed ? 'Closed' : 'Apply Now'}</span>
+              {!isClosed && <ArrowUpRight className="h-3.5 w-3.5" />}
+            </button>
+          )}
+        </div>
+      </article>
     );
   }
 );

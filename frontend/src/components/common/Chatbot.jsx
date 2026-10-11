@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import chatbotImage from '../../assets/robot.png';
+import chatbotImage from '../../assets/robot.jpg';
 
 import {
   X,
@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 /* =========================================================
-   AI LOGO
+   AI LOGO (ELECTRIC BLUE BONFIRE)
 ========================================================= */
 
 const AiMachineLogo = ({ className }) => (
@@ -26,7 +26,7 @@ const AiMachineLogo = ({ className }) => (
     <img
       src={chatbotImage}
       alt="RANKRESUME AI"
-      className="ai-logo-image rounded-full object-cover border border-amber-300/45"
+      className="ai-logo-image rounded-full object-cover border border-cyan-300/50"
     />
   </span>
 );
@@ -83,7 +83,7 @@ const FormattedMessage = ({ content }) => {
             className={`flex items-start ${isBullet ? 'gap-2 pl-0.5' : ''}`}
           >
             {isBullet && (
-              <span className="mt-1 flex-shrink-0 flex items-center justify-center w-4 h-4 rounded-md bg-pink-500/15 border border-pink-400/40 text-pink-300 shadow-[0_0_10px_rgba(236,72,153,0.4)]">
+              <span className="mt-1 flex-shrink-0 flex items-center justify-center w-4 h-4 rounded-md bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.4)]">
                 <ChevronRight className="w-2.5 h-2.5 stroke-[2.5]" />
               </span>
             )}
@@ -95,7 +95,7 @@ const FormattedMessage = ({ content }) => {
                   return (
                     <strong
                       key={partIdx}
-                      className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-fuchsia-300 to-blue-300"
+                      className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-indigo-300"
                     >
                       {keyword}
                     </strong>
@@ -139,7 +139,7 @@ const getChipVisuals = (text) => {
     lower.includes('report')
   ) {
     return {
-      icon: <FileSearch className="w-3.5 h-3.5 text-pink-400 flex-shrink-0" />,
+      icon: <FileSearch className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />,
       emoji: '📄',
     };
   }
@@ -402,7 +402,7 @@ export default function ChatbotWidget() {
   }, [stopListeningSession]);
 
   /* =========================================================
-     SPEECH RECOGNITION (ACCENT & PHONETICS OPTIMIZED)
+     SPEECH RECOGNITION
   ========================================================= */
 
   const startListeningSession = useCallback(() => {
@@ -417,7 +417,7 @@ export default function ChatbotWidget() {
     stopListeningSession();
 
     const recognition = new SpeechRecognition();
-    recognition.lang = 'en-IN'; // Optimized for Indian English
+    recognition.lang = 'en-IN';
     recognition.continuous = false;
     recognition.interimResults = true;
 
@@ -588,6 +588,9 @@ export default function ChatbotWidget() {
   return (
     <div className="font-sans select-none">
       <style>{`
+        /* ============================================
+           ELECTRIC BLUE BONFIRE STYLES
+        ============================================ */
         .ai-logo-bonfire {
           position: relative;
           display: inline-flex;
@@ -606,15 +609,15 @@ export default function ChatbotWidget() {
           border-radius: 999px;
           background: radial-gradient(
             circle,
-            rgba(255,237,120,0.72) 0%,
-            rgba(250,204,21,0.48) 28%,
-            rgba(245,158,11,0.30) 48%,
-            rgba(236,72,153,0.16) 66%,
+            rgba(56, 189, 248, 0.85) 0%,
+            rgba(14, 165, 233, 0.60) 28%,
+            rgba(37, 99, 235, 0.38) 48%,
+            rgba(99, 102, 241, 0.16) 66%,
             transparent 78%
           );
-          filter: blur(6px);
-          opacity: 0.72;
-          transform: translate3d(0,2px,0) scale(0.92);
+          filter: blur(7px);
+          opacity: 0.85;
+          transform: translate3d(0, 2px, 0) scale(0.92);
           animation: aiLogoBonfire 2.6s ease-in-out infinite;
           pointer-events: none;
         }
@@ -625,8 +628,8 @@ export default function ChatbotWidget() {
           inset: -3px;
           z-index: -1;
           border-radius: 999px;
-          box-shadow: 0 0 10px rgba(255,214,64,0.42);
-          opacity: 0.55;
+          box-shadow: 0 0 12px rgba(56, 189, 248, 0.55);
+          opacity: 0.65;
           animation: aiLogoRing 2.6s ease-in-out infinite;
           pointer-events: none;
         }
@@ -635,19 +638,19 @@ export default function ChatbotWidget() {
           position: relative;
           z-index: 1;
           box-shadow:
-            0 0 8px rgba(255,225,90,0.38),
-            0 0 18px rgba(250,204,21,0.24),
-            0 0 30px rgba(236,72,153,0.14);
+            0 0 10px rgba(56, 189, 248, 0.5),
+            0 0 20px rgba(14, 165, 233, 0.35),
+            0 0 32px rgba(37, 99, 235, 0.22);
         }
 
         @keyframes aiLogoBonfire {
-          0%, 100% { opacity: 0.58; transform: translate3d(0,2px,0) scale(0.92); }
-          50% { opacity: 1; transform: translate3d(0,-1px,0) scale(1.06); }
+          0%, 100% { opacity: 0.65; transform: translate3d(0, 2px, 0) scale(0.92); }
+          50% { opacity: 1; transform: translate3d(0, -1px, 0) scale(1.08); }
         }
 
         @keyframes aiLogoRing {
-          0%, 100% { opacity: 0.42; transform: scale(0.98); }
-          50% { opacity: 0.82; transform: scale(1.035); }
+          0%, 100% { opacity: 0.45; transform: scale(0.98); }
+          50% { opacity: 0.85; transform: scale(1.04); }
         }
 
         .bonfire-shell {
@@ -665,13 +668,13 @@ export default function ChatbotWidget() {
           border-radius: inherit;
           background: radial-gradient(
             circle at 50% 100%,
-            rgba(250,204,21,0.58) 0%,
-            rgba(245,158,11,0.30) 28%,
-            rgba(236,72,153,0.16) 48%,
+            rgba(56, 189, 248, 0.55) 0%,
+            rgba(37, 99, 235, 0.32) 28%,
+            rgba(99, 102, 241, 0.16) 48%,
             transparent 72%
           );
-          filter: blur(10px);
-          opacity: 0.72;
+          filter: blur(12px);
+          opacity: 0.75;
           transform: translateZ(0) scale(0.96);
           animation: bonfirePulse 3.4s ease-in-out infinite;
           pointer-events: none;
@@ -683,20 +686,20 @@ export default function ChatbotWidget() {
           inset: -2px;
           z-index: -1;
           border-radius: inherit;
-          border: 1px solid rgba(250,204,21,0.34);
-          opacity: 0.65;
+          border: 1px solid rgba(56, 189, 248, 0.38);
+          opacity: 0.7;
           animation: bonfireRing 3.4s ease-in-out infinite;
           pointer-events: none;
         }
 
         @keyframes bonfirePulse {
-          0%, 100% { opacity: 0.52; transform: translate3d(0,1px,0) scale(0.96); }
-          50% { opacity: 0.90; transform: translate3d(0,-1px,0) scale(1.02); }
+          0%, 100% { opacity: 0.55; transform: translate3d(0, 1px, 0) scale(0.96); }
+          50% { opacity: 0.95; transform: translate3d(0, -1px, 0) scale(1.02); }
         }
 
         @keyframes bonfireRing {
-          0%, 100% { opacity: 0.38; transform: scale(0.99); }
-          50% { opacity: 0.78; transform: scale(1.012); }
+          0%, 100% { opacity: 0.4; transform: scale(0.99); }
+          50% { opacity: 0.85; transform: scale(1.015); }
         }
 
         @keyframes smoothWatermarkLoop {
@@ -743,7 +746,7 @@ export default function ChatbotWidget() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.985 }}
                       transition={{ duration: 0.18 }}
-                      className="mb-3 w-[calc(100vw-2.5rem)] sm:w-80 max-w-[320px] p-3 sm:p-3.5 bg-[#0b1020]/90 sm:bg-[#0b1020]/55 border border-pink-400/35 rounded-2xl backdrop-blur-md relative cursor-pointer group shadow-[0_0_24px_rgba(236,72,153,0.18),0_0_45px_rgba(99,102,241,0.10)]"
+                      className="mb-3 w-[calc(100vw-2.5rem)] sm:w-80 max-w-[320px] p-3 sm:p-3.5 bg-[#070d1e]/90 sm:bg-[#070d1e]/65 border border-cyan-400/35 rounded-2xl backdrop-blur-md relative cursor-pointer group shadow-[0_0_24px_rgba(14,165,233,0.25),0_0_45px_rgba(37,99,235,0.15)]"
                       onClick={handleOpenChat}
                     >
                       <button
@@ -751,7 +754,7 @@ export default function ChatbotWidget() {
                           e.stopPropagation();
                           setShowPopup(false);
                         }}
-                        className="absolute top-2 right-2 text-rose-400/80 hover:text-rose-200 p-1 rounded-md"
+                        className="absolute top-2 right-2 text-cyan-400/80 hover:text-cyan-200 p-1 rounded-md"
                         aria-label="Dismiss message"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -761,14 +764,14 @@ export default function ChatbotWidget() {
                         <AiMachineLogo className="w-7 h-7" />
                         <div className="flex-1 pr-3">
                           <div className="flex items-center gap-1.5 mb-1">
-                            <span className="font-semibold text-xs text-pink-100 font-mono">
+                            <span className="font-semibold text-xs text-cyan-100 font-mono">
                               RANKRESUME AI
                             </span>
-                            <Sparkles className="w-3 h-3 text-pink-400 animate-pulse" />
+                            <Sparkles className="w-3 h-3 text-cyan-400 animate-pulse" />
                           </div>
                           <p className="text-[12px] text-slate-100 leading-snug">
                             Ask about RankResume AI or ResumeIQ.{' '}
-                            <span className="text-pink-400 font-medium group-hover:underline">
+                            <span className="text-cyan-400 font-medium group-hover:underline">
                               Ask me here →
                             </span>
                           </p>
@@ -781,10 +784,10 @@ export default function ChatbotWidget() {
                 {/* Main Floating Trigger Button */}
                 <button
                   onClick={handleOpenChat}
-                  className="relative bg-slate-950/80 border border-sky-400/60 text-pink-400 w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center backdrop-blur-md group cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(236,72,153,0.3)]"
+                  className="relative bg-slate-950/85 border border-cyan-400/70 text-cyan-400 w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center backdrop-blur-md group cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-[0_0_24px_rgba(14,165,233,0.45)]"
                   aria-label="Open RANKRESUME AI"
                 >
-                  <span className="absolute inset-0 rounded-full border border-amber-300/45 animate-ping pointer-events-none opacity-20" />
+                  <span className="absolute inset-0 rounded-full border border-cyan-300/50 animate-ping pointer-events-none opacity-25" />
                   <AiMachineLogo className="w-9 h-9 sm:w-10 sm:h-10 relative z-10" />
                 </button>
               </motion.div>
@@ -804,11 +807,11 @@ export default function ChatbotWidget() {
             style={{ height: viewportHeight }}
             className="fixed inset-x-0 top-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-[385px] sm:max-w-[420px] flex flex-col pointer-events-auto z-[9999]"
           >
-            <div className="bonfire-shell w-full h-full bg-[#070b16]/96 sm:bg-[#070b16]/48 border-0 sm:border border-sky-400/30 text-slate-100 rounded-none sm:rounded-3xl flex flex-col overflow-hidden backdrop-blur-2xl relative overscroll-contain">
+            <div className="bonfire-shell w-full h-full bg-[#070b16]/96 sm:bg-[#070b16]/48 border-0 sm:border border-cyan-400/35 text-slate-100 rounded-none sm:rounded-3xl flex flex-col overflow-hidden backdrop-blur-2xl relative overscroll-contain">
               
               {/* Background Watermark */}
               <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-0 flex items-center justify-center">
-                <div className="animate-watermark-smooth flex flex-col gap-6 whitespace-nowrap opacity-15 text-pink-300">
+                <div className="animate-watermark-smooth flex flex-col gap-6 whitespace-nowrap opacity-15 text-cyan-400">
                   {Array.from({ length: 14 }).map((_, rowIndex) => (
                     <div
                       key={rowIndex}
@@ -817,9 +820,9 @@ export default function ChatbotWidget() {
                       }`}
                     >
                       <span>RANKRESUME AI</span>
-                      <span className="text-red-500 font-normal drop-shadow-[0_0_6px_rgba(239,68,68,0.8)] text-sm">❤️</span>
+                      <span className="text-cyan-400 font-normal drop-shadow-[0_0_6px_rgba(6,182,212,0.8)] text-sm">✨</span>
                       <span>RANKRESUME AI</span>
-                      <span className="text-red-500 font-normal drop-shadow-[0_0_6px_rgba(239,68,68,0.8)] text-sm">❤️</span>
+                      <span className="text-cyan-400 font-normal drop-shadow-[0_0_6px_rgba(6,182,212,0.8)] text-sm">✨</span>
                       <span>RANKRESUME AI</span>
                     </div>
                   ))}
@@ -827,26 +830,26 @@ export default function ChatbotWidget() {
               </div>
 
               {/* Header with ChatGPT Voice Mode Button */}
-              <div className="relative z-20 bg-slate-900/90 sm:bg-slate-900/30 px-4 py-3 flex items-center justify-between border-b border-pink-500/20 backdrop-blur-md flex-shrink-0">
+              <div className="relative z-20 bg-slate-900/90 sm:bg-slate-900/40 px-4 py-3 flex items-center justify-between border-b border-cyan-500/20 backdrop-blur-md flex-shrink-0">
                 <div className="flex items-center space-x-3">
-                  <div className="p-0.5 rounded-full bg-[#160d2b]/70 border border-pink-500/35">
+                  <div className="p-0.5 rounded-full bg-[#071329]/70 border border-cyan-500/35">
                     <AiMachineLogo className="w-7 h-7" />
                   </div>
 
                   <div className="flex flex-col">
                     <span className="font-bold text-sm tracking-wide text-slate-100 flex items-center gap-1.5">
                       RANKRESUME AI
-                      <span className="text-[10px] px-1.5 rounded-full bg-pink-500/15 text-pink-300 border border-pink-400/35 font-mono">
+                      <span className="text-[10px] px-1.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/35 font-mono">
                         CORE
                       </span>
                     </span>
 
                     <div className="flex items-center space-x-1.5">
                       <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-400 shadow-[0_0_8px_#ec4899]" />
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400 shadow-[0_0_8px_#38bdf8]" />
                       </span>
-                      <span className="text-[11px] text-pink-200/80 font-mono">
+                      <span className="text-[11px] text-cyan-200/80 font-mono">
                         {isLiveCall ? 'VOICE CONNECTED' : 'NEURAL ACTIVE'}
                       </span>
                     </div>
@@ -862,7 +865,7 @@ export default function ChatbotWidget() {
                     className={`group relative p-1.5 px-2.5 rounded-full flex items-center gap-1.5 transition-all duration-300 active:scale-95 cursor-pointer ${
                       isLiveCall
                         ? 'bg-rose-500/20 border border-rose-400/60 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.4)]'
-                        : 'bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white shadow-[0_0_12px_rgba(244,63,94,0.35)]'
+                        : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-[0_0_12px_rgba(6,182,212,0.35)]'
                     }`}
                   >
                     <VoicePillIcon isActive={isLiveCall} />
@@ -877,7 +880,7 @@ export default function ChatbotWidget() {
                       if (isLiveCall) handleEndLiveCall();
                       setIsOpen(false);
                     }}
-                    className="p-1.5 rounded-xl bg-gradient-to-tr from-pink-500/20 via-fuchsia-500/20 to-blue-500/20 border border-pink-400/35 text-pink-300 hover:text-white transition-all cursor-pointer"
+                    className="p-1.5 rounded-xl bg-cyan-500/15 border border-cyan-400/35 text-cyan-300 hover:text-white transition-all cursor-pointer"
                     aria-label="Close chat"
                   >
                     <X className="w-5 h-5" />
@@ -895,20 +898,20 @@ export default function ChatbotWidget() {
                     }`}
                   >
                     {msg.role !== 'user' ? (
-                      <div className="p-0.5 rounded-full bg-[#160d2b]/70 border border-sky-500/30 mt-0.5 flex-shrink-0">
+                      <div className="p-0.5 rounded-full bg-[#071329]/70 border border-cyan-500/30 mt-0.5 flex-shrink-0">
                         <AiMachineLogo className="w-5 h-5" />
                       </div>
                     ) : (
-                      <div className="p-1.5 rounded-lg bg-pink-600/20 border border-pink-400/35 mt-0.5 flex-shrink-0">
-                        <User className="w-3.5 h-3.5 text-pink-300" />
+                      <div className="p-1.5 rounded-lg bg-blue-600/20 border border-cyan-400/35 mt-0.5 flex-shrink-0">
+                        <User className="w-3.5 h-3.5 text-cyan-300" />
                       </div>
                     )}
 
                     <div
                       className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-[13.5px] backdrop-blur-sm ${
                         msg.role === 'user'
-                          ? 'bg-gradient-to-br from-pink-600/80 via-fuchsia-600/70 to-blue-600/70 text-white rounded-tr-none border border-pink-400/35 shadow-[0_0_12px_rgba(99,102,241,0.25)]'
-                          : 'bg-white/[0.07] text-slate-100 rounded-tl-none border border-white/10 shadow-[0_0_16px_rgba(99,102,241,0.08)]'
+                          ? 'bg-gradient-to-br from-blue-600/80 via-indigo-600/70 to-cyan-600/70 text-white rounded-tr-none border border-cyan-400/35 shadow-[0_0_12px_rgba(14,165,233,0.25)]'
+                          : 'bg-white/[0.07] text-slate-100 rounded-tl-none border border-white/10 shadow-[0_0_16px_rgba(14,165,233,0.08)]'
                       }`}
                     >
                       <FormattedMessage content={msg.content} />
@@ -917,8 +920,8 @@ export default function ChatbotWidget() {
                 ))}
 
                 {loading && (
-                  <div className="flex items-center space-x-2 text-pink-200/80 text-xs italic ml-1 font-mono">
-                    <span className="w-2 h-2 rounded-full bg-pink-400 animate-ping" />
+                  <div className="flex items-center space-x-2 text-cyan-200/80 text-xs italic ml-1 font-mono">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
                     <span>Computing neural weights...</span>
                   </div>
                 )}
@@ -926,9 +929,9 @@ export default function ChatbotWidget() {
               </div>
 
               {/* Suggestions Strip */}
-              <div className="relative z-10 bg-[#0b1020]/90 border-t border-pink-500/15 px-3 py-2 flex items-center gap-2 overflow-x-auto hide-scrollbar flex-shrink-0">
-                <div className="flex items-center gap-1 text-[11px] text-pink-300/70 font-mono pl-1 flex-shrink-0">
-                  <Sparkles className="w-3 h-3 text-pink-400 animate-pulse" />
+              <div className="relative z-10 bg-[#070d1e]/90 border-t border-cyan-500/15 px-3 py-2 flex items-center gap-2 overflow-x-auto hide-scrollbar flex-shrink-0">
+                <div className="flex items-center gap-1 text-[11px] text-cyan-300/70 font-mono pl-1 flex-shrink-0">
+                  <Sparkles className="w-3 h-3 text-cyan-400 animate-pulse" />
                   <span>Suggestions:</span>
                 </div>
                 {currentSuggestions.map((suggestion, idx) => {
@@ -939,12 +942,12 @@ export default function ChatbotWidget() {
                       type="button"
                       onClick={() => handleSendMessage(suggestion, false)}
                       disabled={loading || isLiveCall}
-                      className="group flex items-center gap-1.5 text-[12px] font-medium whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#160d2b]/70 hover:bg-fuchsia-900/45 border border-pink-400/25 hover:border-pink-400/55 text-slate-100 hover:text-white transition-all disabled:opacity-40 flex-shrink-0 cursor-pointer"
+                      className="group flex items-center gap-1.5 text-[12px] font-medium whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#09152e]/70 hover:bg-cyan-900/40 border border-cyan-400/25 hover:border-cyan-400/55 text-slate-100 hover:text-white transition-all disabled:opacity-40 flex-shrink-0 cursor-pointer"
                     >
                       <span>{emoji}</span>
                       <span>{suggestion.replace(/^[^\w\s]+/, '').trim()}</span>
                       {icon}
-                      <ChevronRight className="w-3 h-3 text-pink-400/50" />
+                      <ChevronRight className="w-3 h-3 text-cyan-400/50" />
                     </button>
                   );
                 })}
@@ -954,13 +957,13 @@ export default function ChatbotWidget() {
               <form
                 onSubmit={handleSubmit}
                 autoComplete="off"
-                className="relative z-20 p-2.5 sm:p-3 bg-[#070b16]/96 border-t border-pink-500/20 flex items-center space-x-2 flex-shrink-0"
+                className="relative z-20 p-2.5 sm:p-3 bg-[#070b16]/96 border-t border-cyan-500/20 flex items-center space-x-2 flex-shrink-0"
               >
                 <div className="relative flex-1 group">
-                  <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-pink-500 via-fuchsia-500 to-blue-500 opacity-25 group-focus-within:opacity-100 transition-all blur-[2px]" />
+                  <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 opacity-25 group-focus-within:opacity-100 transition-all blur-[2px]" />
 
-                  <div className="relative flex items-center bg-[#080b17]/92 rounded-xl border border-pink-400/25 group-focus-within:border-pink-300 transition-all duration-300">
-                    <Sparkles className="ml-3 w-4 h-4 text-pink-300/70 flex-shrink-0" />
+                  <div className="relative flex items-center bg-[#070e22]/92 rounded-xl border border-cyan-400/25 group-focus-within:border-cyan-300 transition-all duration-300">
+                    <Sparkles className="ml-3 w-4 h-4 text-cyan-300/70 flex-shrink-0" />
 
                     <input
                       type="text"
@@ -982,18 +985,18 @@ export default function ChatbotWidget() {
                       className={`mr-1.5 p-1.5 rounded-lg border transition-all ${
                         isListening
                           ? 'bg-rose-500/20 border-rose-400 text-rose-300 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.5)]'
-                          : 'bg-[#160d2b]/70 border-pink-400/30 text-pink-300 hover:text-white hover:border-pink-300'
+                          : 'bg-[#09152e]/70 border-cyan-400/30 text-cyan-300 hover:text-white hover:border-cyan-300'
                       }`}
                       title={isListening ? 'Stop listening' : 'Dictate with Voice'}
                     >
                       {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                     </button>
 
-                    {/* Pink ChatGPT Voice Mode Pill Launcher */}
+                    {/* Cyan/Blue ChatGPT Voice Mode Pill Launcher */}
                     <button
                       type="button"
                       onClick={handleStartLiveCall}
-                      className="mr-2 w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.4)] transition-transform hover:scale-105 active:scale-95 cursor-pointer flex-shrink-0"
+                      className="mr-2 w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 flex items-center justify-center shadow-[0_0_10px_rgba(6,182,212,0.4)] transition-transform hover:scale-105 active:scale-95 cursor-pointer flex-shrink-0"
                       title="Start Real-Time Voice Mode"
                     >
                       <VoicePillIcon isActive={false} />
@@ -1007,8 +1010,8 @@ export default function ChatbotWidget() {
                   className="relative group w-11 h-11 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-300 active:scale-90 disabled:opacity-30 disabled:pointer-events-none flex-shrink-0 overflow-hidden cursor-pointer"
                   aria-label="Transmit message"
                 >
-                  <span className="absolute inset-0 bg-gradient-to-r from-pink-400 via-fuchsia-500 to-blue-500 rounded-xl blur-[3px] opacity-80" />
-                  <span className="relative z-10 w-full h-full flex items-center justify-center bg-gradient-to-tr from-pink-400 via-fuchsia-400 to-blue-500 text-slate-950 rounded-lg">
+                  <span className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-500 rounded-xl blur-[3px] opacity-80" />
+                  <span className="relative z-10 w-full h-full flex items-center justify-center bg-gradient-to-tr from-cyan-400 via-sky-400 to-blue-500 text-slate-950 rounded-lg">
                     <Send className="w-4 h-4" />
                   </span>
                 </button>
@@ -1026,13 +1029,13 @@ export default function ChatbotWidget() {
                   >
                     {/* Top Status */}
                     <div className="pt-2 flex flex-col items-center">
-                      <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-400/30 text-pink-300 text-xs font-mono">
+                      <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-mono">
                         <span
                           className={`w-2 h-2 rounded-full ${
                             isSpeaking
                               ? 'bg-emerald-400 animate-ping'
                               : isListening
-                              ? 'bg-pink-400 animate-pulse'
+                              ? 'bg-cyan-400 animate-pulse'
                               : 'bg-sky-400'
                           }`}
                         />
@@ -1041,7 +1044,7 @@ export default function ChatbotWidget() {
                       <h3 className="mt-3 text-lg font-bold text-slate-100 tracking-wide">
                         RANKRESUME AI
                       </h3>
-                      <p className="text-xs text-pink-300/70 font-mono mt-0.5 max-w-[260px] truncate">
+                      <p className="text-xs text-cyan-300/70 font-mono mt-0.5 max-w-[260px] truncate">
                         {callStatus || 'Listening...'}
                       </p>
                     </div>
@@ -1053,8 +1056,8 @@ export default function ChatbotWidget() {
                           isSpeaking
                             ? 'bg-gradient-to-r from-emerald-500/30 via-teal-500/30 to-sky-500/30 scale-125 opacity-100'
                             : isListening
-                            ? 'bg-gradient-to-r from-pink-500/30 via-rose-500/30 to-purple-500/30 scale-110 opacity-80 animate-pulse'
-                            : 'bg-pink-500/20 scale-95 opacity-50'
+                            ? 'bg-gradient-to-r from-cyan-500/30 via-sky-500/30 to-blue-500/30 scale-110 opacity-80 animate-pulse'
+                            : 'bg-cyan-500/20 scale-95 opacity-50'
                         }`}
                       />
 
@@ -1063,8 +1066,8 @@ export default function ChatbotWidget() {
                           isSpeaking
                             ? 'bg-gradient-to-tr from-teal-400 via-sky-500 to-indigo-500 shadow-[0_0_35px_rgba(20,184,166,0.6)] scale-105'
                             : isListening
-                            ? 'bg-gradient-to-tr from-rose-500 via-pink-500 to-indigo-600 shadow-[0_0_35px_rgba(244,63,94,0.6)] scale-100'
-                            : 'bg-[#0b1020] border border-pink-400/40 shadow-[0_0_20px_rgba(236,72,153,0.3)]'
+                            ? 'bg-gradient-to-tr from-cyan-400 via-sky-500 to-blue-600 shadow-[0_0_35px_rgba(6,182,212,0.6)] scale-100'
+                            : 'bg-[#070d1e] border border-cyan-400/40 shadow-[0_0_20px_rgba(6,182,212,0.3)]'
                         }`}
                       >
                         <div className="flex items-center gap-1.5 h-10">
@@ -1115,7 +1118,7 @@ export default function ChatbotWidget() {
                         onClick={isListening ? stopListeningSession : startListeningSession}
                         className={`p-4 rounded-full border transition-all duration-300 active:scale-95 cursor-pointer ${
                           isListening
-                            ? 'bg-pink-500/20 border-pink-400 text-pink-200 shadow-[0_0_16px_rgba(236,72,153,0.4)]'
+                            ? 'bg-cyan-500/20 border-cyan-400 text-cyan-200 shadow-[0_0_16px_rgba(6,182,212,0.4)]'
                             : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
                         }`}
                         title={isListening ? 'Mute' : 'Unmute'}

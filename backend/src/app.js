@@ -1,12 +1,10 @@
+// backend/src/app.js
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
-
-dotenv.config();
 
 const app = express();
 

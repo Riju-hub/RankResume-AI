@@ -1,5 +1,7 @@
+// frontend/src/pages/auth/Register.jsx
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
 import geminiLogo from '../../assets/gemini-svg.svg';
 import { 
@@ -12,11 +14,12 @@ import {
   AlertCircle, 
   Loader2, 
   ShieldCheck, 
-  UserCheck,
-  Check,
-  Sparkles,
-  Zap,
-  ArrowLeft
+  UserCheck, 
+  Check, 
+  Sparkles, 
+  Zap, 
+  ArrowLeft,
+  BellRing
 } from 'lucide-react';
 
 const Register = () => {
@@ -28,6 +31,12 @@ const Register = () => {
     role: 'candidate',
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
+
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -67,27 +76,16 @@ const Register = () => {
   return (
     <div className="relative flex min-h-screen w-full items-center justify-center overflow-x-hidden bg-[#f4f8ff] px-4 py-12 text-slate-900 selection:bg-pink-500 selection:text-white antialiased font-sans">
       
-      {/* ========================================================================= */}
-      {/* --- Ambient Aura Mesh (Hardware Accelerated, Smooth 60 FPS) --- */}
-      {/* ========================================================================= */}
+      {/* Ambient Aura Mesh */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden transform-gpu">
-        {/* Electric Royal Blue - Upper Left */}
         <div className="absolute -top-32 -left-24 h-[650px] w-[650px] rounded-full bg-gradient-to-br from-blue-500/40 via-cyan-400/30 to-indigo-500/20 blur-[130px] transform-gpu will-change-transform" />
-        
-        {/* Neon Fuchsia & Hot Pink - Upper Right */}
         <div className="absolute -top-24 -right-24 h-[680px] w-[680px] rounded-full bg-gradient-to-bl from-pink-500/45 via-fuchsia-500/35 to-rose-400/25 blur-[140px] transform-gpu will-change-transform" />
-        
-        {/* Sky-Blue Glow - Bottom Left */}
         <div className="absolute -bottom-36 -left-28 h-[600px] w-[600px] rounded-full bg-gradient-to-tr from-sky-400/35 via-blue-600/30 to-transparent blur-[140px] transform-gpu will-change-transform" />
-
-        {/* Hot Pink / Magenta - Bottom Right */}
         <div className="absolute -bottom-32 -right-28 h-[650px] w-[650px] rounded-full bg-gradient-to-tl from-pink-600/40 via-rose-400/30 to-transparent blur-[140px] transform-gpu will-change-transform" />
-
-        {/* Dual-Tone Vector Dot Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.25)_1px,transparent_1px),radial-gradient(circle_at_center,rgba(236,72,153,0.2)_1px,transparent_1px)] [background-size:26px_26px] opacity-40 [mask-image:radial-gradient(ellipse_80%_70%_at_50%_50%,#000_70%,transparent_100%)]" />
       </div>
 
-      {/* Top Floating Return Action */}
+      {/* Return to Home */}
       <Link 
         to="/" 
         className="fixed top-6 left-6 z-20 hidden sm:flex items-center gap-2 rounded-full border border-slate-300/80 bg-white/95 px-4 py-2 text-xs font-bold text-slate-800 shadow-[0_4px_15px_rgba(37,99,235,0.12)] backdrop-blur-md transition-all hover:border-pink-400 hover:text-slate-950 hover:shadow-md hover:scale-[1.02]"
@@ -96,16 +94,13 @@ const Register = () => {
         <span>Back to Home</span>
       </Link>
 
-      {/* ========================================================================= */}
-      {/* --- Register Glass Container --- */}
-      {/* ========================================================================= */}
-      <div className="relative z-10 w-full max-w-[460px]">
+      {/* Container */}
+      <div className="relative z-10 w-full max-w-[470px]">
         <div className="relative rounded-3xl border border-white/95 bg-white/90 p-7 sm:p-9 shadow-[0_20px_60px_rgba(37,99,235,0.16),0_10px_30px_rgba(236,72,153,0.14)] backdrop-blur-2xl transition-all duration-300">
           
-          {/* Top Multi-Color Neon Rim */}
           <div className="absolute -top-px left-1/2 h-[3px] w-3/4 -translate-x-1/2 bg-gradient-to-r from-blue-600 via-pink-500 to-indigo-600 rounded-full shadow-[0_0_12px_rgba(236,72,153,0.6)]" />
 
-          {/* Header & Logo */}
+          {/* Header */}
           <div className="relative flex flex-col items-center text-center">
             <Link
               to="/"
@@ -240,8 +235,13 @@ const Register = () => {
 
             {/* Email Input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800">
-                Email Address
+              <label className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-800 flex items-center justify-between">
+                <span>Email Address</span>
+                {emailTouched && formData.email && (
+                  <span className={`text-[10px] font-bold ${isValidEmail(formData.email) ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    {isValidEmail(formData.email) ? 'Valid email format' : 'Invalid email format'}
+                  </span>
+                )}
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-blue-600">
@@ -252,11 +252,49 @@ const Register = () => {
                   name="email"
                   required
                   value={formData.email}
+                  onFocus={() => setIsEmailFocused(true)}
+                  onBlur={() => {
+                    setIsEmailFocused(false);
+                    setEmailTouched(true);
+                  }}
                   onChange={handleChange}
                   placeholder="name@company.com"
-                  className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3.5 pl-10 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition-all focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-500/20 shadow-xs"
+                  className={`h-11 w-full rounded-xl border bg-white px-3.5 pl-10 text-xs font-bold text-slate-950 placeholder:text-slate-400 outline-none transition-all shadow-xs ${
+                    emailTouched && formData.email && !isValidEmail(formData.email)
+                      ? 'border-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/20'
+                      : 'border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-500/20'
+                  }`}
                 />
               </div>
+
+              {/* Conditional Flash Message: Only displays when the email input is clicked/focused */}
+              <AnimatePresence>
+                {isEmailFocused && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, y: -4 }}
+                    animate={{ opacity: 1, height: 'auto', y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -4 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden pt-1"
+                  >
+                    <div className="rounded-2xl border border-blue-200/90 bg-gradient-to-r from-blue-50/95 to-indigo-50/80 p-3 shadow-xs">
+                      <div className="flex items-start gap-2.5">
+                        <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white shadow-xs">
+                          <BellRing className="h-3.5 w-3.5" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-[11px] font-black uppercase tracking-wider text-blue-900">
+                            Valid Email Required
+                          </p>
+                          <p className="mt-0.5 text-[11px] font-medium leading-relaxed text-slate-600">
+                            Please provide an <strong>authentic, active email address</strong>. Otherwise, you won't receive interview notifications, status alerts, or account updates.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Password Input */}

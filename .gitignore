@@ -20,9 +20,12 @@ backend/.env
 # │   │   ├── components/            # Reusable UI components
 # │   │   │   ├── common/
 # │   │   │   │   ├── DeleteAccountModal.jsx
+# │   │   │   │   ├── ActionConfirmModal.jsx
 # │   │   │   │   ├── HelpFeedback.jsx
 # │   │   │   │   ├── Chatbot.jsx
+# │   │   │   │   ├── ATS.jsx
 # │   │   │   │   ├── Navbar.jsx
+# │   │   │   │   ├── Footer.jsx
 # │   │   │   │   ├── Profile.jsx
 # │   │   │   │   ├── Sidebar.jsx
 # │   │   │   │   ├── ProtectedRoute.jsx
@@ -33,6 +36,7 @@ backend/.env
 # │   │   │   │   ├── KanbanColumn.jsx
 # │   │   │   │   └── CandidateCard.jsx
 # │   │   │   └── jobs/
+# │   │   │       ├── EditJobModal.jsx
 # │   │   │       ├── JobCard.jsx
 # │   │   │       └── JobFilter.jsx
 # │   │   ├── context/               # Global state (e.g., AuthContext)
@@ -40,6 +44,7 @@ backend/.env
 # │   │   ├── hooks/                 # Custom React hooks (React Query abstractions)
 # │   │   │   ├── useAuth.js
 # │   │   │   ├── useJobs.js
+# │   │   │   ├── useSavedJobs.js
 # │   │   │   └── useApplications.js
 # │   │   ├── pages/                 # Route pages
 # │   │   │   ├── auth/
@@ -48,11 +53,13 @@ backend/.env
 # │   │   │   ├── recruiter/
 # │   │   │   │   ├── Dashboard.jsx
 # │   │   │   │   ├── CreateJob.jsx
+# │   │   │   │   ├── MarketJobs.jsx
 # │   │   │   │   ├── JobApplicants.jsx
 # │   │   │   │   └── PipelineView.jsx
 # │   │   │   ├── candidate/
 # │   │   │   │    ├── JobBoard.jsx
 # │   │   │   │    ├── ApplyJobModal.jsx
+# │   │   │   │    ├── JobDetails.jsx
 # │   │   │   │    └── MyApplications.jsx
 # │   │   │   ├── NotFound.jsx
 # │   │   │   └── LandingPage.jsx
@@ -87,6 +94,7 @@ backend/.env
 #     │   ├── models/                # Mongoose database schemas
 #     │   │   ├── User.js
 #     │   │   ├── Job.js
+#     │   │   ├── Review.js
 #     │   │   └── Application.js
 #     │   ├── routes/                # API route definitions
 #     │   │   ├── authRoutes.js
@@ -104,4 +112,3 @@ backend/.env
 #     │   └── server.js              # Server entry point (starts HTTP listener)
 #     ├── .env
 #     └── package.json
-.vercel

@@ -1,4 +1,13 @@
+// backend/src/server.js
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import dns from 'node:dns';
+import dotenv from 'dotenv';
+
+// Resolve path to backend/.env regardless of where the terminal starts
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 dns.setServers([
   '8.8.8.8',

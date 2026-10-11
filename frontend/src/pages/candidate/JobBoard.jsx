@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useJobs } from '../../hooks/useJobs';
+import { useSavedJobs } from '../../hooks/useSavedJobs'; // <--- Added
 import ApplyJobModal from './ApplyJobModal';
 import JobCard from '../../components/jobs/JobCard';
 import JobFilter from '../../components/jobs/JobFilter';
@@ -14,14 +15,10 @@ import {
   Briefcase,
   Layers,
   RefreshCw,
-  ShieldCheck,
-  Zap,
   Target,
-  Activity,
-  ChevronRight,
   ArrowRight,
   X,
-  FileCheck2
+  FileCheck2,
 } from 'lucide-react';
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -43,9 +40,6 @@ const itemVariants = {
     transition: { duration: 0.42, ease: EASE },
   },
 };
-// ============================================================================
-// Candidate-Centric Discovery Modal (Candidate Friendly Copy)
-// ============================================================================
 
 const CandidateWelcomeModal = memo(({ isOpen, onClose, totalRoles = 0 }) => {
   const [mounted, setMounted] = useState(false);
@@ -61,46 +55,39 @@ const CandidateWelcomeModal = memo(({ isOpen, onClose, totalRoles = 0 }) => {
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[999999] flex h-screen w-screen items-center justify-center p-4 sm:p-6 font-sans">
-          {/* True Full-Window Backdrop Blur */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
             onClick={onClose}
-            className="fixed inset-0 h-full w-full bg-slate-950/70 backdrop-blur-md"
+            className="fixed inset-0 h-full w-full bg-slate-950/75 backdrop-blur-md transform-gpu will-change-[opacity]"
             aria-hidden="true"
           />
 
-          {/* Modal Card */}
           <motion.div
             role="dialog"
             aria-modal="true"
-            initial={{ opacity: 0, scale: 0.92, y: 16 }}
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 12 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 340 }}
-            className="relative z-10 w-full max-w-lg overflow-hidden rounded-[30px] border border-cyan-300/30 bg-[#070d1e]/95 p-6 sm:p-8 text-center text-white shadow-[0_25px_90px_rgba(0,0,0,0.85),0_0_60px_rgba(34,211,238,0.2)]"
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10 w-full max-w-lg overflow-hidden rounded-[30px] border border-cyan-300/30 bg-[#070d1e] p-6 sm:p-8 text-center text-white shadow-[0_20px_60px_rgba(0,0,0,0.8)] transform-gpu will-change-[transform,opacity]"
           >
-            {/* Top gradient highlight */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+            <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-cyan-500/10 blur-2xl transform-gpu" />
+            <div className="pointer-events-none absolute -left-16 -bottom-16 h-40 w-40 rounded-full bg-indigo-500/10 blur-2xl transform-gpu" />
 
-            {/* Ambient background glows */}
-            <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-cyan-500/15 blur-3xl" />
-            <div className="pointer-events-none absolute -left-20 -bottom-20 h-48 w-48 rounded-full bg-indigo-500/15 blur-3xl" />
-
-            {/* Close Button */}
             <button
               type="button"
               onClick={onClose}
-              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-colors hover:border-cyan-300/30 hover:bg-cyan-500/10 hover:text-cyan-300"
+              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-colors hover:border-cyan-300/30 hover:bg-cyan-500/10 hover:text-cyan-300 cursor-pointer"
               aria-label="Close modal"
             >
               <X className="h-4 w-4" />
             </button>
 
-            {/* Icon Banner */}
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/30 bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-400 p-3.5 shadow-[0_0_35px_rgba(34,211,238,0.35)]">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-cyan-300/30 bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-400 p-3 shadow-[0_0_25px_rgba(34,211,238,0.25)]">
               <img
                 src={geminiLogo}
                 alt="RankResume AI"
@@ -108,43 +95,38 @@ const CandidateWelcomeModal = memo(({ isOpen, onClose, totalRoles = 0 }) => {
               />
             </div>
 
-            {/* System Badge */}
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-wider text-cyan-300">
-              <Sparkles className="h-3 w-3 animate-pulse text-cyan-300" />
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/10 px-3 py-1 font-mono text-[10px] font-black uppercase tracking-wider text-cyan-300">
+              <Sparkles className="h-3 w-3 text-cyan-300" />
               Your Career Co-Pilot
             </div>
 
-            {/* Headline */}
-            <h3 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-white">
+            <h3 className="mt-3 text-2xl sm:text-3xl font-black tracking-tight text-white">
               Ready to find your{' '}
               <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
                 next big role?
               </span>
             </h3>
 
-            {/* Description */}
-            <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-300">
-              Never wonder if your resume made the cut. We evaluate your real-world experience, practical skills, and project impact—so you get matched directly with {totalRoles ? `${totalRoles} verified tech openings` : 'top engineering roles'} without keyword traps.
+            <p className="mt-2.5 text-xs sm:text-sm font-medium leading-relaxed text-slate-300">
+              Never wonder if your resume made the cut. We evaluate your real-world experience, practical skills, and project impact—matching you directly with {totalRoles ? `${totalRoles} verified tech openings` : 'top engineering roles'} without keyword traps.
             </p>
 
-            {/* Key Candidate Benefits */}
-            <div className="mt-5 grid grid-cols-2 gap-2.5 text-left">
-              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
+            <div className="mt-4 grid grid-cols-2 gap-2.5 text-left">
+              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/80 p-2.5">
                 <Target className="h-4 w-4 shrink-0 text-cyan-300" />
                 <span className="text-[11px] font-semibold text-slate-200">Instant Match Telemetry</span>
               </div>
-              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/60 p-2.5">
+              <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-slate-900/80 p-2.5">
                 <FileCheck2 className="h-4 w-4 shrink-0 text-fuchsia-400" />
                 <span className="text-[11px] font-semibold text-slate-200">No Keyword Traps</span>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 text-xs font-bold text-white shadow-[0_0_25px_rgba(34,211,238,0.25)] transition-all hover:shadow-[0_0_35px_rgba(34,211,238,0.4)] hover:scale-[1.02] active:scale-95"
+                className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 text-xs font-bold text-white shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-transform duration-150 hover:scale-[1.01] active:scale-95 cursor-pointer"
               >
                 <span>Explore Jobs Now</span>
                 <ArrowRight className="h-4 w-4" />
@@ -152,7 +134,7 @@ const CandidateWelcomeModal = memo(({ isOpen, onClose, totalRoles = 0 }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white"
+                className="flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white cursor-pointer"
               >
                 Maybe Later
               </button>
@@ -169,6 +151,7 @@ CandidateWelcomeModal.displayName = 'CandidateWelcomeModal';
 
 const JobBoard = () => {
   const { jobs = [], isLoading, isError, refetch } = useJobs();
+  const { toggleSave, isJobSaved } = useSavedJobs(); // <--- Connect Saved Jobs
 
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('All');
@@ -197,9 +180,7 @@ const JobBoard = () => {
   };
 
   const departments = useMemo(() => {
-    return Array.from(
-      new Set(jobs.map((j) => j.department).filter(Boolean))
-    );
+    return Array.from(new Set(jobs.map((j) => j.department).filter(Boolean)));
   }, [jobs]);
 
   const filteredJobs = useMemo(() => {
@@ -209,29 +190,20 @@ const JobBoard = () => {
       const matchesSearch =
         !term ||
         job.title?.toLowerCase().includes(term) ||
+        job.companyName?.toLowerCase().includes(term) ||
         job.description?.toLowerCase().includes(term) ||
-        job.skillsRequired?.some((s) =>
-          s.toLowerCase().includes(term)
-        );
+        job.skillsRequired?.some((s) => s.toLowerCase().includes(term));
 
       const matchesDept =
-        departmentFilter === 'All' ||
-        job.department === departmentFilter;
+        departmentFilter === 'All' || job.department === departmentFilter;
 
-      const matchesType =
-        typeFilter === 'All' ||
-        job.jobType === typeFilter;
+      const matchesType = typeFilter === 'All' || job.jobType === typeFilter;
 
       const isNotClosed = job.status !== 'closed';
 
       return matchesSearch && matchesDept && matchesType && isNotClosed;
     });
   }, [jobs, searchTerm, departmentFilter, typeFilter]);
-
-  const hasActiveFilters =
-    Boolean(searchTerm) ||
-    departmentFilter !== 'All' ||
-    typeFilter !== 'All';
 
   if (isLoading) {
     return (
@@ -265,20 +237,16 @@ const JobBoard = () => {
         className="relative flex min-h-[380px] w-full flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-rose-200/80 bg-white/90 p-8 text-center font-sans shadow-[0_20px_55px_rgba(244,63,94,0.08)] backdrop-blur-xl"
       >
         <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-rose-500/10 blur-3xl" />
-
         <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-rose-200 bg-rose-50 text-rose-600 shadow-sm">
           <AlertCircle className="h-7 w-7 stroke-[2.4]" />
         </div>
-
         <h3 className="mt-5 text-base font-black text-slate-950">
           Failed to load positions
         </h3>
-
         <p className="mt-2 max-w-sm text-xs font-semibold leading-6 text-slate-600">
           We encountered an issue retrieving available listings. Please check
           your connection and retry.
         </p>
-
         {refetch && (
           <button
             type="button"
@@ -294,332 +262,146 @@ const JobBoard = () => {
   }
 
   return (
-    <>
-      <style>{`
-        @keyframes rrBoardSpectrum {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
+    <main className="relative isolate min-h-screen overflow-hidden font-sans antialiased text-slate-900">
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-pink-50/35" />
 
-        @keyframes rrBoardFloatA {
-          0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-          50% { transform: translate3d(18px, -18px, 0) scale(1.04); }
-        }
-
-        @keyframes rrBoardFloatB {
-          0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-          50% { transform: translate3d(-18px, 18px, 0) scale(1.05); }
-        }
-
-        @keyframes rrBoardPulse {
-          0%, 100% { opacity: .45; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        @keyframes rrBoardShine {
-          0% { transform: translateX(-130%); }
-          100% { transform: translateX(170%); }
-        }
-
-        .rr-board-spectrum {
-          background-size: 220% 100%;
-          animation: rrBoardSpectrum 7s ease-in-out infinite;
-          will-change: background-position;
-        }
-
-        .rr-board-float-a {
-          animation: rrBoardFloatA 10s ease-in-out infinite;
-          will-change: transform;
-        }
-
-        .rr-board-float-b {
-          animation: rrBoardFloatB 12s ease-in-out infinite;
-          will-change: transform;
-        }
-
-        .rr-board-pulse {
-          animation: rrBoardPulse 2.8s ease-in-out infinite;
-          will-change: transform, opacity;
-        }
-
-        .rr-board-shine {
-          animation: rrBoardShine 3s ease-in-out infinite;
-          will-change: transform;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .rr-board-spectrum,
-          .rr-board-float-a,
-          .rr-board-float-b,
-          .rr-board-pulse,
-          .rr-board-shine {
-            animation: none !important;
-          }
-        }
-      `}</style>
-
-      <main className="relative isolate min-h-screen overflow-hidden font-sans antialiased text-slate-900">
-        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-pink-50/35">
-          <div className="rr-board-float-a absolute -left-40 -top-36 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-[115px] transform-gpu" />
-          <div className="rr-board-float-b absolute -right-40 top-[30%] h-[520px] w-[520px] rounded-full bg-pink-500/10 blur-[125px] transform-gpu" />
-          <div className="absolute bottom-[-220px] left-[35%] h-[420px] w-[420px] rounded-full bg-violet-500/8 blur-[110px]" />
-
-          <div
-            className="absolute inset-0 opacity-[0.25]"
-            style={{
-              backgroundImage:
-                'radial-gradient(circle, rgba(59,130,246,0.15) 1px, transparent 1px)',
-              backgroundSize: '28px 28px',
-              maskImage:
-                'linear-gradient(to bottom, black 0%, transparent 80%)',
-              WebkitMaskImage:
-                'linear-gradient(to bottom, black 0%, transparent 80%)',
-            }}
-          />
-        </div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-          className="mx-auto max-w-7xl space-y-6"
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="mx-auto max-w-7xl space-y-6"
+      >
+        {/* Header Hero */}
+        <motion.section
+          variants={itemVariants}
+          className="group relative overflow-hidden rounded-[2rem] border border-white/90 bg-white/75 p-6 shadow-[0_24px_70px_rgba(37,99,235,0.10),0_10px_35px_rgba(236,72,153,0.07)] backdrop-blur-2xl sm:p-8"
         >
-          {/* Hero */}
-          <motion.section
-            variants={itemVariants}
-            className="group relative overflow-hidden rounded-[2rem] border border-white/90 bg-white/75 p-6 shadow-[0_24px_70px_rgba(37,99,235,0.10),0_10px_35px_rgba(236,72,153,0.07)] backdrop-blur-2xl sm:p-8"
-          >
-            <div className="rr-board-spectrum absolute left-0 right-0 top-0 h-[3px] bg-gradient-to-r from-cyan-400 via-blue-600 via-violet-500 to-pink-500" />
-
-            <div className="pointer-events-none absolute -right-24 -top-28 h-72 w-72 rounded-full bg-gradient-to-br from-pink-500/20 via-violet-500/10 to-transparent blur-3xl transform-gpu" />
-            <div className="pointer-events-none absolute -bottom-28 -left-24 h-72 w-72 rounded-full bg-gradient-to-tr from-blue-500/20 via-cyan-400/10 to-transparent blur-3xl transform-gpu" />
-
-            <div className="relative z-10 flex flex-col justify-between gap-7 lg:flex-row lg:items-center">
-              <div className="max-w-3xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/80 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-blue-700 shadow-sm backdrop-blur-md">
-                  <Sparkles className="h-3.5 w-3.5 text-pink-600" />
-                  Gemini 2.5 Multi-Modal Matching
-                  <span className="rr-board-pulse ml-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                </div>
-
-                <h1 className="mt-4 text-3xl font-black tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
-                  Explore Active{' '}
-                  <span className="bg-gradient-to-r from-blue-600 via-violet-600 to-pink-600 bg-clip-text text-transparent">
-                    Positions
-                  </span>
-                </h1>
-
-                <p className="mt-3 max-w-2xl text-xs font-semibold leading-6 text-slate-600 sm:text-sm">
-                  Upload your CV to compute instant{' '}
-                  <span className="font-extrabold text-blue-700 underline decoration-blue-300 underline-offset-4">
-                    vector match scores
-                  </span>{' '}
-                  and bypass standard ATS keyword filters.
-                </p>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50/70 px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-blue-700">
-                    <Target className="h-3 w-3" />
-                    Semantic matching
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-pink-200 bg-pink-50/70 px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-pink-700">
-                    <Zap className="h-3 w-3" />
-                    Instant scoring
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50/70 px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-wider text-emerald-700">
-                    <ShieldCheck className="h-3 w-3" />
-                    Secure workflow
-                  </span>
-                </div>
+          <div className="absolute left-0 right-0 top-0 h-[3px] bg-gradient-to-r from-cyan-400 via-blue-600 via-violet-500 to-pink-500" />
+          <div className="relative z-10 flex flex-col justify-between gap-7 lg:flex-row lg:items-center">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/80 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-blue-700 shadow-sm backdrop-blur-md">
+                <Sparkles className="h-3.5 w-3.5 text-pink-600" />
+                Gemini 2.5 Multi-Modal Matching
               </div>
 
-              {/* Hero metrics */}
-              <div className="grid shrink-0 grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-white/90 px-4 py-3 shadow-sm">
-                  <div className="flex items-center gap-1.5 text-[9px] font-mono font-black uppercase tracking-wider text-blue-700">
-                    <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
-                    Open Roles
-                  </div>
-                  <p className="mt-1 font-mono text-2xl font-black text-slate-950">
-                    {jobs.length}
-                  </p>
-                </div>
+              <h1 className="mt-4 text-3xl font-black tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-5xl">
+                Explore Active{' '}
+                <span className="bg-gradient-to-r from-blue-600 via-violet-600 to-pink-600 bg-clip-text text-transparent">
+                  Positions
+                </span>
+              </h1>
 
-                <div className="rounded-2xl border border-pink-200/80 bg-gradient-to-br from-pink-50/80 to-white/90 px-4 py-3 shadow-sm">
-                  <div className="flex items-center gap-1.5 text-[9px] font-mono font-black uppercase tracking-wider text-pink-700">
-                    <Layers className="h-3.5 w-3.5 stroke-[2.5]" />
-                    Departments
-                  </div>
-                  <p className="mt-1 font-mono text-2xl font-black text-pink-600">
-                    {departments.length}
-                  </p>
-                </div>
-
-                <div className="col-span-2 flex items-center justify-center gap-2 rounded-2xl border border-slate-200/80 bg-white/65 px-3 py-2 text-[9px] font-bold text-slate-500 shadow-sm">
-                  <Activity className="h-3.5 w-3.5 text-emerald-600" />
-                  {filteredJobs.length} live opportunities matching your view
-                </div>
-              </div>
+              <p className="mt-3 max-w-2xl text-xs font-semibold leading-6 text-slate-600 sm:text-sm">
+                Click any role or use View in Details to inspect specifications, requirements, and compensation packages.
+              </p>
             </div>
-          </motion.section>
 
-          {/* Filters */}
-          <motion.section variants={itemVariants}>
-            <div className="relative overflow-hidden rounded-[1.6rem] border border-white/90 bg-white/70 p-2 shadow-[0_12px_35px_rgba(15,23,42,0.05)] backdrop-blur-xl">
-              <div className="pointer-events-none absolute left-1/4 top-0 h-20 w-40 rounded-full bg-blue-500/5 blur-3xl" />
-              <div className="relative z-10">
-                <JobFilter
-                  searchTerm={searchTerm}
-                  onSearchChange={setSearchTerm}
-                  department={departmentFilter}
-                  onDepartmentChange={setDepartmentFilter}
-                  jobType={typeFilter}
-                  onJobTypeChange={setTypeFilter}
-                  departments={departments}
-                  onReset={handleResetFilters}
-                />
-              </div>
-            </div>
-          </motion.section>
-
-          {/* Results header */}
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-col gap-3 px-1 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-blue-600 shadow-sm">
-                <Briefcase className="h-4 w-4" />
-              </div>
-
-              <div>
-                <p className="font-mono text-[9px] font-black uppercase tracking-[0.18em] text-blue-600">
-                  Opportunity feed
+            <div className="grid shrink-0 grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-blue-200/80 bg-gradient-to-br from-blue-50/80 to-white/90 px-4 py-3 shadow-sm">
+                <div className="flex items-center gap-1.5 text-[9px] font-mono font-black uppercase tracking-wider text-blue-700">
+                  <Briefcase className="h-3.5 w-3.5 stroke-[2.5]" />
+                  Open Roles
+                </div>
+                <p className="mt-1 font-mono text-2xl font-black text-slate-950">
+                  {jobs.length}
                 </p>
-                <p className="text-sm font-black text-slate-900">
-                  Showing{' '}
-                  <span className="font-mono text-blue-700">
-                    {filteredJobs.length}
-                  </span>{' '}
-                  {filteredJobs.length === 1 ? 'position' : 'positions'}
+              </div>
+
+              <div className="rounded-2xl border border-pink-200/80 bg-gradient-to-br from-pink-50/80 to-white/90 px-4 py-3 shadow-sm">
+                <div className="flex items-center gap-1.5 text-[9px] font-mono font-black uppercase tracking-wider text-pink-700">
+                  <Layers className="h-3.5 w-3.5 stroke-[2.5]" />
+                  Departments
+                </div>
+                <p className="mt-1 font-mono text-2xl font-black text-pink-600">
+                  {departments.length}
                 </p>
               </div>
             </div>
+          </div>
+        </motion.section>
 
-            {hasActiveFilters ? (
+        {/* Filter Controls */}
+        <motion.section variants={itemVariants}>
+          <div className="relative overflow-hidden rounded-[1.6rem] border border-white/90 bg-white/70 p-2 shadow-[0_12px_35px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+            <JobFilter
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              department={departmentFilter}
+              onDepartmentChange={setDepartmentFilter}
+              jobType={typeFilter}
+              onJobTypeChange={setTypeFilter}
+              departments={departments}
+              onReset={handleResetFilters}
+            />
+          </div>
+        </motion.section>
+
+        {/* Feed Results */}
+        <AnimatePresence mode="popLayout">
+          {filteredJobs.length === 0 ? (
+            <motion.section
+              key="empty"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="relative flex min-h-[340px] flex-col items-center justify-center rounded-[2rem] border border-dashed border-slate-300 bg-white/75 p-8 text-center"
+            >
+              <SearchX className="h-8 w-8 text-slate-400" />
+              <h3 className="mt-4 text-base font-black text-slate-950">
+                No matching positions found
+              </h3>
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="group inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-xl border border-pink-200 bg-pink-50/70 px-3 py-2 text-[10px] font-extrabold text-pink-600 transition-[transform,border-color,background-color] duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 active:translate-y-0"
+                className="mt-4 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white cursor-pointer"
               >
-                <RefreshCw className="h-3 w-3 transition-transform duration-300 group-hover:rotate-180" />
-                Clear active filters
-                <ChevronRight className="h-3 w-3" />
+                Reset Filters
               </button>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50/70 px-3 py-2 text-[9px] font-extrabold uppercase tracking-wider text-emerald-700">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                All positions live
-              </span>
-            )}
-          </motion.div>
-
-          {/* Jobs */}
-          <AnimatePresence mode="popLayout">
-            {filteredJobs.length === 0 ? (
-              <motion.section
-                key="empty"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="relative flex min-h-[340px] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-dashed border-slate-300 bg-white/75 p-8 text-center shadow-sm backdrop-blur-xl"
-              >
-                <div className="pointer-events-none absolute -left-20 -top-20 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-20 -right-20 h-48 w-48 rounded-full bg-pink-500/10 blur-3xl" />
-
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50 text-slate-500 shadow-sm">
-                  <SearchX className="h-7 w-7 stroke-[2]" />
-                </div>
-
-                <h3 className="relative mt-5 text-base font-black text-slate-950">
-                  No matching positions found
-                </h3>
-
-                <p className="relative mt-2 max-w-sm text-xs font-semibold leading-6 text-slate-600">
-                  We could not find any active postings matching your search
-                  parameters or filter criteria.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={handleResetFilters}
-                  className="group relative mt-5 inline-flex h-10 cursor-pointer items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-violet-600 to-pink-600 px-5 text-xs font-extrabold text-white shadow-[0_10px_25px_rgba(37,99,235,0.22)] transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(236,72,153,0.22)] active:translate-y-0"
+            </motion.section>
+          ) : (
+            <motion.div
+              key="results"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              className="grid grid-cols-1 gap-5 md:grid-cols-2"
+            >
+              {filteredJobs.map((job) => (
+                <motion.div
+                  key={job._id}
+                  variants={itemVariants}
+                  whileHover={{ y: -3, transition: { duration: 0.2, ease: EASE } }}
+                  className="transform-gpu"
                 >
-                  <RefreshCw className="relative z-10 h-3.5 w-3.5 stroke-[2.5]" />
-                  <span className="relative z-10">Reset All Filters</span>
-                  <span className="rr-board-shine pointer-events-none absolute inset-y-0 left-0 w-1/3 -translate-x-[130%] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                </button>
-              </motion.section>
-            ) : (
-              <motion.div
-                key="results"
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-                className="grid grid-cols-1 gap-5 md:grid-cols-2"
-              >
-                {filteredJobs.map((job) => (
-                  <motion.div
-                    key={job._id}
-                    variants={itemVariants}
-                    whileHover={{ y: -3, transition: { duration: 0.2, ease: EASE } }}
-                    className="transform-gpu"
-                  >
-                    <JobCard
-                      job={job}
-                      isRecruiter={false}
-                      onApply={handleApplyClick}
-                    />
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <JobCard
+                    job={job}
+                    isRecruiter={false}
+                    onApply={handleApplyClick}
+                    isBookmarked={isJobSaved(job._id)}
+                    onBookmark={() => toggleSave(job._id)}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
-          {/* Bottom trust strip */}
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-col gap-3 rounded-2xl border border-white/80 bg-white/60 px-4 py-3 shadow-sm backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
-              <Sparkles className="h-3.5 w-3.5 text-pink-600" />
-              Discover roles powered by semantic resume matching
-            </div>
+      <CandidateWelcomeModal
+        isOpen={showGreetingModal}
+        onClose={() => setShowGreetingModal(false)}
+        totalRoles={jobs.length}
+      />
 
-            <div className="flex items-center gap-2 font-mono text-[9px] font-black uppercase tracking-wider text-emerald-600">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              Secure application flow
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* TIMED CANDIDATE DISCOVERY MODAL (Portal Rooted) */}
-        <CandidateWelcomeModal
-          isOpen={showGreetingModal}
-          onClose={() => setShowGreetingModal(false)}
-          totalRoles={jobs.length}
-        />
-
-        <ApplyJobModal
-          job={selectedJob}
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setSelectedJob(null);
-          }}
-        />
-      </main>
-    </>
+      <ApplyJobModal
+        job={selectedJob}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedJob(null);
+        }}
+      />
+    </main>
   );
 };
 

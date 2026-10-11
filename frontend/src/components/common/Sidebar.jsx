@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+// frontend/src/components/common/Sidebar.jsx
+import React, { useState, useMemo, memo } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
+import { useSavedJobs } from '../../hooks/useSavedJobs';
 import { DeleteAccountModal } from './DeleteAccountModal';
 import {
   LayoutDashboard,
@@ -18,78 +20,66 @@ import {
   ShieldCheck,
   UserCheck,
   LogOut,
+  Bookmark,
+  Compass,
 } from 'lucide-react';
 
-/*
-  Modern, smooth and lightweight Sidebar
-  --------------------------------------
-  - Pure JSX / JavaScript
-  - No TypeScript
-  - No animation library required
-  - CSS transforms/opacity are used for smooth GPU-friendly motion
-  - Existing routes, auth logic and DeleteAccountModal are preserved
-*/
-
-const primaryNav = {
+const PRIMARY_NAV = {
   recruiter: [
     { name: 'Dashboard', path: '/recruiter/dashboard', icon: LayoutDashboard },
+    { name: 'Explore Openings', path: '/recruiter/market-jobs', icon: Compass }, // <--- New link for recruiters
     { name: 'Create Job Post', path: '/recruiter/create-job', icon: PlusCircle },
   ],
   candidate: [
     { name: 'Job Board', path: '/jobs', icon: Briefcase },
+    { name: 'Saved Jobs', path: '/candidate/saved-jobs', icon: Bookmark, badgeKey: 'savedJobs' },
     { name: 'My Applications', path: '/my-applications', icon: FileText },
   ],
 };
 
-const secondaryNav = [
-  {
-    name: 'ATS',
-    path: '/ats',
-    icon: ScanSearch,
-    ats: true,
-  },
+const SECONDARY_NAV = [
+  { name: 'ATS', path: '/ats', icon: ScanSearch, ats: true },
   { name: 'My Profile', path: '/profile', icon: User },
   { name: 'Help & Feedback', path: '/help', icon: HelpCircle },
   { name: 'Terms & Policy', path: '/terms', icon: FileCheck2 },
 ];
 
-export const Sidebar = ({ isOpen, onClose }) => {
+export const Sidebar = memo(({ isOpen, onClose }) => {
   const { isRecruiter, logout } = useAuthContext();
+  const { totalSaved } = useSavedJobs();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const isRecruiterRole = Boolean(isRecruiter);
 
-  const roleTheme = isRecruiterRole
-    ? {
-        label: 'Recruitment Hub',
-        subtitle: 'Recruiter workspace',
-        Icon: ShieldCheck,
-        accent: 'pink',
-        gradient: 'from-fuchsia-500 via-pink-500 to-rose-500',
-        softGradient: 'from-fuchsia-50 via-pink-50 to-rose-50',
-        icon: 'text-pink-600',
-        badge: 'border-pink-200 bg-pink-50 text-pink-700',
-        active:
-          'border-pink-200/80 bg-gradient-to-r from-pink-50 via-white to-rose-50 text-slate-950 shadow-[0_8px_28px_rgba(236,72,153,0.10)]',
-      }
-    : {
-        label: 'Candidate Portal',
-        subtitle: 'Candidate workspace',
-        Icon: UserCheck,
-        accent: 'blue',
-        gradient: 'from-cyan-500 via-blue-600 to-violet-600',
-        softGradient: 'from-cyan-50 via-blue-50 to-violet-50',
-        icon: 'text-blue-600',
-        badge: 'border-blue-200 bg-blue-50 text-blue-700',
-        active:
-          'border-blue-200/80 bg-gradient-to-r from-cyan-50 via-white to-violet-50 text-slate-950 shadow-[0_8px_28px_rgba(59,130,246,0.10)]',
-      };
+  const roleTheme = useMemo(() => {
+    return isRecruiterRole
+      ? {
+          label: 'Recruitment Hub',
+          subtitle: 'Recruiter workspace',
+          Icon: ShieldCheck,
+          gradient: 'from-fuchsia-500 via-pink-500 to-rose-500',
+          softGradient: 'from-fuchsia-50/70 via-pink-50/50 to-rose-50/40',
+          icon: 'text-pink-600',
+          badge: 'border-pink-200 bg-pink-50 text-pink-700',
+          active:
+            'border-pink-200/80 bg-gradient-to-r from-pink-50/80 via-white to-rose-50/80 text-slate-950 shadow-sm',
+        }
+      : {
+          label: 'Candidate Portal',
+          subtitle: 'Candidate workspace',
+          Icon: UserCheck,
+          gradient: 'from-cyan-500 via-blue-600 to-violet-600',
+          softGradient: 'from-cyan-50/70 via-blue-50/50 to-violet-50/40',
+          icon: 'text-blue-600',
+          badge: 'border-blue-200 bg-blue-50 text-blue-700',
+          active:
+            'border-blue-200/80 bg-gradient-to-r from-cyan-50/80 via-white to-violet-50/80 text-slate-950 shadow-sm',
+        };
+  }, [isRecruiterRole]);
 
   const RoleIcon = roleTheme.Icon;
-  const primaryLinks = isRecruiterRole
-    ? primaryNav.recruiter
-    : primaryNav.candidate;
+  const primaryLinks = isRecruiterRole ? PRIMARY_NAV.recruiter : PRIMARY_NAV.candidate;
 
   const handleLogout = () => {
     onClose?.();
@@ -104,351 +94,50 @@ export const Sidebar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <style>{`
-        .rr-sidebar,
-        .rr-sidebar *,
-        .rr-sidebar *::before,
-        .rr-sidebar *::after {
-          box-sizing: border-box;
-        }
-
-        .rr-sidebar {
-          --rr-blue: #2563eb;
-          --rr-cyan: #06b6d4;
-          --rr-violet: #7c3aed;
-          --rr-pink: #ec4899;
-          --rr-text: #0f172a;
-          font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-            "Segoe UI", sans-serif;
-          -webkit-font-smoothing: antialiased;
-          isolation: isolate;
-          overflow: hidden;
-          background:
-            radial-gradient(circle at 12% 8%, rgba(6,182,212,.10), transparent 28%),
-            radial-gradient(circle at 88% 28%, rgba(236,72,153,.08), transparent 30%),
-            radial-gradient(circle at 20% 82%, rgba(124,58,237,.07), transparent 30%),
-            linear-gradient(180deg, rgba(255,255,255,.96), rgba(248,250,255,.94));
-        }
-
-        /* Lightweight animated color atmosphere.
-           Only transform/opacity animate, keeping the effect compositor-friendly. */
-        .rr-bg-orb {
-          position: absolute;
-          z-index: -2;
-          border-radius: 9999px;
-          pointer-events: none;
-          filter: blur(42px);
-          will-change: transform;
-          opacity: .55;
-          animation: rr-orb-float 18s ease-in-out infinite;
-        }
-
-        .rr-bg-orb-a {
-          width: 170px;
-          height: 170px;
-          top: -70px;
-          left: -70px;
-          background: rgba(6,182,212,.18);
-        }
-
-        .rr-bg-orb-b {
-          width: 190px;
-          height: 190px;
-          top: 32%;
-          right: -100px;
-          background: rgba(236,72,153,.14);
-          animation-delay: -6s;
-          animation-duration: 22s;
-        }
-
-        .rr-bg-orb-c {
-          width: 160px;
-          height: 160px;
-          bottom: 4%;
-          left: -85px;
-          background: rgba(124,58,237,.12);
-          animation-delay: -11s;
-          animation-duration: 25s;
-        }
-
-        @keyframes rr-orb-float {
-          0%, 100% {
-            transform: translate3d(0, 0, 0) scale(1);
-          }
-          50% {
-            transform: translate3d(18px, -14px, 0) scale(1.06);
-          }
-        }
-
-        /* Subtle static dot grid: visual depth without a constantly animated paint layer. */
-        .rr-dot-grid {
-          position: absolute;
-          z-index: -1;
-          inset: 0;
-          pointer-events: none;
-          opacity: .26;
-          background-image: radial-gradient(
-            rgba(59,130,246,.22) .7px,
-            transparent .8px
-          );
-          background-size: 22px 22px;
-          mask-image: linear-gradient(to bottom, black, transparent 92%);
-          -webkit-mask-image: linear-gradient(to bottom, black, transparent 92%);
-        }
-
-        .rr-sidebar-scroll {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-
-        .rr-sidebar-scroll::-webkit-scrollbar {
-          display: none;
-        }
-
-        .rr-sidebar-item {
-          position: relative;
-          isolation: isolate;
-          transform: translate3d(0, 0, 0);
-          transition:
-            transform 180ms cubic-bezier(.22,1,.36,1),
-            background-color 180ms ease,
-            border-color 180ms ease,
-            box-shadow 180ms ease,
-            color 180ms ease;
-        }
-
-        .rr-sidebar-item::before {
-          content: "";
-          position: absolute;
-          inset: 1px;
-          z-index: -1;
-          border-radius: 15px;
-          opacity: 0;
-          background: linear-gradient(
-            105deg,
-            rgba(6,182,212,.10),
-            rgba(59,130,246,.08),
-            rgba(124,58,237,.08),
-            rgba(236,72,153,.09)
-          );
-          transition: opacity 180ms ease;
-        }
-
-        .rr-sidebar-item:hover {
-          transform: translate3d(3px, 0, 0);
-        }
-
-        .rr-sidebar-item:hover::before {
-          opacity: 1;
-        }
-
-        .rr-sidebar-chevron {
-          transform: translate3d(-5px, 0, 0);
-          opacity: 0;
-          transition:
-            transform 180ms cubic-bezier(.22,1,.36,1),
-            opacity 180ms ease;
-        }
-
-        .rr-sidebar-item:hover .rr-sidebar-chevron,
-        .rr-sidebar-item[aria-current="page"] .rr-sidebar-chevron {
-          transform: translate3d(0, 0, 0);
-          opacity: 1;
-        }
-
-        .rr-sidebar-icon {
-          transition: transform 180ms cubic-bezier(.22,1,.36,1), color 180ms ease;
-        }
-
-        .rr-sidebar-item:hover .rr-sidebar-icon {
-          transform: scale(1.08);
-        }
-
-        .rr-sidebar-brand-orb {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .rr-sidebar-brand-orb::after {
-          content: "";
-          position: absolute;
-          width: 70px;
-          height: 70px;
-          top: -35px;
-          left: -35px;
-          border-radius: 999px;
-          background: rgba(255,255,255,.38);
-          filter: blur(2px);
-          pointer-events: none;
-        }
-
-        .rr-sidebar-status {
-          position: relative;
-          overflow: hidden;
-          background:
-            radial-gradient(circle at 100% 0%, rgba(99,102,241,.12), transparent 45%),
-            linear-gradient(135deg, rgba(255,255,255,.92), rgba(239,246,255,.78));
-        }
-
-        .rr-sidebar-status::before {
-          content: "";
-          position: absolute;
-          width: 120px;
-          height: 120px;
-          right: -58px;
-          top: -70px;
-          border-radius: 999px;
-          background: rgba(99,102,241,.13);
-          pointer-events: none;
-        }
-
-        .rr-sidebar-status::after {
-          content: "";
-          position: absolute;
-          left: -30%;
-          top: 0;
-          width: 28%;
-          height: 100%;
-          transform: skewX(-18deg);
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,255,255,.75),
-            transparent
-          );
-          animation: rr-status-shimmer 5s ease-in-out infinite;
-          pointer-events: none;
-        }
-
-        @keyframes rr-status-shimmer {
-          0%, 55% {
-            transform: translate3d(-180%,0,0) skewX(-18deg);
-          }
-          75%, 100% {
-            transform: translate3d(520%,0,0) skewX(-18deg);
-          }
-        }
-
-        .rr-sidebar-pulse {
-          animation: rr-soft-pulse 2.4s ease-in-out infinite;
-        }
-
-        @keyframes rr-soft-pulse {
-          0%, 100% {
-            box-shadow: 0 0 0 0 rgba(16,185,129,.20);
-          }
-          50% {
-            box-shadow: 0 0 0 5px rgba(16,185,129,0);
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .rr-bg-orb,
-          .rr-sidebar-status::after,
-          .rr-sidebar-pulse {
-            animation: none !important;
-          }
-
-          .rr-sidebar-item,
-          .rr-sidebar-item::before,
-          .rr-sidebar-chevron,
-          .rr-sidebar-icon {
-            transition: none !important;
-          }
-
-          .rr-sidebar-item:hover {
-            transform: none;
-          }
-        }
-      `}</style>
-
-      {/* Mobile backdrop */}
       {isOpen && (
         <div
           onClick={onClose}
           aria-hidden="true"
-          className="
-            fixed inset-0 z-40 lg:hidden
-            bg-slate-950/30 backdrop-blur-[3px]
-          "
+          className="fixed inset-0 z-40 bg-slate-950/40 transition-opacity duration-200 lg:hidden"
         />
       )}
 
       <aside
-        className={`
-          rr-sidebar fixed left-0 top-16 bottom-0 z-50
-          flex w-[280px] flex-col
-          border-r border-slate-200/70
-          bg-white/90
-          shadow-[12px_0_40px_rgba(15,23,42,0.05)]
-          backdrop-blur-2xl
-          transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)]
-          lg:translate-x-0
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        `}
+        className={`fixed left-0 top-16 bottom-0 z-50 flex w-[280px] flex-col border-r border-slate-200/80 bg-white/95 shadow-xl transition-transform duration-300 ease-out will-change-transform lg:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
       >
-        {/* Lightweight multicolor background atmosphere */}
-        <span aria-hidden="true" className="rr-bg-orb rr-bg-orb-a" />
-        <span aria-hidden="true" className="rr-bg-orb rr-bg-orb-b" />
-        <span aria-hidden="true" className="rr-bg-orb rr-bg-orb-c" />
-        <span aria-hidden="true" className="rr-dot-grid" />
-
-        {/* Thin multicolor edge */}
         <div
           aria-hidden="true"
-          className={`absolute right-0 top-0 h-full w-px bg-gradient-to-b ${roleTheme.gradient} opacity-30`}
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-50 via-white to-slate-50/60 opacity-90"
         />
 
-        <div className="rr-sidebar-scroll flex-1 overflow-y-auto px-3 pb-3">
-          {/* Mobile heading */}
+        <div className="flex-1 overflow-y-auto px-3 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="flex items-center justify-between px-2 pb-3 pt-4 lg:hidden">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">
                 Navigation
               </p>
-              <p className="mt-0.5 text-sm font-extrabold text-slate-900">
-                Workspace
-              </p>
+              <p className="mt-0.5 text-sm font-extrabold text-slate-900">Workspace</p>
             </div>
-
             <button
               type="button"
               onClick={onClose}
               aria-label="Close navigation"
-              className="
-                flex h-9 w-9 items-center justify-center rounded-xl
-                border border-slate-200 bg-white text-slate-500
-                shadow-sm transition-all duration-200
-                hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900
-                active:scale-95
-              "
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
-          {/* Role header */}
           <div
-            className={`
-              relative mt-2 overflow-hidden rounded-[22px]
-              border border-slate-200/70 bg-gradient-to-br ${roleTheme.softGradient}
-              p-3.5 shadow-[0_10px_35px_rgba(30,41,59,0.06)]
-            `}
+            className={`relative mt-2 overflow-hidden rounded-[20px] border border-slate-200/70 bg-gradient-to-br ${roleTheme.softGradient} p-3.5 shadow-sm`}
           >
-            <div
-              aria-hidden="true"
-              className={`absolute -right-10 -top-10 h-28 w-28 rounded-full bg-gradient-to-br ${roleTheme.gradient} opacity-10 blur-2xl`}
-            />
-
             <div className="relative flex items-center gap-3">
               <div
-                className={`
-                  rr-sidebar-brand-orb flex h-11 w-11 shrink-0 items-center justify-center
-                  rounded-2xl bg-gradient-to-br ${roleTheme.gradient}
-                  text-white shadow-lg shadow-blue-500/15
-                `}
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${roleTheme.gradient} text-white shadow-md shadow-blue-500/10`}
               >
-                <RoleIcon className="h-5 w-5" strokeWidth={2.3} />
+                <RoleIcon className="h-5 w-5" strokeWidth={2.2} />
               </div>
 
               <div className="min-w-0 flex-1">
@@ -457,16 +146,11 @@ export const Sidebar = ({ isOpen, onClose }) => {
                     {roleTheme.label}
                   </h2>
                   <span
-                    className={`
-                      inline-flex shrink-0 items-center rounded-full border
-                      px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider
-                      ${roleTheme.badge}
-                    `}
+                    className={`inline-flex shrink-0 items-center rounded-full border px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider ${roleTheme.badge}`}
                   >
                     Active
                   </span>
                 </div>
-
                 <p className="mt-0.5 truncate text-[10px] font-semibold text-slate-500">
                   {roleTheme.subtitle}
                 </p>
@@ -474,18 +158,18 @@ export const Sidebar = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Primary navigation */}
-          <section className="mt-6">
+          <section className="mt-5">
             <div className="mb-2 flex items-center justify-between px-2">
               <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">
                 Workspace
               </p>
-              <span className="h-1 w-1 rounded-full bg-gradient-to-r from-blue-500 to-pink-500" />
+              <span className="h-1 w-1 rounded-full bg-slate-300" />
             </div>
 
-            <nav className="space-y-1.5" aria-label="Workspace navigation">
+            <nav className="space-y-1" aria-label="Workspace navigation">
               {primaryLinks.map((link) => {
                 const Icon = link.icon;
+                const isSavedJobs = link.badgeKey === 'savedJobs';
 
                 return (
                   <NavLink
@@ -493,41 +177,48 @@ export const Sidebar = ({ isOpen, onClose }) => {
                     to={link.path}
                     onClick={onClose}
                     className={({ isActive }) =>
-                      `
-                        rr-sidebar-item group flex min-h-[48px] items-center
-                        justify-between rounded-2xl border px-3
-                        text-[12px] font-extrabold
-                        ${isActive
+                      `group flex min-h-[44px] items-center justify-between rounded-xl border px-3 text-[12px] font-bold transition-all duration-150 ${
+                        isActive
                           ? roleTheme.active
-                          : 'border-transparent text-slate-600 hover:border-slate-200/80 hover:bg-slate-50/80 hover:text-slate-950'}
-                      `
+                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-950'
+                      }`
                     }
                   >
                     {({ isActive }) => (
                       <>
                         <div className="flex min-w-0 items-center gap-3">
                           <span
-                            className={`
-                              flex h-8 w-8 shrink-0 items-center justify-center rounded-xl
-                              transition-colors duration-180
-                              ${isActive
-                                ? `bg-white shadow-sm ${roleTheme.icon}`
-                                : 'bg-slate-100/80 text-slate-500 group-hover:bg-white group-hover:text-blue-600'}
-                            `}
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                              isActive
+                                ? `bg-white shadow-xs ${roleTheme.icon}`
+                                : 'bg-slate-100/90 text-slate-500 group-hover:bg-white group-hover:text-blue-600'
+                            }`}
                           >
-                            <Icon className="rr-sidebar-icon h-[17px] w-[17px]" strokeWidth={2.25} />
+                            <Icon className="h-4 w-4" strokeWidth={2.2} />
                           </span>
-
                           <span className="truncate">{link.name}</span>
                         </div>
 
-                        <ChevronRight
-                          className={`
-                            rr-sidebar-chevron h-4 w-4 shrink-0
-                            ${isActive ? roleTheme.icon : 'text-slate-400'}
-                          `}
-                          strokeWidth={2.5}
-                        />
+                        <div className="flex items-center gap-2">
+                          {isSavedJobs && Boolean(totalSaved > 0) && (
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-[10px] font-black transition-colors ${
+                                isActive
+                                  ? 'bg-blue-600 text-white'
+                                  : 'bg-blue-50 text-blue-700 ring-1 ring-blue-500/20'
+                              }`}
+                            >
+                              {totalSaved}
+                            </span>
+                          )}
+
+                          <ChevronRight
+                            className={`h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                              isActive ? roleTheme.icon : 'text-slate-400 opacity-60'
+                            }`}
+                            strokeWidth={2.2}
+                          />
+                        </div>
                       </>
                     )}
                   </NavLink>
@@ -536,10 +227,8 @@ export const Sidebar = ({ isOpen, onClose }) => {
             </nav>
           </section>
 
-          {/* Divider */}
-          <div className="my-5 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+          <div className="my-4 h-px bg-slate-100" />
 
-          {/* Account / support */}
           <section>
             <div className="mb-2 px-2">
               <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-400">
@@ -547,63 +236,53 @@ export const Sidebar = ({ isOpen, onClose }) => {
               </p>
             </div>
 
-            <nav className="space-y-1" aria-label="Account and support navigation">
-              {secondaryNav.map((link) => {
+            <nav className="space-y-1" aria-label="Account navigation">
+              {SECONDARY_NAV.map((link) => {
                 const Icon = link.icon;
-
                 return (
                   <NavLink
                     key={link.path}
                     to={link.path}
                     onClick={onClose}
                     className={({ isActive }) =>
-                      `
-                        rr-sidebar-item group flex min-h-[44px] items-center
-                        justify-between rounded-2xl border px-3
-                        text-[12px] font-bold
-                        ${isActive
+                      `group flex min-h-[42px] items-center justify-between rounded-xl border px-3 text-[12px] font-bold transition-all duration-150 ${
+                        isActive
                           ? link.ats
-                            ? 'border-violet-200/90 bg-gradient-to-r from-violet-50 via-white to-cyan-50 text-slate-950 shadow-[0_10px_30px_rgba(124,58,237,0.12)]'
-                            : 'border-indigo-200/80 bg-gradient-to-r from-indigo-50 via-white to-cyan-50 text-slate-950 shadow-[0_8px_25px_rgba(99,102,241,0.08)]'
+                            ? 'border-violet-200 bg-violet-50/80 text-violet-950 shadow-xs'
+                            : 'border-slate-200 bg-slate-50 text-slate-950 shadow-xs'
                           : link.ats
-                            ? 'border-violet-100/80 bg-gradient-to-r from-violet-50/60 via-white/70 to-cyan-50/60 text-violet-700 hover:border-violet-200 hover:shadow-[0_8px_24px_rgba(124,58,237,0.10)]'
-                            : 'border-transparent text-slate-600 hover:border-slate-200/80 hover:bg-slate-50/80 hover:text-slate-950'}
-                      `
+                          ? 'border-transparent bg-violet-50/40 text-violet-700 hover:border-violet-200 hover:bg-violet-50'
+                          : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-950'
+                      }`
                     }
                   >
                     {({ isActive }) => (
                       <>
                         <div className="flex min-w-0 items-center gap-3">
                           <span
-                            className={`
-                              flex h-8 w-8 shrink-0 items-center justify-center rounded-xl
-                              transition-colors duration-180
-                              ${isActive
+                            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                              isActive
                                 ? link.ats
-                                  ? 'bg-gradient-to-br from-violet-600 to-cyan-500 text-white shadow-md shadow-violet-500/20'
-                                  : 'bg-white text-indigo-600 shadow-sm'
+                                  ? 'bg-violet-600 text-white'
+                                  : 'bg-white text-indigo-600'
                                 : link.ats
-                                  ? 'bg-violet-100/80 text-violet-600 group-hover:bg-white group-hover:text-violet-700'
-                                  : 'bg-slate-100/80 text-slate-500 group-hover:bg-white group-hover:text-indigo-600'}
-                            `}
+                                ? 'bg-violet-100 text-violet-600'
+                                : 'bg-slate-100 text-slate-500'
+                            }`}
                           >
-                            <Icon className="rr-sidebar-icon h-4 w-4" strokeWidth={2.2} />
+                            <Icon className="h-3.5 w-3.5" strokeWidth={2.2} />
                           </span>
                           <span className="truncate">{link.name}</span>
                         </div>
-
                         <ChevronRight
-                          className={`
-                            rr-sidebar-chevron h-4 w-4 shrink-0
-                            ${isActive
+                          className={`h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                            isActive
                               ? link.ats
                                 ? 'text-violet-600'
-                                : 'text-indigo-600'
-                              : link.ats
-                                ? 'text-violet-300 group-hover:text-violet-500'
-                                : 'text-slate-400'}
-                          `}
-                          strokeWidth={2.5}
+                                : 'text-slate-600'
+                              : 'text-slate-400 opacity-60'
+                          }`}
+                          strokeWidth={2.2}
                         />
                       </>
                     )}
@@ -611,115 +290,63 @@ export const Sidebar = ({ isOpen, onClose }) => {
                 );
               })}
 
-              {/* Sign out */}
               <button
                 type="button"
                 onClick={handleLogout}
-                className="
-                  rr-sidebar-item group flex min-h-[44px] w-full items-center
-                  justify-between rounded-2xl border border-transparent px-3
-                  text-left text-[12px] font-bold text-slate-600
-                  hover:border-slate-200/80 hover:bg-slate-50/80 hover:text-slate-950
-                  cursor-pointer
-                "
+                className="group flex min-h-[42px] w-full items-center justify-between rounded-xl border border-transparent px-3 text-left text-[12px] font-bold text-slate-600 transition-all duration-150 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-950 cursor-pointer"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className="
-                    flex h-8 w-8 shrink-0 items-center justify-center rounded-xl
-                    bg-slate-100/80 text-slate-500 transition-colors duration-180
-                    group-hover:bg-white group-hover:text-slate-900
-                  ">
-                    <LogOut className="rr-sidebar-icon h-4 w-4" strokeWidth={2.2} />
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-slate-900">
+                    <LogOut className="h-3.5 w-3.5" strokeWidth={2.2} />
                   </span>
                   <span>Sign Out</span>
                 </div>
-
-                <ChevronRight
-                  className="rr-sidebar-chevron h-4 w-4 text-slate-400"
-                  strokeWidth={2.5}
-                />
+                <ChevronRight className="h-4 w-4 text-slate-400 opacity-60" strokeWidth={2.2} />
               </button>
 
-              {/* Delete account */}
               <button
                 type="button"
                 onClick={handleDelete}
-                className="
-                  rr-sidebar-item group flex min-h-[44px] w-full items-center
-                  justify-between rounded-2xl border border-transparent px-3
-                  text-left text-[12px] font-bold text-rose-600
-                  hover:border-rose-200/80 hover:bg-rose-50/70 hover:text-rose-700
-                  cursor-pointer
-                "
+                className="group flex min-h-[42px] w-full items-center justify-between rounded-xl border border-transparent px-3 text-left text-[12px] font-bold text-rose-600 transition-all duration-150 hover:border-rose-200 hover:bg-rose-50/70 hover:text-rose-700 cursor-pointer"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className="
-                    flex h-8 w-8 shrink-0 items-center justify-center rounded-xl
-                    bg-rose-50 text-rose-500 transition-colors duration-180
-                    group-hover:bg-white
-                  ">
-                    <Trash2 className="rr-sidebar-icon h-4 w-4" strokeWidth={2.2} />
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-500 group-hover:bg-white">
+                    <Trash2 className="h-3.5 w-3.5" strokeWidth={2.2} />
                   </span>
                   <span>Delete Account</span>
                 </div>
-
-                <ChevronRight
-                  className="rr-sidebar-chevron h-4 w-4 text-rose-400"
-                  strokeWidth={2.5}
-                />
+                <ChevronRight className="h-4 w-4 text-rose-400 opacity-60" strokeWidth={2.2} />
               </button>
             </nav>
           </section>
         </div>
 
-        {/* Engine status */}
         <div className="px-3 pb-3 pt-1">
-          <div
-            className="
-              rr-sidebar-status rounded-[22px]
-              border border-slate-200/80
-              bg-white/80 p-3
-              shadow-[0_12px_35px_rgba(15,23,42,0.07)]
-              backdrop-blur-xl
-            "
-          >
-            <div className="relative z-10 flex items-center justify-between">
+          <div className="rounded-[18px] border border-slate-200/80 bg-slate-50/70 p-3">
+            <div className="flex items-center justify-between">
               <div className="flex min-w-0 items-center gap-2.5">
-                <div
-                  className="
-                    flex h-9 w-9 shrink-0 items-center justify-center rounded-xl
-                    bg-gradient-to-br from-cyan-500 via-blue-600 to-violet-600
-                    text-white shadow-md shadow-blue-500/20
-                  "
-                >
-                  <Bot className="h-[17px] w-[17px]" strokeWidth={2.2} />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-violet-600 text-white shadow-xs">
+                  <Bot className="h-4 w-4" strokeWidth={2.2} />
                 </div>
-
                 <div className="min-w-0">
                   <p className="truncate text-[11px] font-black tracking-tight text-slate-950">
                     Gemini 2.5 ATS
                   </p>
-                  <p className="mt-0.5 text-[8px] font-black uppercase tracking-[0.16em] text-blue-600">
+                  <p className="text-[8px] font-black uppercase tracking-[0.16em] text-blue-600">
                     Neural Engine
                   </p>
                 </div>
               </div>
-
               <span
-                className="rr-sidebar-pulse relative ml-2 flex h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500"
-                aria-label="Engine online"
+                className="relative flex h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500"
                 title="Engine online"
               >
-                <span className="absolute inset-0 rounded-full bg-emerald-400/40" />
+                <span className="absolute inset-0 rounded-full bg-emerald-400 opacity-75 animate-ping" />
               </span>
             </div>
-
-            <div className="relative z-10 mt-2.5 flex items-center gap-2">
-              <span className="h-1 w-1 rounded-full bg-emerald-500" />
-              <p className="text-[9px] font-semibold leading-relaxed text-slate-500">
-                Vector pipeline ready for real-time parsing.
-              </p>
-            </div>
+            <p className="mt-2 text-[9px] font-medium leading-relaxed text-slate-500">
+              Vector pipeline ready for real-time parsing.
+            </p>
           </div>
         </div>
       </aside>
@@ -730,6 +357,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
       />
     </>
   );
-};
+});
 
+Sidebar.displayName = 'Sidebar';
 export default Sidebar;
