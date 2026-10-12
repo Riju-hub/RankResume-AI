@@ -24,6 +24,7 @@ backend/.env
 # │   │   │   │   ├── HelpFeedback.jsx
 # │   │   │   │   ├── Chatbot.jsx
 # │   │   │   │   ├── ATS.jsx
+# │   │   │   │   ├── ForgotPasswordModel.jsx
 # │   │   │   │   ├── Navbar.jsx
 # │   │   │   │   ├── Footer.jsx
 # │   │   │   │   ├── Profile.jsx
@@ -49,6 +50,7 @@ backend/.env
 # │   │   ├── pages/                 # Route pages
 # │   │   │   ├── auth/
 # │   │   │   │   ├── Login.jsx
+# │   │   │   │   ├── ResetPassword.jsx
 # │   │   │   │   └── Register.jsx
 # │   │   │   ├── recruiter/
 # │   │   │   │   ├── Dashboard.jsx
@@ -59,6 +61,7 @@ backend/.env
 # │   │   │   ├── candidate/
 # │   │   │   │    ├── JobBoard.jsx
 # │   │   │   │    ├── ApplyJobModal.jsx
+# │   │   │   │    ├── SavedJobs.jsx
 # │   │   │   │    ├── JobDetails.jsx
 # │   │   │   │    └── MyApplications.jsx
 # │   │   │   ├── NotFound.jsx
@@ -74,6 +77,7 @@ backend/.env
 # │   ├── .env
 # │   ├── index.html
 # │   ├── package.json
+# │   ├── vercel.json
 # │   ├── tailwind.config.js
 # │   └── vite.config.js
 # │
