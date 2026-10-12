@@ -1,6 +1,8 @@
 // frontend/src/components/common/Sidebar.jsx
-import React, { useState, useMemo, memo, useCallback } from 'react';
+import React, { useState, useMemo, memo, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthContext } from '../../context/AuthContext';
 import { useSavedJobs } from '../../hooks/useSavedJobs';
 import { DeleteAccountModal } from './DeleteAccountModal';
@@ -44,11 +46,104 @@ const SECONDARY_NAV = [
   { name: 'Terms & Policy', path: '/terms', icon: FileCheck2 },
 ];
 
+// ============================================================================
+// Modern Pearlescent Aurora Sign Out Modal
+// ============================================================================
+const SignOutConfirmModal = memo(({ isOpen, onClose, onConfirm }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted || typeof document === 'undefined') return null;
+
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 sm:p-6 font-sans">
+          {/* Backdrop Blur */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-md transform-gpu will-change-[opacity]"
+            aria-hidden="true"
+          />
+
+          {/* Modal Container */}
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 320 }}
+            className="relative z-10 w-full max-w-sm overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-6 text-center text-slate-900 shadow-[0_25px_60px_rgba(15,23,42,0.18)] backdrop-blur-2xl sm:p-7 transform-gpu will-change-[transform,opacity]"
+          >
+            {/* Gradient Accent Bar */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-violet-500" />
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
+              aria-label="Close dialog"
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            {/* Icon */}
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50 text-indigo-600 shadow-sm">
+              <LogOut className="h-6 w-6 stroke-[2.2]" />
+            </div>
+
+            {/* Content */}
+            <h3 className="mt-4 text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
+              Sign out of platform?
+            </h3>
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
+              Are you sure you want to end your current session? You will need to sign in again to access your workspace.
+            </p>
+
+            {/* Actions */}
+            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+              <button
+                type="button"
+                onClick={onConfirm}
+                className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 text-xs font-bold text-white shadow-[0_4px_16px_rgba(99,102,241,0.25)] transition-all hover:shadow-[0_6px_22px_rgba(99,102,241,0.35)] active:scale-[0.98]"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Yes, Sign Out</span>
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 px-5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-200"
+              >
+                Cancel
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>,
+    document.body
+  );
+});
+
+SignOutConfirmModal.displayName = 'SignOutConfirmModal';
+
 export const Sidebar = memo(({ isOpen, onClose }) => {
   const { isRecruiter, logout } = useAuthContext();
   const { totalSaved } = useSavedJobs();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   const isRecruiterRole = Boolean(isRecruiter);
 
@@ -77,11 +172,18 @@ export const Sidebar = memo(({ isOpen, onClose }) => {
   const RoleIcon = roleTheme.Icon;
   const primaryLinks = isRecruiterRole ? PRIMARY_NAV.recruiter : PRIMARY_NAV.candidate;
 
-  const handleLogout = useCallback(() => {
+  // Prompt signout modal
+  const handlePromptSignOut = useCallback(() => {
     onClose?.();
+    setShowSignOutModal(true);
+  }, [onClose]);
+
+  // Execute signout upon user confirmation
+  const handleConfirmSignOut = useCallback(() => {
+    setShowSignOutModal(false);
     logout();
     navigate('/', { replace: true });
-  }, [logout, navigate, onClose]);
+  }, [logout, navigate]);
 
   const handleDelete = useCallback(() => {
     onClose?.();
@@ -289,10 +391,11 @@ export const Sidebar = memo(({ isOpen, onClose }) => {
                 );
               })}
 
+              {/* Sign Out Trigger Button */}
               <button
                 type="button"
-                onClick={handleLogout}
-                className="group flex h-10 w-full items-center justify-between rounded-xl border border-transparent px-3 text-left text-xs font-semibold text-slate-600 transition-colors duration-100 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                onClick={handlePromptSignOut}
+                className="group flex h-10 w-full items-center justify-between rounded-xl border border-transparent px-3 text-left text-xs font-semibold text-slate-600 transition-colors duration-100 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900 cursor-pointer"
               >
                 <div className="flex min-w-0 items-center gap-2.5">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-slate-900">
@@ -303,10 +406,11 @@ export const Sidebar = memo(({ isOpen, onClose }) => {
                 <ChevronRight className="h-3.5 w-3.5 text-slate-400 opacity-60" strokeWidth={2.2} />
               </button>
 
+              {/* Delete Account Button */}
               <button
                 type="button"
                 onClick={handleDelete}
-                className="group flex h-10 w-full items-center justify-between rounded-xl border border-transparent px-3 text-left text-xs font-semibold text-rose-600 transition-colors duration-100 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700"
+                className="group flex h-10 w-full items-center justify-between rounded-xl border border-transparent px-3 text-left text-xs font-semibold text-rose-600 transition-colors duration-100 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 cursor-pointer"
               >
                 <div className="flex min-w-0 items-center gap-2.5">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-500 group-hover:bg-white">
@@ -345,6 +449,13 @@ export const Sidebar = memo(({ isOpen, onClose }) => {
           </div>
         </div>
       </aside>
+
+      {/* Modern Center Sign Out Confirmation Modal */}
+      <SignOutConfirmModal
+        isOpen={showSignOutModal}
+        onClose={() => setShowSignOutModal(false)}
+        onConfirm={handleConfirmSignOut}
+      />
 
       {/* Account Deletion Dialog */}
       <DeleteAccountModal
